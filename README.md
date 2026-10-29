@@ -12,6 +12,7 @@
   <code>SQLite</code>
   <code>Portable</code>
   <code>Offline-first</code>
+  <code>MIT License</code>
 </p>
 
 ---
@@ -233,3 +234,11 @@ dotnet test SteadyClock.sln -c Release
 **SteadyClock** is a quiet, offline-first time tracker for Windows 10/11. It has a single timer, idle auto-pause, reliable crash recovery, local history, a system tray mode and global hotkeys. It has no accounts, cloud sync, telemetry or network code. All data is stored locally in `%LOCALAPPDATA%\MyTimeTracker\` (legacy folder name retained for compatibility).
 
 Built with .NET 8, WPF and SQLite. Portable and self-contained x64 builds are available in Releases.
+
+## Лицензия
+
+Проект распространяется под лицензией **MIT**. Полный текст — в файле [LICENSE](LICENSE).
+
+Вы можете свободно использовать, изменять, распространять и встраивать SteadyClock в свои проекты при сохранении уведомления об авторских правах и текста лицензии.
+
+Copyright (c) 2026 SteadyClock contributors.
