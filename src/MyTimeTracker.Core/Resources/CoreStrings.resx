@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="IdleThresholdRange" xml:space="preserve"><value>Порог простоя должен быть от {0} до {1} секунд.</value></data>
+  <data name="ReminderAfterRange" xml:space="preserve"><value>Напоминание должно срабатывать через 1–1440 минут.</value></data>
+  <data name="ReminderRepeatRange" xml:space="preserve"><value>Интервал повтора напоминания должен быть от 5 до 1440 минут.</value></data>
+  <data name="WorkDaysCorrupt" xml:space="preserve"><value>Список рабочих дней настроен некорректно.</value></data>
+  <data name="WorkDaysAtLeastOne" xml:space="preserve"><value>Выберите хотя бы один рабочий день или отключите напоминания.</value></data>
+  <data name="WorkStartFormat" xml:space="preserve"><value>Начало рабочего дня должно быть указано в формате ЧЧ:ММ.</value></data>
+  <data name="WorkEndFormat" xml:space="preserve"><value>Конец рабочего дня должен быть указан в формате ЧЧ:ММ.</value></data>
+  <data name="WorkEndAfterStart" xml:space="preserve"><value>Конец рабочего дня должен быть позже начала.</value></data>
+  <data name="HotkeyMissing" xml:space="preserve"><value>Горячая клавиша «{0}» не задана.</value></data>
+  <data name="HotkeyModifierRequired" xml:space="preserve"><value>Для сочетания «{0}» нужен хотя бы один модификатор (Ctrl, Alt, Shift или Win).</value></data>
+  <data name="HotkeyDuplicate" xml:space="preserve"><value>Комбинация {0} назначена нескольким действиям.</value></data>
+  <data name="ActionToggle" xml:space="preserve"><value>старт/пауза</value></data>
+  <data name="ActionStop" xml:space="preserve"><value>стоп</value></data>
+  <data name="ActionShowHide" xml:space="preserve"><value>показать/скрыть окно</value></data>
+  <data name="DurationHoursMinutes" xml:space="preserve"><value>{0} ч {1:00} мин</value></data>
+  <data name="DurationMinutes" xml:space="preserve"><value>{0} мин</value></data>
+  <data name="DurationSeconds" xml:space="preserve"><value>{0} сек</value></data>
+  <data name="DstInvalidTime" xml:space="preserve"><value>Указанное локальное время не существует из-за перехода на летнее время.</value></data>
+</root>
