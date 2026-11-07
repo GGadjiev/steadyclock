@@ -10,6 +10,10 @@ namespace SteadyClock.Desktop.Services;
 /// </summary>
 public sealed class PlatformIdleTimeProvider : IIdleTimeProvider
 {
+    private readonly object _x11Sync = new();
+    private IntPtr _x11Display;
+    private IntPtr _x11Info;
+
     public TimeSpan GetIdleTime()
     {
         try
@@ -99,35 +103,53 @@ public sealed class PlatformIdleTimeProvider : IIdleTimeProvider
         return TimeSpan.FromMilliseconds(idleMs);
     }
 
-    private static TimeSpan GetX11Idle()
+    private TimeSpan GetX11Idle()
     {
-        var display = XOpenDisplay(null);
-        if (display == IntPtr.Zero)
+        lock (_x11Sync)
         {
-            return TimeSpan.Zero;
-        }
-
-        var info = IntPtr.Zero;
-        try
-        {
-            info = XScreenSaverAllocInfo();
-            if (info == IntPtr.Zero ||
-                !XScreenSaverQueryInfo(display, XDefaultRootWindow(display), info))
+            if (_x11Display == IntPtr.Zero)
             {
+                _x11Display = XOpenDisplay(null);
+                if (_x11Display == IntPtr.Zero)
+                {
+                    return TimeSpan.Zero;
+                }
+
+                _x11Info = XScreenSaverAllocInfo();
+                if (_x11Info == IntPtr.Zero)
+                {
+                    XCloseDisplay(_x11Display);
+                    _x11Display = IntPtr.Zero;
+                    return TimeSpan.Zero;
+                }
+            }
+
+            if (!XScreenSaverQueryInfo(
+                _x11Display,
+                XDefaultRootWindow(_x11Display),
+                _x11Info))
+            {
+                CloseX11Locked();
                 return TimeSpan.Zero;
             }
 
-            var data = Marshal.PtrToStructure<XScreenSaverInfo>(info);
+            var data = Marshal.PtrToStructure<XScreenSaverInfo>(_x11Info);
             return TimeSpan.FromMilliseconds(data.Idle);
         }
-        finally
-        {
-            if (info != IntPtr.Zero)
-            {
-                XFree(info);
-            }
+    }
 
-            XCloseDisplay(display);
+    private void CloseX11Locked()
+    {
+        if (_x11Info != IntPtr.Zero)
+        {
+            XFree(_x11Info);
+            _x11Info = IntPtr.Zero;
+        }
+
+        if (_x11Display != IntPtr.Zero)
+        {
+            XCloseDisplay(_x11Display);
+            _x11Display = IntPtr.Zero;
         }
     }
 }
