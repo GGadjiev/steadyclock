@@ -39,7 +39,8 @@
                                    Classes="mono"
                                    FontSize="13"
                                    FontWeight="SemiBold"
-                                   HorizontalAlignment="Right" />
+                                   HorizontalAlignment="Right"
+                                   Margin="0,0,7,0" />
                         <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Right"
                                     Spacing="2"
@@ -112,7 +113,7 @@
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled"
                       IsVisible="{Binding IsTimerPage}">
-            <StackPanel Margin="0,0,12,22">
+            <StackPanel Margin="22,0,12,22">
                 <Border Classes="card" Padding="18,20,18,16">
                     <StackPanel>
                         <TextBlock Text="{Binding TimerText}" Classes="timer" />
@@ -231,7 +232,7 @@
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled"
                       IsVisible="{Binding IsHistoryPage}">
-            <StackPanel Margin="0,0,12,22">
+            <StackPanel Margin="22,0,12,22">
                 <TextBlock Text="{loc:Loc Key=Loading}"
                            FontSize="13"
                            Foreground="{DynamicResource TextSecondaryBrush}"

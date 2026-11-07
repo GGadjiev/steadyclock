@@ -17,7 +17,7 @@
         Background="{DynamicResource AppBackgroundBrush}">
     <Grid RowDefinitions="*,Auto,Auto" Margin="24,20,24,0">
         <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <StackPanel Spacing="12" Margin="0,0,12,0">
+            <StackPanel Spacing="12" Margin="22,0,12,0">
                 <TextBlock Text="{loc:Loc Key=SettingsTitle}" FontSize="23" FontWeight="SemiBold" />
 
                 <Border Classes="card" Padding="16">

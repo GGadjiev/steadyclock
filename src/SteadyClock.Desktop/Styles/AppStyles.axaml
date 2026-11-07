@@ -53,6 +53,16 @@
         </Setter>
     </Style>
 
+    <Style Selector="Button /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.16" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
+                <BrushTransition Property="Foreground" Duration="0:0:0.16" />
+            </Transitions>
+        </Setter>
+    </Style>
+
     <Style Selector="Button:pressed">
         <Setter Property="Opacity" Value="0.82" />
     </Style>
@@ -212,9 +222,23 @@
 
     <Style Selector="controls|HotkeyTextBox">
         <Setter Property="MinHeight" Value="38" />
+        <Setter Property="Background" Value="#F4F7F5" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <Style Selector="controls|HotkeyTextBox:pointerover">
+        <Setter Property="Background" Value="{DynamicResource HoverSurfaceBrush}" />
+    </Style>
+
+    <Style Selector="controls|HotkeyTextBox:focus">
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
     </Style>
 
     <Style Selector="ComboBox">
+        <Setter Property="Background" Value="#F4F7F5" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="9" />
         <Setter Property="Transitions">
             <Transitions>
                 <BrushTransition Property="Background" Duration="0:0:0.16" />
@@ -225,7 +249,11 @@
 
     <Style Selector="ComboBox:pointerover">
         <Setter Property="Background" Value="{DynamicResource HoverSurfaceBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+
+    <Style Selector="ComboBox:focus">
+        <Setter Property="BorderThickness" Value="0" />
     </Style>
 
     <Style Selector="ComboBoxItem">
@@ -260,6 +288,14 @@
         <Setter Property="MinHeight" Value="8" />
     </Style>
 
+    <Style Selector="ScrollBar">
+        <Setter Property="AllowAutoHide" Value="False" />
+    </Style>
+
+    <Style Selector="ScrollViewer">
+        <Setter Property="AllowAutoHide" Value="False" />
+    </Style>
+
     <Style Selector="Button.secondary">
         <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
@@ -290,11 +326,46 @@
     <Style Selector="Button.primary:pointerover">
         <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource AccentHoverBrush}" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentHoverBrush}" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="Button.secondary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource HoverSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
     </Style>
 
     <Style Selector="Button.danger:pointerover">
         <Setter Property="Background" Value="#9A342F" />
         <Setter Property="BorderBrush" Value="#9A342F" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="Button.danger:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#9A342F" />
+        <Setter Property="BorderBrush" Value="#9A342F" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="Button.nav:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource HoverSurfaceBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="Button.rowAction:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource HoverSurfaceBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="Button.link:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
     </Style>
 
     <Style Selector="Border.error">
