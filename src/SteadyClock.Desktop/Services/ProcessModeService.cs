@@ -17,6 +17,7 @@ public sealed class ProcessModeService : IDisposable
     private bool _wasRunning;
     private bool _suppressUntilClosed;
     private bool _stoppingFromProcess;
+    private bool _targetInitialized;
     private string _targetKey = string.Empty;
     private bool _disposed;
 
@@ -55,7 +56,25 @@ public sealed class ProcessModeService : IDisposable
             var key = $"{trigger.Path}|{trigger.Name}";
             if (!string.Equals(key, _targetKey, StringComparison.Ordinal))
             {
+                if (_targetInitialized &&
+                    _controller.HasActiveSession &&
+                    _controller.Engine.ActiveSession?.Source == SessionSource.ProcessAutomatic)
+                {
+                    _stoppingFromProcess = true;
+                    try
+                    {
+                        await _controller.StopAsync(cancellationToken).ConfigureAwait(true);
+                        _logger.Info(
+                            "Режим «По приложению»: цель изменена, предыдущая сессия остановлена.");
+                    }
+                    finally
+                    {
+                        _stoppingFromProcess = false;
+                    }
+                }
+
                 _targetKey = key;
+                _targetInitialized = true;
                 _wasRunning = false;
                 _suppressUntilClosed = false;
             }
