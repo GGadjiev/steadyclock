@@ -47,14 +47,26 @@
                                     IsVisible="{Binding CanManage}">
                             <Button Classes="rowAction"
                                     Command="{Binding EditCommand}"
-                                    Content="✎"
-                                    ToolTip.Tip="{Binding EditLabel}"
-                                    AutomationProperties.Name="{Binding EditLabel}" />
+                                    AutomationProperties.Name="{Binding EditLabel}">
+                                <ToolTip.Tip>
+                                    <TextBlock Text="{Binding EditLabel}" Foreground="White" />
+                                </ToolTip.Tip>
+                                <PathIcon Width="12"
+                                          Height="12"
+                                          Foreground="{Binding $parent[Button].Foreground}"
+                                          Data="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.13,5.12L18.88,8.87M3,17.25V21H6.75L17.81,9.94L14.06,6.19L3,17.25Z" />
+                            </Button>
                             <Button Classes="rowAction"
                                     Command="{Binding DeleteCommand}"
-                                    Content="×"
-                                    ToolTip.Tip="{Binding DeleteLabel}"
-                                    AutomationProperties.Name="{Binding DeleteLabel}" />
+                                    AutomationProperties.Name="{Binding DeleteLabel}">
+                                <ToolTip.Tip>
+                                    <TextBlock Text="{Binding DeleteLabel}" Foreground="White" />
+                                </ToolTip.Tip>
+                                <PathIcon Width="12"
+                                          Height="12"
+                                          Foreground="{Binding $parent[Button].Foreground}"
+                                          Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                            </Button>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
@@ -87,8 +99,11 @@
                 <Button Classes="nav"
                         Content="⚙"
                         Command="{Binding OpenSettingsCommand}"
-                        ToolTip.Tip="{loc:Loc Key=SettingsOpenTooltip}"
-                        AutomationProperties.Name="{loc:Loc Key=SettingsOpenTooltip}" />
+                        AutomationProperties.Name="{loc:Loc Key=SettingsOpenTooltip}">
+                    <ToolTip.Tip>
+                        <TextBlock Text="{loc:Loc Key=SettingsOpenTooltip}" Foreground="White" />
+                    </ToolTip.Tip>
+                </Button>
             </StackPanel>
         </Grid>
 
@@ -97,7 +112,7 @@
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled"
                       IsVisible="{Binding IsTimerPage}">
-            <StackPanel Margin="0,0,0,22">
+            <StackPanel Margin="0,0,12,22">
                 <Border Classes="card" Padding="18,20,18,16">
                     <StackPanel>
                         <TextBlock Text="{Binding TimerText}" Classes="timer" />
@@ -216,7 +231,7 @@
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled"
                       IsVisible="{Binding IsHistoryPage}">
-            <StackPanel Margin="0,0,0,22">
+            <StackPanel Margin="0,0,12,22">
                 <TextBlock Text="{loc:Loc Key=Loading}"
                            FontSize="13"
                            Foreground="{DynamicResource TextSecondaryBrush}"

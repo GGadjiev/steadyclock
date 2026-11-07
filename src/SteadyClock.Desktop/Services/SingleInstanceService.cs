@@ -121,11 +121,13 @@ public sealed class SingleInstanceService : IDisposable
 
     private static string GetUserHash()
     {
+        var instanceId = Environment.GetEnvironmentVariable("STEADYCLOCK_INSTANCE_ID");
         var identity = string.Join(
             "|",
             Environment.UserName,
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-            Environment.MachineName);
+            Environment.MachineName,
+            instanceId ?? string.Empty);
         var hash = SHA256.HashData(Encoding.UTF8.GetBytes(identity));
         return Convert.ToHexString(hash)[..16];
     }

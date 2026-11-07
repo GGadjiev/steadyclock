@@ -26,9 +26,12 @@
                 <Button Grid.Column="1"
                         Classes="rowAction"
                         Content="×"
-                        ToolTip.Tip="{loc:Loc Key=Close}"
                         AutomationProperties.Name="{loc:Loc Key=Close}"
-                        Click="CloseClicked" />
+                        Click="CloseClicked">
+                    <ToolTip.Tip>
+                        <TextBlock Text="{loc:Loc Key=Close}" Foreground="White" />
+                    </ToolTip.Tip>
+                </Button>
             </Grid>
             <TextBlock x:Name="MessageText"
                        Grid.Row="1"

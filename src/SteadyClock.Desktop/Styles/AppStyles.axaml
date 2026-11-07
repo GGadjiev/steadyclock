@@ -1,6 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:conv="using:SteadyClock.Desktop.Converters">
+        xmlns:conv="using:SteadyClock.Desktop.Converters"
+        xmlns:controls="using:SteadyClock.Desktop.Views.Controls">
     <Styles.Resources>
         <SolidColorBrush x:Key="AppBackgroundBrush">#F3F6F4</SolidColorBrush>
         <SolidColorBrush x:Key="CardBackgroundBrush">#FFFFFF</SolidColorBrush>
@@ -36,6 +37,7 @@
     <Style Selector="Window">
         <Setter Property="Background" Value="{DynamicResource AppBackgroundBrush}" />
         <Setter Property="FontFamily" Value="Segoe UI, SF Pro Text, Cantarell, Noto Sans" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
     </Style>
 
     <Style Selector="Button">
@@ -53,10 +55,6 @@
 
     <Style Selector="Button:pressed">
         <Setter Property="Opacity" Value="0.82" />
-    </Style>
-
-    <Style Selector="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
     </Style>
 
     <Style Selector="Border.card">
@@ -212,6 +210,56 @@
         <Setter Property="BorderThickness" Value="2" />
     </Style>
 
+    <Style Selector="controls|HotkeyTextBox">
+        <Setter Property="MinHeight" Value="38" />
+    </Style>
+
+    <Style Selector="ComboBox">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.16" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="ComboBox:pointerover">
+        <Setter Property="Background" Value="{DynamicResource HoverSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+    </Style>
+
+    <Style Selector="ComboBoxItem">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.16" />
+                <BrushTransition Property="Foreground" Duration="0:0:0.16" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="CheckBox">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Foreground" Duration="0:0:0.16" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="CheckBox:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+    </Style>
+
+    <Style Selector="ScrollBar:vertical">
+        <Setter Property="Width" Value="8" />
+        <Setter Property="MinWidth" Value="8" />
+        <Setter Property="Margin" Value="2,0,0,0" />
+    </Style>
+
+    <Style Selector="ScrollBar:horizontal">
+        <Setter Property="Height" Value="8" />
+        <Setter Property="MinHeight" Value="8" />
+    </Style>
+
     <Style Selector="Button.secondary">
         <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
@@ -267,5 +315,13 @@
         <Setter Property="Padding" Value="8,5" />
         <Setter Property="CornerRadius" Value="6" />
         <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <Style Selector="ToolTip TextBlock">
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="ToolTip /template/ ContentPresenter">
+        <Setter Property="Foreground" Value="White" />
     </Style>
 </Styles>

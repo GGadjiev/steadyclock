@@ -17,7 +17,7 @@
         Background="{DynamicResource AppBackgroundBrush}">
     <Grid RowDefinitions="*,Auto,Auto" Margin="24,20,24,0">
         <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <StackPanel Spacing="12">
+            <StackPanel Spacing="12" Margin="0,0,12,0">
                 <TextBlock Text="{loc:Loc Key=SettingsTitle}" FontSize="23" FontWeight="SemiBold" />
 
                 <Border Classes="card" Padding="16">
@@ -38,6 +38,8 @@
                             <Grid ColumnDefinitions="*,Auto">
                                 <ComboBox ItemsSource="{Binding ProcessOptions}"
                                           SelectedItem="{Binding SelectedProcess}"
+                                          Height="38"
+                                          VerticalAlignment="Center"
                                           HorizontalAlignment="Stretch"
                                           AutomationProperties.Name="{loc:Loc Key=ProcessPickerLabel}">
                                     <ComboBox.ItemTemplate>
@@ -50,8 +52,10 @@
                                 </ComboBox>
                                 <Button Grid.Column="1"
                                         Classes="secondary"
+                                        Height="38"
                                         Content="{loc:Loc Key=ProcessRefreshButton}"
                                         Command="{Binding RefreshProcessesCommand}"
+                                        VerticalAlignment="Center"
                                         Margin="8,0,0,0" />
                             </Grid>
                             <CheckBox Content="{loc:Loc Key=StopWhenClosedLabel}"
@@ -106,6 +110,7 @@
                             <TextBlock Text="{loc:Loc Key=HotkeyToggle}"
                                        VerticalAlignment="Center" />
                             <controls:HotkeyTextBox Grid.Column="1"
+                                                    MinHeight="38"
                                                     Hotkey="{Binding ToggleHotkey}"
                                                     AutomationProperties.Name="{loc:Loc Key=HotkeyToggle}" />
                             <TextBlock Grid.Row="1"
@@ -113,6 +118,7 @@
                                        VerticalAlignment="Center" />
                             <controls:HotkeyTextBox Grid.Row="1"
                                                     Grid.Column="1"
+                                                    MinHeight="38"
                                                     Hotkey="{Binding StopHotkey}"
                                                     AutomationProperties.Name="{loc:Loc Key=HotkeyStop}" />
                             <TextBlock Grid.Row="2"
@@ -120,6 +126,7 @@
                                        VerticalAlignment="Center" />
                             <controls:HotkeyTextBox Grid.Row="2"
                                                     Grid.Column="1"
+                                                    MinHeight="38"
                                                     Hotkey="{Binding ShowHideHotkey}"
                                                     AutomationProperties.Name="{loc:Loc Key=HotkeyShowHide}" />
                         </Grid>
@@ -192,11 +199,19 @@
                                             </ComboBox>
                                             <Button Grid.Row="1" Grid.Column="1"
                                                     Classes="rowAction"
-                                                    Content="▶"
+                                                    Width="20"
+                                                    Height="20"
+                                                    VerticalAlignment="Center"
                                                     Command="{Binding PreviewSoundCommand}"
-                                                    ToolTip.Tip="{loc:Loc Key=NotificationPreviewSound}"
                                                     AutomationProperties.Name="{loc:Loc Key=NotificationPreviewSound}"
-                                                    Margin="10,7,0,0" />
+                                                    Margin="10,7,0,0">
+                                                <ToolTip.Tip>
+                                                    <TextBlock Text="{loc:Loc Key=NotificationPreviewSound}" Foreground="White" />
+                                                </ToolTip.Tip>
+                                                <PathIcon Width="10"
+                                                          Height="10"
+                                                          Data="M8,5.14V19.14L19,12.14L8,5.14Z" />
+                                            </Button>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>

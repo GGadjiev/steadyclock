@@ -1,8 +1,11 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Styling;
+using Avalonia.VisualTree;
 using MyTimeTracker.Core.Models;
 using SteadyClock.Desktop.Resources;
 
@@ -21,9 +24,17 @@ public sealed class HotkeyTextBox : TextBox
 
     public HotkeyTextBox()
     {
+        if (Application.Current is { } application &&
+            application.TryFindResource(typeof(TextBox), out var resource) &&
+            resource is ControlTheme textBoxTheme)
+        {
+            Theme = textBoxTheme;
+        }
+
         IsReadOnly = true;
         AddHandler(KeyDownEvent, OnPreviewKeyDown, RoutingStrategies.Tunnel);
         GotFocus += (_, _) => SelectAll();
+        LayoutUpdated += (_, _) => HideClearButton();
         UpdateDisplayText();
     }
 
@@ -39,6 +50,25 @@ public sealed class HotkeyTextBox : TextBox
         if (change.Property == HotkeyProperty)
         {
             UpdateDisplayText();
+        }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        HideClearButton();
+    }
+
+    private void HideClearButton()
+    {
+        // The Fluent TextBox template adds a clear button for non-empty text.
+        // Clearing the display here would desynchronize the captured hotkey.
+        foreach (var button in this.GetVisualDescendants().OfType<Button>())
+        {
+            if (button.IsVisible)
+            {
+                button.IsVisible = false;
+            }
         }
     }
 
