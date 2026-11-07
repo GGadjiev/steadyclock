@@ -1,0 +1,51 @@
+name: cross-platform
+
+on:
+  push:
+    branches:
+      - main
+      - feature/cross-platform
+  pull_request:
+    branches:
+      - main
+      - feature/cross-platform
+
+jobs:
+  build-and-test:
+    name: Avalonia (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-latest
+          - ubuntu-latest
+          - macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Build Avalonia client
+        run: dotnet build src/SteadyClock.Desktop/SteadyClock.Desktop.csproj -c Release
+
+      - name: Run core tests
+        run: dotnet test tests/MyTimeTracker.Tests/MyTimeTracker.Tests.csproj -c Release
+
+  wpf-windows:
+    name: WPF (windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build legacy WPF client
+        run: dotnet build src/MyTimeTracker.App/MyTimeTracker.App.csproj -c Release
