@@ -13,25 +13,85 @@
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource AppBackgroundBrush}">
 
+    <Window.Resources>
+        <DataTemplate x:Key="SessionRowTemplate" x:DataType="vm:SessionLineViewModel">
+            <Border Classes="session">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="{Binding TimeRangeText}"
+                                       FontSize="13.5"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center" />
+                            <Border Classes="badge" IsVisible="{Binding HasBadge}">
+                                <TextBlock Text="{Binding Badge}" />
+                            </Border>
+                        </StackPanel>
+                        <TextBlock Text="{Binding Comment}"
+                                   FontSize="12.5"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,5,0,0"
+                                   IsVisible="{Binding HasComment}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding DurationText}"
+                                   Classes="mono"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   HorizontalAlignment="Right" />
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    Spacing="2"
+                                    Margin="0,3,0,0"
+                                    IsVisible="{Binding CanManage}">
+                            <Button Classes="rowAction"
+                                    Command="{Binding EditCommand}"
+                                    Content="✎"
+                                    ToolTip.Tip="{Binding EditLabel}"
+                                    AutomationProperties.Name="{Binding EditLabel}" />
+                            <Button Classes="rowAction"
+                                    Command="{Binding DeleteCommand}"
+                                    Content="×"
+                                    ToolTip.Tip="{Binding DeleteLabel}"
+                                    AutomationProperties.Name="{Binding DeleteLabel}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </Window.Resources>
+
     <Grid RowDefinitions="Auto,*">
-        <Grid Grid.Row="0" Margin="20,16,20,8" ColumnDefinitions="Auto,*">
+        <Grid Grid.Row="0" Margin="20,16,20,8" ColumnDefinitions="Auto,*,Auto">
             <Image Width="28"
                    Height="28"
                    VerticalAlignment="Center"
                    Source="avares://SteadyClock/Assets/app.png" />
             <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
-                <TextBlock Text="{loc:Loc Key=AppTitle}" Classes="title" />
+                <TextBlock Text="{Binding HeaderTitle}" Classes="title" />
                 <TextBlock Text="{loc:Loc Key=CrossPlatformPreview}"
                            FontSize="11.5"
                            Foreground="{DynamicResource TextTertiaryBrush}"
                            Margin="0,1,0,0" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                <Button Classes="nav"
+                        Content="{loc:Loc Key=HistoryTitle}"
+                        Command="{Binding ShowHistoryCommand}"
+                        IsVisible="{Binding IsTimerPage}" />
+                <Button Classes="nav"
+                        Content="{loc:Loc Key=Back}"
+                        Command="{Binding ShowTimerCommand}"
+                        IsVisible="{Binding IsHistoryPage}" />
             </StackPanel>
         </Grid>
 
         <ScrollViewer Grid.Row="1"
                       Margin="20,2,20,0"
                       VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled">
+                      HorizontalScrollBarVisibility="Disabled"
+                      IsVisible="{Binding IsTimerPage}">
             <StackPanel Margin="0,0,0,22">
                 <Border Classes="card" Padding="18,20,18,16">
                     <StackPanel>
@@ -104,40 +164,8 @@
                            Classes="section"
                            Margin="2,18,0,9" />
 
-                <ItemsControl ItemsSource="{Binding TodaySessions}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="vm:SessionLineViewModel">
-                            <Border Classes="session">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <StackPanel>
-                                        <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Text="{Binding TimeRangeText}"
-                                                       FontSize="13.5"
-                                                       FontWeight="SemiBold"
-                                                       VerticalAlignment="Center" />
-                                            <Border Classes="badge" IsVisible="{Binding HasBadge}">
-                                                <TextBlock Text="{Binding Badge}" />
-                                            </Border>
-                                        </StackPanel>
-                                        <TextBlock Text="{Binding Comment}"
-                                                   FontSize="12.5"
-                                                   Foreground="{DynamicResource TextSecondaryBrush}"
-                                                   TextWrapping="Wrap"
-                                                   Margin="0,5,0,0"
-                                                   IsVisible="{Binding HasComment}" />
-                                    </StackPanel>
-                                    <TextBlock Grid.Column="1"
-                                               Text="{Binding DurationText}"
-                                               Classes="mono"
-                                               FontSize="13"
-                                               FontWeight="SemiBold"
-                                               VerticalAlignment="Top"
-                                               HorizontalAlignment="Right" />
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                <ItemsControl ItemsSource="{Binding TodaySessions}"
+                              ItemTemplate="{StaticResource SessionRowTemplate}" />
 
                 <TextBlock Text="{loc:Loc Key=NoSessionsToday}"
                            FontSize="13"
@@ -147,14 +175,100 @@
                            Margin="20,10,20,6"
                            IsVisible="{Binding IsEmpty}" />
 
+                <Button Content="{loc:Loc Key=AddManualEntry}"
+                        Classes="link"
+                        Command="{Binding AddManualCommand}"
+                        HorizontalAlignment="Center"
+                        Margin="0,8,0,0" />
+
                 <TextBlock Text="{loc:Loc Key=BetaFoundationNotice}"
                            FontSize="11.5"
                            Foreground="{DynamicResource TextTertiaryBrush}"
                            TextWrapping="Wrap"
                            TextAlignment="Center"
-                           Margin="8,16,8,0" />
+                           Margin="8,10,8,0" />
+            </StackPanel>
+        </ScrollViewer>
+
+        <ScrollViewer Grid.Row="1"
+                      Margin="20,2,20,0"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      IsVisible="{Binding IsHistoryPage}">
+            <StackPanel Margin="0,0,0,22">
+                <TextBlock Text="{loc:Loc Key=Loading}"
+                           FontSize="13"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           HorizontalAlignment="Center"
+                           Margin="0,8,0,10"
+                           IsVisible="{Binding IsHistoryLoading}" />
+
+                <ItemsControl ItemsSource="{Binding HistoryGroups}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:HistoryGroupViewModel">
+                            <Border Classes="card" Margin="0,0,0,12" Padding="14">
+                                <StackPanel>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding DateText}"
+                                                       FontSize="14"
+                                                       FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding SessionCountText}"
+                                                       FontSize="11.5"
+                                                       Foreground="{DynamicResource TextTertiaryBrush}"
+                                                       Margin="0,2,0,0" />
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding TotalText}"
+                                                   Classes="mono"
+                                                   FontSize="13.5"
+                                                   FontWeight="SemiBold"
+                                                   VerticalAlignment="Top"
+                                                   HorizontalAlignment="Right" />
+                                    </Grid>
+                                    <ItemsControl ItemsSource="{Binding Sessions}"
+                                                  ItemTemplate="{StaticResource SessionRowTemplate}"
+                                                  Margin="0,10,0,0" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="{loc:Loc Key=HistoryEmpty}"
+                           FontSize="13"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           Margin="20,16,20,10"
+                           IsVisible="{Binding IsHistoryEmpty}" />
+
+                <Border Classes="error"
+                        Margin="0,4,0,8"
+                        IsVisible="{Binding HasError}">
+                    <TextBlock Text="{Binding ErrorMessage}" />
+                </Border>
+
+                <Button Content="{loc:Loc Key=LoadEarlier}"
+                        Classes="link"
+                        Command="{Binding LoadEarlierCommand}"
+                        IsEnabled="{Binding CanLoadEarlier}"
+                        HorizontalAlignment="Center"
+                        Margin="0,4,0,4" />
+
+                <Button Content="{loc:Loc Key=AddManualEntry}"
+                        Classes="link"
+                        Command="{Binding AddManualCommand}"
+                        HorizontalAlignment="Center"
+                        Margin="0,4,0,0" />
+
+                <TextBlock Text="{loc:Loc Key=BetaFoundationNotice}"
+                           FontSize="11.5"
+                           Foreground="{DynamicResource TextTertiaryBrush}"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           Margin="8,10,8,0" />
             </StackPanel>
         </ScrollViewer>
     </Grid>
 </Window>
-

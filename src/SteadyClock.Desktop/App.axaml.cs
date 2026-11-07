@@ -110,7 +110,11 @@ public partial class App : Application
             _controller.UpdateSettings(settings);
             await _controller.InitializeAsync(_lifetime.Token);
 
-            _viewModel = new MainViewModel(_controller, _logger!);
+            var dialogs = new AvaloniaDialogService(
+                _controller,
+                _logger!,
+                () => _mainWindow);
+            _viewModel = new MainViewModel(_controller, dialogs, _logger!);
             _mainWindow = new MainWindow { DataContext = _viewModel };
             _mainWindow.Closing += OnMainWindowClosing;
             desktop.MainWindow = _mainWindow;

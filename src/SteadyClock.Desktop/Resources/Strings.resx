@@ -60,7 +60,9 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>SteadyClock</value></data>
   <data name="CrossPlatformPreview" xml:space="preserve"><value>Кроссплатформенная версия · beta</value></data>
-  <data name="BetaFoundationNotice" xml:space="preserve"><value>Это первая кроссплатформенная основа. Настройки, горячие клавиши, уведомления и режим «По приложению» появятся на следующих этапах.</value></data>
+  <data name="BetaFoundationNotice" xml:space="preserve"><value>Кроссплатформенная версия. Настройки, уведомления и режим «По приложению» появятся на следующих этапах.</value></data>
+  <data name="DateFormatExample" xml:space="preserve"><value>ДД.ММ.ГГГГ</value></data>
+  <data name="TimeFormatExample" xml:space="preserve"><value>ЧЧ:ММ</value></data>
   <data name="HistoryTitle" xml:space="preserve"><value>История</value></data>
   <data name="SettingsTitle" xml:space="preserve"><value>Настройки</value></data>
   <data name="StatusRunning" xml:space="preserve"><value>Работает</value></data>

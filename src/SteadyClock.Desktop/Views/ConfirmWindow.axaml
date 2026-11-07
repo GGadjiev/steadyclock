@@ -1,0 +1,32 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="SteadyClock.Desktop.Views.ConfirmWindow"
+        Width="430"
+        SizeToContent="Height"
+        CanResize="False"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource AppBackgroundBrush}">
+    <StackPanel Margin="24,20,24,18" Spacing="12">
+        <TextBlock x:Name="HeadingText"
+                   FontSize="19"
+                   FontWeight="SemiBold"
+                   TextWrapping="Wrap" />
+        <TextBlock x:Name="MessageText"
+                   FontSize="13.5"
+                   Foreground="{DynamicResource TextSecondaryBrush}"
+                   TextWrapping="Wrap" />
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="10"
+                    Margin="0,10,0,0">
+            <Button x:Name="CancelButton"
+                    Classes="secondary"
+                    MinWidth="104" />
+            <Button x:Name="ConfirmButton"
+                    Classes="primary"
+                    MinWidth="112"
+                    IsDefault="True" />
+        </StackPanel>
+    </StackPanel>
+</Window>
