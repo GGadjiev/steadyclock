@@ -11,6 +11,7 @@ public sealed class NotificationService : IDisposable
 {
     private readonly TimeTrackingController _controller;
     private readonly SoundService _sounds;
+    private readonly ProcessModeService _processMode;
     private readonly IAppLogger _logger;
     private DateTimeOffset _lastErrorNotification = DateTimeOffset.MinValue;
     private ToastWindow? _current;
@@ -20,10 +21,12 @@ public sealed class NotificationService : IDisposable
     public NotificationService(
         TimeTrackingController controller,
         SoundService sounds,
+        ProcessModeService processMode,
         IAppLogger logger)
     {
         _controller = controller;
         _sounds = sounds;
+        _processMode = processMode;
         _logger = logger;
 
         _controller.AutoPaused += OnAutoPaused;
@@ -31,6 +34,8 @@ public sealed class NotificationService : IDisposable
         _controller.ReminderDue += OnReminderDue;
         _controller.PersistenceFailed += OnPersistenceFailed;
         _controller.TimerStateChanged += OnTimerStateChanged;
+        _processMode.ProcessSessionStarted += OnProcessSessionStarted;
+        _processMode.ProcessSessionStopped += OnProcessSessionStopped;
     }
 
     private NotificationSettings Settings => _controller.CurrentSettings.Notifications;
@@ -139,6 +144,48 @@ public sealed class NotificationService : IDisposable
                 autoCloseSeconds: Settings.ToastDurationSeconds,
                 tag: "error");
         }
+    }
+
+    private void OnProcessSessionStarted(object? sender, string applicationName)
+    {
+        var rule = Settings.ProcessStarted;
+        if (!Settings.Enabled || rule is null)
+        {
+            return;
+        }
+
+        PlayIfAllowed(rule.SoundId);
+        if (!rule.ShowToast || IsQuietHours())
+        {
+            return;
+        }
+
+        Show(
+            Strings.Get("ProcessStartedNotificationTitle"),
+            Strings.Format("ProcessStartedNotificationMessageFormat", applicationName),
+            autoCloseSeconds: Settings.ToastDurationSeconds,
+            tag: "process");
+    }
+
+    private void OnProcessSessionStopped(object? sender, string applicationName)
+    {
+        var rule = Settings.ProcessStopped;
+        if (!Settings.Enabled || rule is null)
+        {
+            return;
+        }
+
+        PlayIfAllowed(rule.SoundId);
+        if (!rule.ShowToast || IsQuietHours())
+        {
+            return;
+        }
+
+        Show(
+            Strings.Get("ProcessStoppedNotificationTitle"),
+            Strings.Format("ProcessStoppedNotificationMessageFormat", applicationName),
+            autoCloseSeconds: Settings.ToastDurationSeconds,
+            tag: "process");
     }
 
     private void PlayIfAllowed(string? soundId)
@@ -261,6 +308,8 @@ public sealed class NotificationService : IDisposable
         _controller.ReminderDue -= OnReminderDue;
         _controller.PersistenceFailed -= OnPersistenceFailed;
         _controller.TimerStateChanged -= OnTimerStateChanged;
+        _processMode.ProcessSessionStarted -= OnProcessSessionStarted;
+        _processMode.ProcessSessionStopped -= OnProcessSessionStopped;
         _current?.Close();
         _current = null;
     }

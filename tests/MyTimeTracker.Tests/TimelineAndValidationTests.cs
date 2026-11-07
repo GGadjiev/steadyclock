@@ -282,6 +282,48 @@ public sealed class TimelineAndValidationTests
     }
 
     [Fact]
+    public void Process_mode_requires_a_selected_application()
+    {
+        var settings = AppSettings.CreateDefault();
+        settings.TrackerMode = TrackingMode.Process;
+        var errors = SettingsValidator.Validate(settings);
+        Assert.Contains(
+            errors,
+            error => error.Contains("приложение", StringComparison.OrdinalIgnoreCase));
+
+        settings.ProcessTrigger = new ProcessTriggerSettings
+        {
+            Name = "code",
+            Path = "/usr/bin/code",
+            DisplayName = "Visual Studio Code",
+            StopWhenClosed = false
+        };
+        Assert.Empty(SettingsValidator.Validate(settings));
+    }
+
+    [Fact]
+    public void Settings_clone_preserves_process_trigger()
+    {
+        var settings = AppSettings.CreateDefault();
+        settings.TrackerMode = TrackingMode.Process;
+        settings.ProcessTrigger = new ProcessTriggerSettings
+        {
+            Name = "code",
+            Path = "/usr/bin/code",
+            DisplayName = "Visual Studio Code",
+            StopWhenClosed = false
+        };
+
+        var clone = settings.DeepClone();
+        settings.ProcessTrigger.Name = "changed";
+
+        Assert.Equal(TrackingMode.Process, clone.TrackerMode);
+        Assert.Equal("code", clone.ProcessTrigger.Name);
+        Assert.Equal("/usr/bin/code", clone.ProcessTrigger.Path);
+        Assert.False(clone.ProcessTrigger.StopWhenClosed);
+    }
+
+    [Fact]
     public void Notification_settings_validate_duration_and_quiet_hours()
     {
         var settings = AppSettings.CreateDefault();

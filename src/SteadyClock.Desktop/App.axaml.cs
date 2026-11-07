@@ -27,6 +27,8 @@ public partial class App : Application
     private AppPaths? _paths;
     private RotatingFileLogger? _logger;
     private TimeTrackingController? _controller;
+    private ProcessCatalog? _processCatalog;
+    private ProcessModeService? _processMode;
     private SoundService? _sounds;
     private NotificationService? _notifications;
     private MainViewModel? _viewModel;
@@ -35,6 +37,7 @@ public partial class App : Application
     private NativeMenuItem? _trayToggleItem;
     private NativeMenuItem? _trayStopItem;
     private DispatcherTimer? _pollTimer;
+    private DispatcherTimer? _processTimer;
     private bool _isInitialized;
     private bool _isExiting;
     private bool _pendingShow;
@@ -112,11 +115,14 @@ public partial class App : Application
             await _controller.InitializeAsync(_lifetime.Token);
 
             _sounds = new SoundService(_logger!);
-            _notifications = new NotificationService(_controller, _sounds, _logger!);
+            _processCatalog = new ProcessCatalog();
+            _processMode = new ProcessModeService(_controller, _processCatalog, _logger!);
+            _notifications = new NotificationService(_controller, _sounds, _processMode, _logger!);
             var dialogs = new AvaloniaDialogService(
                 _controller,
                 settingsStore,
                 _sounds,
+                _processCatalog,
                 _logger!,
                 () => _mainWindow);
             _viewModel = new MainViewModel(_controller, dialogs, _logger!);
@@ -129,6 +135,8 @@ public partial class App : Application
             CreateTray();
             _pollTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(500), DispatcherPriority.Background, OnPollTick);
             _pollTimer.Start();
+            _processTimer = new DispatcherTimer(TimeSpan.FromSeconds(2), DispatcherPriority.Background, OnProcessTick);
+            _processTimer.Start();
 
             _controller.TimerStateChanged += OnTimerStateChanged;
             _controller.TickCompleted += OnControllerTick;
@@ -139,6 +147,7 @@ public partial class App : Application
             }
 
             _isInitialized = true;
+            _ = EvaluateProcessModeAsync();
             var launchedAtLogin = desktop.Args?.Any(argument =>
                 string.Equals(argument, "--autostart", StringComparison.OrdinalIgnoreCase)) == true;
             var stayInTray = launchedAtLogin &&
@@ -242,6 +251,32 @@ public partial class App : Application
         }
     }
 
+    private void OnProcessTick(object? sender, EventArgs e)
+    {
+        if (!_isInitialized || _isExiting || _processMode is null)
+        {
+            return;
+        }
+
+        _ = EvaluateProcessModeAsync();
+    }
+
+    private async Task EvaluateProcessModeAsync()
+    {
+        try
+        {
+            await _processMode!.EvaluateAsync(_lifetime.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            // Shutdown.
+        }
+        catch (Exception exception)
+        {
+            _logger?.Error("Ошибка опроса режима «По приложению».", exception);
+        }
+    }
+
     private void OnShowRequested(object? sender, EventArgs e)
     {
         Dispatcher.UIThread.Post(() =>
@@ -340,6 +375,7 @@ public partial class App : Application
 
         _isExiting = true;
         _pollTimer?.Stop();
+        _processTimer?.Stop();
 
         if (stopActiveSession && _controller?.HasActiveSession == true)
         {
@@ -422,8 +458,19 @@ public partial class App : Application
         _disposed = true;
         _pollTimer?.Stop();
         _pollTimer = null;
+        _processTimer?.Stop();
+        _processTimer = null;
         _lifetime.Cancel();
         DisposeTray();
+
+        try
+        {
+            _processMode?.Dispose();
+        }
+        catch
+        {
+            // Ignore shutdown races.
+        }
 
         try
         {

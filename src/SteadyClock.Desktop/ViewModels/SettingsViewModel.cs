@@ -16,9 +16,20 @@ public partial class SettingsViewModel : ObservableObject
     private readonly TimeTrackingController _controller;
     private readonly ISettingsStore _settingsStore;
     private readonly SoundService _sounds;
+    private readonly IProcessCatalog _processCatalog;
+    private bool _isRefreshingProcesses;
 
     [ObservableProperty]
     private bool _autoStartTimer;
+
+    [ObservableProperty]
+    private bool _useProcessMode;
+
+    [ObservableProperty]
+    private ProcessOptionViewModel? _selectedProcess;
+
+    [ObservableProperty]
+    private bool _stopWhenClosed;
 
     [ObservableProperty]
     private string _idleThresholdText;
@@ -90,14 +101,30 @@ public partial class SettingsViewModel : ObservableObject
         AppSettings settings,
         TimeTrackingController controller,
         ISettingsStore settingsStore,
-        SoundService sounds)
+        SoundService sounds,
+        IProcessCatalog processCatalog)
     {
         _original = settings.DeepClone();
         _controller = controller;
         _settingsStore = settingsStore;
         _sounds = sounds;
+        _processCatalog = processCatalog;
 
         AutoStartTimer = settings.AutoStartTimer;
+        UseProcessMode = settings.TrackerMode == TrackingMode.Process;
+        StopWhenClosed = settings.ProcessTrigger?.StopWhenClosed ?? true;
+        ProcessOptions = new ObservableCollection<ProcessOptionViewModel>();
+        if (settings.ProcessTrigger is { HasTarget: true } savedTrigger)
+        {
+            ProcessOptions.Add(new ProcessOptionViewModel(
+                savedTrigger.Name,
+                savedTrigger.Path,
+                string.IsNullOrWhiteSpace(savedTrigger.DisplayName)
+                    ? savedTrigger.Name
+                    : savedTrigger.DisplayName,
+                IsRunning: false));
+            SelectedProcess = ProcessOptions[0];
+        }
         IdleThresholdText = settings.IdleThresholdSeconds.ToString(CultureInfo.InvariantCulture);
         CloseToTray = settings.CloseToTray;
         NotificationsEnabled = settings.Notifications.Enabled;
@@ -135,14 +162,27 @@ public partial class SettingsViewModel : ObservableObject
                 NotificationEventKind.Error,
                 Strings.Get("NotificationEventError"),
                 settings.Notifications.Error,
+                sound => _sounds.Play(sound.Id)),
+            new(
+                NotificationEventKind.ProcessStarted,
+                Strings.Get("NotificationEventProcessStarted"),
+                settings.Notifications.ProcessStarted,
+                sound => _sounds.Play(sound.Id)),
+            new(
+                NotificationEventKind.ProcessStopped,
+                Strings.Get("NotificationEventProcessStopped"),
+                settings.Notifications.ProcessStopped,
                 sound => _sounds.Play(sound.Id))
         };
+
+        _ = RefreshProcessesAsync();
     }
 
     public string Title => Strings.Get("SettingsTitle");
     public string SaveButtonText => Strings.Get("SaveButton");
     public string CancelButtonText => Strings.Get("CancelButton");
     public ObservableCollection<NotificationRuleViewModel> Rules { get; }
+    public ObservableCollection<ProcessOptionViewModel> ProcessOptions { get; }
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
 
     partial void OnErrorMessageChanged(string value) => OnPropertyChanged(nameof(HasError));
@@ -169,6 +209,23 @@ public partial class SettingsViewModel : ObservableObject
 
         var settings = _original.DeepClone();
         settings.AutoStartTimer = AutoStartTimer;
+        settings.TrackerMode = UseProcessMode ? TrackingMode.Process : TrackingMode.Normal;
+        if (SelectedProcess is not null)
+        {
+            settings.ProcessTrigger = new ProcessTriggerSettings
+            {
+                Name = SelectedProcess.Name,
+                Path = SelectedProcess.Path,
+                DisplayName = SelectedProcess.DisplayName,
+                StopWhenClosed = StopWhenClosed
+            };
+        }
+        else if (UseProcessMode)
+        {
+            ErrorMessage = Strings.Get("SelectProcessError");
+            return;
+        }
+
         settings.IdleThresholdSeconds = idle;
         settings.CloseToTray = CloseToTray;
         settings.RemindersEnabled = RemindersEnabled;
@@ -210,6 +267,8 @@ public partial class SettingsViewModel : ObservableObject
             {
                 NotificationEventKind.AutoPause => settings.Notifications.AutoPause,
                 NotificationEventKind.Reminder => settings.Notifications.Reminder,
+                NotificationEventKind.ProcessStarted => settings.Notifications.ProcessStarted,
+                NotificationEventKind.ProcessStopped => settings.Notifications.ProcessStopped,
                 _ => settings.Notifications.Error
             };
             rule.ApplyTo(target);
@@ -237,6 +296,83 @@ public partial class SettingsViewModel : ObservableObject
         {
             IsBusy = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task RefreshProcessesAsync()
+    {
+        if (_isRefreshingProcesses)
+        {
+            return;
+        }
+
+        _isRefreshingProcesses = true;
+        try
+        {
+            var previous = SelectedProcess;
+            IReadOnlyList<RunningProcessInfo> running;
+            try
+            {
+                running = await _processCatalog.GetRunningProcessesAsync();
+            }
+            catch
+            {
+                running = Array.Empty<RunningProcessInfo>();
+            }
+
+            var options = running
+                .Select(process => new ProcessOptionViewModel(
+                    process.Name,
+                    process.Path,
+                    process.DisplayName,
+                    IsRunning: true))
+                .ToList();
+
+            var selected = previous;
+            if (previous is not null)
+            {
+                var match = options.FirstOrDefault(option => TargetsEqual(option, previous));
+                if (match is null)
+                {
+                    selected = previous with { IsRunning = false };
+                    options.Insert(0, selected);
+                }
+                else
+                {
+                    selected = match;
+                }
+            }
+
+            ProcessOptions.Clear();
+            foreach (var option in options)
+            {
+                ProcessOptions.Add(option);
+            }
+
+            SelectedProcess = selected;
+        }
+        finally
+        {
+            _isRefreshingProcesses = false;
+        }
+    }
+
+    private static bool TargetsEqual(
+        ProcessOptionViewModel left,
+        ProcessOptionViewModel right)
+    {
+        var comparison = OperatingSystem.IsLinux()
+            ? StringComparison.Ordinal
+            : StringComparison.OrdinalIgnoreCase;
+
+        if (!string.IsNullOrWhiteSpace(left.Path) &&
+            !string.IsNullOrWhiteSpace(right.Path) &&
+            string.Equals(left.Path, right.Path, comparison))
+        {
+            return true;
+        }
+
+        return string.Equals(left.Name, right.Name, comparison);
     }
 
     [RelayCommand]

@@ -128,6 +128,7 @@ public sealed class JsonSettingsStore : ISettingsStore
             settings.WorkEnd = "18:00";
         }
 
+        settings.ProcessTrigger ??= new ProcessTriggerSettings();
         settings.Notifications ??= new NotificationSettings();
         settings.Notifications.AutoPause ??= new NotificationRuleSettings { SoundId = "soft" };
         settings.Notifications.Reminder ??= new NotificationRuleSettings { SoundId = "bell" };

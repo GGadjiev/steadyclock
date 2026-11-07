@@ -47,6 +47,17 @@ public sealed class TimerEngineTests
     }
 
     [Fact]
+    public void Process_tracking_source_is_stored_on_the_active_session()
+    {
+        var (engine, _) = CreateEngine();
+        engine.Start(source: SessionSource.ProcessAutomatic);
+
+        Assert.Equal(TimerStatus.Running, engine.Status);
+        Assert.NotNull(engine.ActiveSession);
+        Assert.Equal(SessionSource.ProcessAutomatic, engine.ActiveSession!.Source);
+    }
+
+    [Fact]
     public void Idle_below_threshold_is_not_subtracted()
     {
         var (engine, clocks) = CreateEngine();

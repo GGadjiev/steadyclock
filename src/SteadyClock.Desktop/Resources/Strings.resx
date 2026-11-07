@@ -217,6 +217,51 @@
   <data name="RemindersEnabledLabel" xml:space="preserve">
     <value>Включить напоминания</value>
   </data>
+  <data name="SettingsSectionMode" xml:space="preserve">
+    <value>Режим трекера</value>
+  </data>
+  <data name="UseProcessModeLabel" xml:space="preserve">
+    <value>Запускать таймер по выбранному приложению</value>
+  </data>
+  <data name="ProcessPickerLabel" xml:space="preserve">
+    <value>Приложение</value>
+  </data>
+  <data name="ProcessRefreshButton" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="ProcessModeHint" xml:space="preserve">
+    <value>Таймер запустится при старте приложения и остановится после закрытия последнего экземпляра. SteadyClock должен быть запущен в трее.</value>
+  </data>
+  <data name="ProcessNotRunningSuffix" xml:space="preserve">
+    <value>не запущено</value>
+  </data>
+  <data name="StopWhenClosedLabel" xml:space="preserve">
+    <value>Останавливать таймер после закрытия приложения</value>
+  </data>
+  <data name="ProcessBadge" xml:space="preserve">
+    <value>процесс</value>
+  </data>
+  <data name="ProcessStartedNotificationTitle" xml:space="preserve">
+    <value>Таймер запущен</value>
+  </data>
+  <data name="ProcessStartedNotificationMessageFormat" xml:space="preserve">
+    <value>Приложение {0} запущено. Учёт времени начат.</value>
+  </data>
+  <data name="ProcessStoppedNotificationTitle" xml:space="preserve">
+    <value>Таймер остановлен</value>
+  </data>
+  <data name="ProcessStoppedNotificationMessageFormat" xml:space="preserve">
+    <value>Приложение {0} закрыто. Сессия сохранена.</value>
+  </data>
+  <data name="NotificationEventProcessStarted" xml:space="preserve">
+    <value>Старт по приложению</value>
+  </data>
+  <data name="NotificationEventProcessStopped" xml:space="preserve">
+    <value>Стоп по приложению</value>
+  </data>
+  <data name="SelectProcessError" xml:space="preserve">
+    <value>Выберите приложение для режима «По приложению».</value>
+  </data>
   <data name="OpenHistory" xml:space="preserve">
     <value>История</value>
   </data>

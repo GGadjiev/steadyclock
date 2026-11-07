@@ -9,7 +9,9 @@ public enum NotificationEventKind
 {
     AutoPause,
     Reminder,
-    Error
+    Error,
+    ProcessStarted,
+    ProcessStopped
 }
 
 public partial class NotificationRuleViewModel : ObservableObject

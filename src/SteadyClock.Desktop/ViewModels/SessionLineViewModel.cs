@@ -20,13 +20,16 @@ public sealed class SessionLineViewModel
         DurationText = TimeText.FormatDuration(slice.Duration);
         Comment = slice.Comment;
         IsManual = slice.IsManual;
+        IsProcess = slice.Source == SessionSource.ProcessAutomatic;
         IsActive = slice.IsActive;
         CanManage = !slice.IsActive;
         Badge = slice.IsRunning
             ? Strings.Get("Now")
             : slice.IsManual
                 ? Strings.Get("ManualBadge")
-                : string.Empty;
+                : IsProcess
+                    ? Strings.Get("ProcessBadge")
+                    : string.Empty;
         EditCommand = new AsyncRelayCommand(
             () => edit(this),
             () => CanManage);
@@ -42,6 +45,7 @@ public sealed class SessionLineViewModel
     public string DurationText { get; }
     public string Comment { get; }
     public bool IsManual { get; }
+    public bool IsProcess { get; }
     public bool IsActive { get; }
     public bool CanManage { get; }
     public string Badge { get; }

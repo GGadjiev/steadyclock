@@ -104,7 +104,12 @@ public sealed class TimeTrackingController : IDisposable
         _reminderPolicy.Reset();
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken = default)
+    public Task StartAsync(CancellationToken cancellationToken = default) =>
+        StartAsync(SessionSource.Automatic, cancellationToken);
+
+    public async Task StartAsync(
+        SessionSource source,
+        CancellationToken cancellationToken = default)
     {
         await ExecuteLockedAsync(async () =>
         {
@@ -113,7 +118,7 @@ public sealed class TimeTrackingController : IDisposable
                 return;
             }
 
-            _engine.Start();
+            _engine.Start(source: source);
             await PersistActiveLockedAsync(notify: true, cancellationToken).ConfigureAwait(true);
         }, cancellationToken).ConfigureAwait(true);
     }

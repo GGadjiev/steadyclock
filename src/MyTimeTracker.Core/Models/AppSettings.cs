@@ -11,6 +11,10 @@ public sealed class AppSettings
     // Timer
     public bool AutoStartTimer { get; set; }
 
+    // Tracking automation
+    public TrackingMode TrackerMode { get; set; } = TrackingMode.Normal;
+    public ProcessTriggerSettings ProcessTrigger { get; set; } = new();
+
     // Idle detection
     public int IdleThresholdSeconds { get; set; } = 120;
 
@@ -43,6 +47,8 @@ public sealed class AppSettings
     {
         Version = Version,
         AutoStartTimer = AutoStartTimer,
+        TrackerMode = TrackerMode,
+        ProcessTrigger = ProcessTrigger.Clone(),
         IdleThresholdSeconds = IdleThresholdSeconds,
         CloseToTray = CloseToTray,
         AutoStartWithWindows = AutoStartWithWindows,

@@ -23,5 +23,12 @@ public enum IdlePauseCause
 public enum SessionSource
 {
     Automatic = 0,
-    Manual = 1
+    Manual = 1,
+    ProcessAutomatic = 2
+}
+
+public enum TrackingMode
+{
+    Normal = 0,
+    Process = 1
 }

@@ -18,6 +18,12 @@ public static class SettingsValidator
                 AppSettings.MaxIdleThresholdSeconds));
         }
 
+        if (settings.TrackerMode == TrackingMode.Process &&
+            (settings.ProcessTrigger is null || !settings.ProcessTrigger.HasTarget))
+        {
+            errors.Add(CoreStrings.Get("ProcessTargetRequired"));
+        }
+
         if (settings.ForgotTimerAfterMinutes is < 1 or > 1440)
         {
             errors.Add(CoreStrings.Get("ReminderAfterRange"));

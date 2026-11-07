@@ -12,6 +12,7 @@ public sealed class AvaloniaDialogService : IUserDialogs
     private readonly TimeTrackingController _controller;
     private readonly ISettingsStore _settingsStore;
     private readonly SoundService _sounds;
+    private readonly IProcessCatalog _processCatalog;
     private readonly IAppLogger _logger;
     private readonly Func<Window?> _ownerProvider;
 
@@ -19,12 +20,14 @@ public sealed class AvaloniaDialogService : IUserDialogs
         TimeTrackingController controller,
         ISettingsStore settingsStore,
         SoundService sounds,
+        IProcessCatalog processCatalog,
         IAppLogger logger,
         Func<Window?> ownerProvider)
     {
         _controller = controller;
         _settingsStore = settingsStore;
         _sounds = sounds;
+        _processCatalog = processCatalog;
         _logger = logger;
         _ownerProvider = ownerProvider;
     }
@@ -63,7 +66,8 @@ public sealed class AvaloniaDialogService : IUserDialogs
                 _controller.CurrentSettings,
                 _controller,
                 _settingsStore,
-                _sounds);
+                _sounds,
+                _processCatalog);
             var window = new SettingsWindow(viewModel);
             await window.ShowDialog<bool>(owner);
         }

@@ -79,4 +79,5 @@
   <data name="NotificationDurationRange" xml:space="preserve"><value>Длительность уведомления должна быть от {0} до {1} секунд.</value></data>
   <data name="QuietHoursStartFormat" xml:space="preserve"><value>Начало тихих часов должно быть указано в формате ЧЧ:ММ.</value></data>
   <data name="QuietHoursEndFormat" xml:space="preserve"><value>Конец тихих часов должен быть указан в формате ЧЧ:ММ.</value></data>
+  <data name="ProcessTargetRequired" xml:space="preserve"><value>Выберите приложение для режима «По приложению».</value></data>
 </root>

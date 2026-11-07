@@ -28,6 +28,41 @@
                 </Border>
 
                 <Border Classes="card" Padding="16">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="{loc:Loc Key=SettingsSectionMode}" Classes="section" />
+                        <CheckBox Content="{loc:Loc Key=UseProcessModeLabel}"
+                                  IsChecked="{Binding UseProcessMode}" />
+                        <StackPanel Spacing="8" IsEnabled="{Binding UseProcessMode}">
+                            <TextBlock Text="{loc:Loc Key=ProcessPickerLabel}" Classes="caption" />
+                            <Grid ColumnDefinitions="*,Auto">
+                                <ComboBox ItemsSource="{Binding ProcessOptions}"
+                                          SelectedItem="{Binding SelectedProcess}"
+                                          HorizontalAlignment="Stretch"
+                                          AutomationProperties.Name="{loc:Loc Key=ProcessPickerLabel}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:ProcessOptionViewModel">
+                                            <TextBlock Text="{Binding Label}"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       MaxWidth="420" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <Button Grid.Column="1"
+                                        Classes="secondary"
+                                        Content="{loc:Loc Key=ProcessRefreshButton}"
+                                        Command="{Binding RefreshProcessesCommand}"
+                                        Margin="8,0,0,0" />
+                            </Grid>
+                            <CheckBox Content="{loc:Loc Key=StopWhenClosedLabel}"
+                                      IsChecked="{Binding StopWhenClosed}" />
+                            <TextBlock Text="{loc:Loc Key=ProcessModeHint}"
+                                       Classes="caption"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="card" Padding="16">
                     <StackPanel Spacing="7">
                         <TextBlock Text="{loc:Loc Key=SettingsSectionIdle}" Classes="section" />
                         <TextBlock Text="{loc:Loc Key=IdleThresholdSecondsLabel}" Classes="caption" />

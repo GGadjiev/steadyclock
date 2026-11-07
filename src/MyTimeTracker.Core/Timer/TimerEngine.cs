@@ -149,7 +149,7 @@ public sealed class TimerEngine
         };
     }
 
-    public void Start(string? comment = null)
+    public void Start(string? comment = null, SessionSource source = SessionSource.Automatic)
     {
         if (Status != TimerStatus.Stopped)
         {
@@ -164,7 +164,7 @@ public sealed class TimerEngine
             StartUtc = nowWall,
             EndUtc = null,
             Comment = comment?.Trim() ?? string.Empty,
-            Source = SessionSource.Automatic,
+            Source = source,
             State = TimerStatus.Running,
             LastHeartbeatUtc = nowWall,
             CreatedUtc = nowWall,
