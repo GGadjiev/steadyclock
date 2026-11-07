@@ -449,7 +449,7 @@
     <value>Выход</value>
   </data>
   <data name="HotkeyConflictFormat" xml:space="preserve">
-    <value>Комбинация {0} уже занята другой программой.</value>
+    <value>Не удалось назначить {0}: комбинация занята или не поддерживается.</value>
   </data>
   <data name="AutostartFailed" xml:space="preserve">
     <value>Не удалось изменить автозапуск. Проверьте права текущего пользователя.</value>

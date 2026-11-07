@@ -198,24 +198,22 @@ public sealed class SettingsViewModel : ObservableObject
             end = parsedEnd.ToString("HH:mm", CultureInfo.InvariantCulture);
         }
 
-        var candidate = new AppSettings
-        {
-            AutoStartTimer = IsAutomaticStartEnabled,
-            IdleThresholdSeconds = idle,
-            CloseToTray = CloseToTray,
-            AutoStartWithWindows = AutoStartWithWindows,
-            LaunchInTrayOnAutoStart = LaunchInTrayOnAutoStart,
-            ToggleTimerHotkey = ToggleHotkey.Clone(),
-            StopTimerHotkey = StopHotkey.Clone(),
-            ShowHideHotkey = ShowHideHotkey.Clone(),
-            RemindersEnabled = RemindersEnabled,
-            ForgotTimerReminderEnabled = ForgotTimerReminderEnabled,
-            ForgotTimerAfterMinutes = after,
-            ReminderRepeatMinutes = repeat,
-            WorkDays = new[] { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday },
-            WorkStart = start,
-            WorkEnd = end
-        };
+        var candidate = _coordinator.Current.DeepClone();
+        candidate.AutoStartTimer = IsAutomaticStartEnabled;
+        candidate.IdleThresholdSeconds = idle;
+        candidate.CloseToTray = CloseToTray;
+        candidate.AutoStartWithWindows = AutoStartWithWindows;
+        candidate.LaunchInTrayOnAutoStart = LaunchInTrayOnAutoStart;
+        candidate.ToggleTimerHotkey = ToggleHotkey.Clone();
+        candidate.StopTimerHotkey = StopHotkey.Clone();
+        candidate.ShowHideHotkey = ShowHideHotkey.Clone();
+        candidate.RemindersEnabled = RemindersEnabled;
+        candidate.ForgotTimerReminderEnabled = ForgotTimerReminderEnabled;
+        candidate.ForgotTimerAfterMinutes = after;
+        candidate.ReminderRepeatMinutes = repeat;
+        candidate.WorkDays = new[] { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday };
+        candidate.WorkStart = start;
+        candidate.WorkEnd = end;
 
         IsBusy = true;
         try
