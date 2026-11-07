@@ -179,6 +179,13 @@ public partial class App : Application
 
             _isInitialized = true;
             _ = EvaluateProcessModeAsync();
+            if (!hotkeyResult.Success)
+            {
+                _notifications?.ShowWarning(
+                    Strings.Get("SettingsSectionHotkeys"),
+                    Strings.Get("HotkeyRegistrationFailed"));
+            }
+
             var launchedAtLogin = desktop.Args?.Any(argument =>
                 string.Equals(argument, "--autostart", StringComparison.OrdinalIgnoreCase)) == true;
             var stayInTray = launchedAtLogin &&

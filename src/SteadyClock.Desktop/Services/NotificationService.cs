@@ -40,6 +40,13 @@ public sealed class NotificationService : IDisposable
 
     private NotificationSettings Settings => _controller.CurrentSettings.Notifications;
 
+    public void ShowWarning(string title, string message) =>
+        Show(
+            title,
+            message,
+            autoCloseSeconds: Settings.ToastDurationSeconds,
+            tag: "warning");
+
     private void OnAutoPaused(object? sender, AutoPausedEventArgs e)
     {
         var rule = Settings.AutoPause;
