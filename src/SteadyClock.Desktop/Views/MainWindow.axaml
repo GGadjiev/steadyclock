@@ -1,0 +1,160 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:SteadyClock.Desktop.ViewModels"
+        xmlns:loc="using:SteadyClock.Desktop.Resources"
+        x:Class="SteadyClock.Desktop.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="{loc:Loc Key=AppTitle}"
+        Icon="avares://SteadyClock/Assets/app.ico"
+        Width="424"
+        Height="680"
+        MinWidth="390"
+        MinHeight="520"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource AppBackgroundBrush}">
+
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" Margin="20,16,20,8" ColumnDefinitions="Auto,*">
+            <Image Width="28"
+                   Height="28"
+                   VerticalAlignment="Center"
+                   Source="avares://SteadyClock/Assets/app.png" />
+            <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="{loc:Loc Key=AppTitle}" Classes="title" />
+                <TextBlock Text="{loc:Loc Key=CrossPlatformPreview}"
+                           FontSize="11.5"
+                           Foreground="{DynamicResource TextTertiaryBrush}"
+                           Margin="0,1,0,0" />
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1"
+                      Margin="20,2,20,0"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="0,0,0,22">
+                <Border Classes="card" Padding="18,20,18,16">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TimerText}" Classes="timer" />
+                        <Border HorizontalAlignment="Center"
+                                Margin="0,8,0,0"
+                                Padding="10,5"
+                                CornerRadius="10"
+                                Background="{Binding Status, Converter={StaticResource StatusBrush}, ConverterParameter=Background}">
+                            <StackPanel Orientation="Horizontal" Spacing="7">
+                                <Ellipse Width="8"
+                                         Height="8"
+                                         VerticalAlignment="Center"
+                                         Fill="{Binding Status, Converter={StaticResource StatusBrush}, ConverterParameter=Dot}" />
+                                <TextBlock Text="{Binding StatusText}"
+                                           FontSize="12.5"
+                                           FontWeight="SemiBold"
+                                           Foreground="{Binding Status, Converter={StaticResource StatusBrush}, ConverterParameter=Foreground}" />
+                            </StackPanel>
+                        </Border>
+
+                        <Button Content="{Binding PrimaryActionText}"
+                                Command="{Binding PrimaryActionCommand}"
+                                Classes="primary"
+                                HorizontalAlignment="Stretch"
+                                Margin="0,18,0,0" />
+                        <Button Content="{loc:Loc Key=Stop}"
+                                Command="{Binding StopCommand}"
+                                Classes="secondary"
+                                HorizontalAlignment="Stretch"
+                                Margin="0,8,0,0"
+                                IsVisible="{Binding CanStop}" />
+                        <Border Classes="error"
+                                Margin="0,12,0,0"
+                                IsVisible="{Binding HasError}">
+                            <TextBlock Text="{Binding ErrorMessage}" />
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="card" Margin="0,12,0,0" Padding="16,14">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="{loc:Loc Key=Today}" FontSize="15" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding TodayDateText}"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       Margin="0,2,0,0" />
+                            <TextBlock Text="{Binding TodaySessionCountText}"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource TextTertiaryBrush}"
+                                       Margin="0,4,0,0" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding TodayTotalText}"
+                                       Classes="mono"
+                                       FontSize="21"
+                                       FontWeight="SemiBold"
+                                       HorizontalAlignment="Right" />
+                            <TextBlock Text="{loc:Loc Key=SessionTotalLabel}"
+                                       FontSize="11.5"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       HorizontalAlignment="Right"
+                                       Margin="0,1,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <TextBlock Text="{loc:Loc Key=SessionsToday}"
+                           Classes="section"
+                           Margin="2,18,0,9" />
+
+                <ItemsControl ItemsSource="{Binding TodaySessions}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SessionLineViewModel">
+                            <Border Classes="session">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{Binding TimeRangeText}"
+                                                       FontSize="13.5"
+                                                       FontWeight="SemiBold"
+                                                       VerticalAlignment="Center" />
+                                            <Border Classes="badge" IsVisible="{Binding HasBadge}">
+                                                <TextBlock Text="{Binding Badge}" />
+                                            </Border>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding Comment}"
+                                                   FontSize="12.5"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,5,0,0"
+                                                   IsVisible="{Binding HasComment}" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding DurationText}"
+                                               Classes="mono"
+                                               FontSize="13"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Top"
+                                               HorizontalAlignment="Right" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="{loc:Loc Key=NoSessionsToday}"
+                           FontSize="13"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           Margin="20,10,20,6"
+                           IsVisible="{Binding IsEmpty}" />
+
+                <TextBlock Text="{loc:Loc Key=BetaFoundationNotice}"
+                           FontSize="11.5"
+                           Foreground="{DynamicResource TextTertiaryBrush}"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           Margin="8,16,8,0" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
+
