@@ -129,6 +129,20 @@
                                 HorizontalAlignment="Stretch"
                                 Margin="0,8,0,0"
                                 IsVisible="{Binding CanStop}" />
+                        <Grid Margin="0,12,0,0"
+                              IsVisible="{Binding IsCommentEnabled}">
+                            <TextBox Text="{Binding CommentText}"
+                                     MaxLength="1000"
+                                     FontSize="12.5"
+                                     AutomationProperties.Name="{loc:Loc Key=CommentPlaceholder}" />
+                            <TextBlock Text="{loc:Loc Key=CommentPlaceholder}"
+                                       Margin="11,0,0,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="12.5"
+                                       Foreground="{DynamicResource TextTertiaryBrush}"
+                                       IsHitTestVisible="False"
+                                       IsVisible="{Binding IsCommentEmpty}" />
+                        </Grid>
                         <Border Classes="error"
                                 Margin="0,12,0,0"
                                 IsVisible="{Binding HasError}">

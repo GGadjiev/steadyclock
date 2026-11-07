@@ -21,10 +21,15 @@ public partial class MainViewModel : ObservableObject, IDisposable
     private DateOnly _today;
     private DateOnly? _historyStartDate;
     private long _lastRenderedSecond = -1;
+    private bool _suppressComment;
+    private CancellationTokenSource? _commentSaveCts;
     private bool _disposed;
 
     [ObservableProperty]
     private string _timerText = "00:00:00";
+
+    [ObservableProperty]
+    private string _commentText = string.Empty;
 
     [ObservableProperty]
     private string _statusText = Strings.Get("StatusStopped");
@@ -92,6 +97,21 @@ public partial class MainViewModel : ObservableObject, IDisposable
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
     public bool IsTimerPage => !IsHistoryPage;
     public string HeaderTitle => IsHistoryPage ? Strings.Get("HistoryTitle") : Strings.Get("AppTitle");
+    public bool IsCommentEnabled => _controller.HasActiveSession;
+
+    partial void OnCommentTextChanged(string value)
+    {
+        OnPropertyChanged(nameof(IsCommentEmpty));
+        if (_suppressComment || !_controller.HasActiveSession)
+        {
+            return;
+        }
+
+        _controller.SetComment(value);
+        ScheduleCommentSave();
+    }
+
+    public bool IsCommentEmpty => string.IsNullOrEmpty(CommentText);
 
     partial void OnErrorMessageChanged(string value) => OnPropertyChanged(nameof(HasError));
     partial void OnIsHistoryPageChanged(bool value)
@@ -271,6 +291,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
             ? "00:00:00"
             : TimeText.FormatClock(_controller.CurrentDuration);
         ApplyStatus(_controller.Status);
+        SyncCommentFromEngine();
 
         var summary = BuildTodaySummary(now);
         TodayTotalText = TimeText.FormatClock(summary.TotalDuration);
@@ -429,6 +450,63 @@ public partial class MainViewModel : ObservableObject, IDisposable
             _ => Strings.Get("Start")
         };
         CanStop = _controller.HasActiveSession;
+        OnPropertyChanged(nameof(IsCommentEnabled));
+    }
+
+    private void SyncCommentFromEngine()
+    {
+        var comment = _controller.HasActiveSession
+            ? _controller.Engine.ActiveSession?.Comment ?? string.Empty
+            : string.Empty;
+        if (CommentText == comment)
+        {
+            return;
+        }
+
+        _suppressComment = true;
+        try
+        {
+            CommentText = comment;
+        }
+        finally
+        {
+            _suppressComment = false;
+        }
+    }
+
+    private void ScheduleCommentSave()
+    {
+        CancelPendingCommentSave();
+        _commentSaveCts = new CancellationTokenSource();
+        var token = _commentSaveCts.Token;
+        _ = SaveCommentAfterDelayAsync(token);
+    }
+
+    private async Task SaveCommentAfterDelayAsync(CancellationToken token)
+    {
+        try
+        {
+            await Task.Delay(700, token);
+            if (!token.IsCancellationRequested && _controller.HasActiveSession)
+            {
+                await _controller.PersistCommentAsync(token);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Superseded by a newer keystroke or by stopping the timer.
+        }
+        catch (Exception exception)
+        {
+            _logger.Error("Не удалось сохранить комментарий.", exception);
+        }
+    }
+
+    private void CancelPendingCommentSave()
+    {
+        _commentSaveCts?.Cancel();
+        _commentSaveCts?.Dispose();
+        _commentSaveCts = null;
     }
 
     private void OnTickCompleted(object? sender, EventArgs e) => UpdateLiveView();
@@ -463,6 +541,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
         }
 
         _disposed = true;
+        CancelPendingCommentSave();
         _controller.TickCompleted -= OnTickCompleted;
         _controller.TimerStateChanged -= OnTimerStateChanged;
         _controller.SessionsChanged -= OnSessionsChanged;

@@ -33,6 +33,7 @@ public partial class App : Application
     private NotificationService? _notifications;
     private AutostartService? _autostart;
     private IGlobalHotkeyService? _hotkeys;
+    private ISessionMonitor? _sessionMonitor;
     private IUserDialogs? _dialogs;
     private MainViewModel? _viewModel;
     private MainWindow? _mainWindow;
@@ -120,6 +121,12 @@ public partial class App : Application
 
             _autostart = new AutostartService(_logger!);
             _hotkeys = GlobalHotkeyServiceFactory.Create(_logger!);
+            _sessionMonitor = SessionMonitorFactory.Create(_logger!);
+            _sessionMonitor.SessionLocked += OnSessionLocked;
+            _sessionMonitor.SessionUnlocked += OnSessionUnlocked;
+            _sessionMonitor.SystemSuspending += OnSystemSuspending;
+            _sessionMonitor.SystemResumed += OnSystemResumed;
+            _sessionMonitor.SystemTimeChanged += OnSystemTimeChanged;
             var hotkeyResult = _hotkeys.Apply(settings);
             if (!hotkeyResult.Success)
             {
@@ -243,6 +250,63 @@ public partial class App : Application
 
     private void OnHotkeyShowHide(object? sender, EventArgs e) =>
         Dispatcher.UIThread.Post(ToggleMainWindowVisibility);
+
+    private void OnSessionLocked(object? sender, EventArgs e) =>
+        RunControllerAction(
+            token => _controller!.HandleSessionLockAsync(token),
+            "Не удалось обработать блокировку экрана.");
+
+    private void OnSessionUnlocked(object? sender, EventArgs e) =>
+        RunControllerAction(
+            token => _controller!.HandleSessionUnlockAsync(token),
+            "Не удалось обработать разблокировку экрана.");
+
+    private void OnSystemSuspending(object? sender, EventArgs e) =>
+        RunControllerAction(
+            token => _controller!.HandleSystemSuspendAsync(token),
+            "Не удалось сохранить сессию перед сном.");
+
+    private void OnSystemResumed(object? sender, EventArgs e) =>
+        RunControllerAction(
+            token => _controller!.OnSystemResumedAsync(token),
+            "Не удалось обработать пробуждение.");
+
+    private void OnSystemTimeChanged(object? sender, EventArgs e)
+    {
+        try
+        {
+            TimeZoneInfo.ClearCachedData();
+        }
+        catch
+        {
+            // Non-fatal; the next local-time read still uses the last known zone.
+        }
+    }
+
+    private void RunControllerAction(
+        Func<CancellationToken, Task> action,
+        string errorMessage)
+    {
+        Dispatcher.UIThread.Post(() => _ = RunControllerActionAsync(action, errorMessage));
+    }
+
+    private async Task RunControllerActionAsync(
+        Func<CancellationToken, Task> action,
+        string errorMessage)
+    {
+        try
+        {
+            await action(_lifetime.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            // Shutdown.
+        }
+        catch (Exception exception)
+        {
+            _logger?.Error(errorMessage, exception);
+        }
+    }
 
     private void ToggleMainWindowVisibility()
     {
@@ -613,6 +677,15 @@ public partial class App : Application
         try
         {
             _hotkeys?.Dispose();
+        }
+        catch
+        {
+            // Ignore shutdown races.
+        }
+
+        try
+        {
+            _sessionMonitor?.Dispose();
         }
         catch
         {
