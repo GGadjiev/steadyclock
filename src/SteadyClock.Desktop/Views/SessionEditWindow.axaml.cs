@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using SteadyClock.Desktop.Services;
 using SteadyClock.Desktop.ViewModels;
 
 namespace SteadyClock.Desktop.Views;
@@ -10,6 +11,7 @@ public partial class SessionEditWindow : Window
     public SessionEditWindow()
     {
         InitializeComponent();
+        InputFocusHelper.Attach(this);
     }
 
     public SessionEditWindow(SessionEditViewModel viewModel)

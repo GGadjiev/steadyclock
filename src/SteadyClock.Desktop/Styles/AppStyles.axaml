@@ -38,6 +38,23 @@
         <Setter Property="FontFamily" Value="Segoe UI, SF Pro Text, Cantarell, Noto Sans" />
     </Style>
 
+    <Style Selector="Button">
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.16" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
+                <BrushTransition Property="Foreground" Duration="0:0:0.16" />
+                <DoubleTransition Property="Opacity" Duration="0:0:0.16" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button:pressed">
+        <Setter Property="Opacity" Value="0.82" />
+    </Style>
+
     <Style Selector="TextBlock">
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
     </Style>
@@ -108,11 +125,7 @@
         <Setter Property="FontSize" Value="15" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
-    </Style>
-
-    <Style Selector="Button.primary:pointerover">
-        <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource AccentHoverBrush}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
     <Style Selector="Button.danger">
@@ -124,6 +137,7 @@
         <Setter Property="Padding" Value="16,0" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
     <Style Selector="Button.nav">
@@ -181,6 +195,16 @@
         <Setter Property="Padding" Value="10,8" />
         <Setter Property="MinHeight" Value="38" />
         <Setter Property="FontSize" Value="13.5" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.16" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="TextBox:pointerover">
+        <Setter Property="BorderBrush" Value="#B9C8C1" />
     </Style>
 
     <Style Selector="TextBox:focus">
@@ -198,6 +222,31 @@
         <Setter Property="Padding" Value="16,0" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.16" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
+                <BrushTransition Property="Foreground" Duration="0:0:0.16" />
+                <DoubleTransition Property="Opacity" Duration="0:0:0.16" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.secondary:pointerover">
+        <Setter Property="Background" Value="{DynamicResource HoverSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+    </Style>
+
+    <Style Selector="Button.primary:pointerover">
+        <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentHoverBrush}" />
+    </Style>
+
+    <Style Selector="Button.danger:pointerover">
+        <Setter Property="Background" Value="#9A342F" />
+        <Setter Property="BorderBrush" Value="#9A342F" />
     </Style>
 
     <Style Selector="Border.error">
