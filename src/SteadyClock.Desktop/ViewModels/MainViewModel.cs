@@ -200,6 +200,9 @@ public partial class MainViewModel : ObservableObject, IDisposable
     private Task AddManualAsync() => _dialogs.ShowSessionEditorAsync(null);
 
     [RelayCommand]
+    private Task OpenSettingsAsync() => _dialogs.ShowSettingsAsync();
+
+    [RelayCommand]
     private async Task LoadEarlierAsync()
     {
         if (IsHistoryLoading)

@@ -27,6 +27,8 @@ public partial class App : Application
     private AppPaths? _paths;
     private RotatingFileLogger? _logger;
     private TimeTrackingController? _controller;
+    private SoundService? _sounds;
+    private NotificationService? _notifications;
     private MainViewModel? _viewModel;
     private MainWindow? _mainWindow;
     private TrayIcon? _trayIcon;
@@ -37,7 +39,6 @@ public partial class App : Application
     private bool _isExiting;
     private bool _pendingShow;
     private bool _disposed;
-    private DateTimeOffset _lastWarningAt = DateTimeOffset.MinValue;
 
     public override void Initialize()
     {
@@ -110,8 +111,12 @@ public partial class App : Application
             _controller.UpdateSettings(settings);
             await _controller.InitializeAsync(_lifetime.Token);
 
+            _sounds = new SoundService(_logger!);
+            _notifications = new NotificationService(_controller, _sounds, _logger!);
             var dialogs = new AvaloniaDialogService(
                 _controller,
+                settingsStore,
+                _sounds,
                 _logger!,
                 () => _mainWindow);
             _viewModel = new MainViewModel(_controller, dialogs, _logger!);
@@ -127,7 +132,6 @@ public partial class App : Application
 
             _controller.TimerStateChanged += OnTimerStateChanged;
             _controller.TickCompleted += OnControllerTick;
-            _controller.PersistenceFailed += OnPersistenceFailed;
 
             if (settings.AutoStartTimer && _controller.Status == TimerStatus.Stopped)
             {
@@ -314,7 +318,8 @@ public partial class App : Application
             return;
         }
 
-        if (_trayIcon is not null)
+        if (_trayIcon is not null &&
+            (_controller?.CurrentSettings.CloseToTray ?? true))
         {
             e.Cancel = true;
             _mainWindow?.Hide();
@@ -362,18 +367,6 @@ public partial class App : Application
     private void OnTimerStateChanged(object? sender, TimerStatusChangedEventArgs e) => UpdateTray();
 
     private void OnControllerTick(object? sender, EventArgs e) => UpdateTray();
-
-    private void OnPersistenceFailed(object? sender, EventArgs e)
-    {
-        var now = DateTimeOffset.UtcNow;
-        if (now - _lastWarningAt < TimeSpan.FromMinutes(5))
-        {
-            return;
-        }
-
-        _lastWarningAt = now;
-        _logger?.Warn("Не удалось сохранить активную сессию; повтор будет выполнен на следующем heartbeat.");
-    }
 
     private void UpdateTray()
     {
@@ -431,6 +424,24 @@ public partial class App : Application
         _pollTimer = null;
         _lifetime.Cancel();
         DisposeTray();
+
+        try
+        {
+            _notifications?.Dispose();
+        }
+        catch
+        {
+            // Ignore shutdown races.
+        }
+
+        try
+        {
+            _sounds?.Dispose();
+        }
+        catch
+        {
+            // Ignore shutdown races.
+        }
 
         try
         {

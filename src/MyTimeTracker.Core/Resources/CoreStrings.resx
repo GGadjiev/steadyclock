@@ -76,4 +76,7 @@
   <data name="DurationMinutes" xml:space="preserve"><value>{0} мин</value></data>
   <data name="DurationSeconds" xml:space="preserve"><value>{0} сек</value></data>
   <data name="DstInvalidTime" xml:space="preserve"><value>Указанное локальное время не существует из-за перехода на летнее время.</value></data>
+  <data name="NotificationDurationRange" xml:space="preserve"><value>Длительность уведомления должна быть от {0} до {1} секунд.</value></data>
+  <data name="QuietHoursStartFormat" xml:space="preserve"><value>Начало тихих часов должно быть указано в формате ЧЧ:ММ.</value></data>
+  <data name="QuietHoursEndFormat" xml:space="preserve"><value>Конец тихих часов должен быть указан в формате ЧЧ:ММ.</value></data>
 </root>

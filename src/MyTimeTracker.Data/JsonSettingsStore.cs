@@ -128,6 +128,12 @@ public sealed class JsonSettingsStore : ISettingsStore
             settings.WorkEnd = "18:00";
         }
 
+        settings.Notifications ??= new NotificationSettings();
+        settings.Notifications.AutoPause ??= new NotificationRuleSettings { SoundId = "soft" };
+        settings.Notifications.Reminder ??= new NotificationRuleSettings { SoundId = "bell" };
+        settings.Notifications.Error ??= new NotificationRuleSettings { SoundId = "warning" };
+        settings.Notifications.ProcessStarted ??= new NotificationRuleSettings { SoundId = "twotone" };
+        settings.Notifications.ProcessStopped ??= new NotificationRuleSettings { SoundId = "click" };
         settings.Version = AppSettings.CurrentVersion;
     }
 }

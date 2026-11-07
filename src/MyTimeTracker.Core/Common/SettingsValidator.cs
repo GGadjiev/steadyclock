@@ -28,6 +28,29 @@ public static class SettingsValidator
             errors.Add(CoreStrings.Get("ReminderRepeatRange"));
         }
 
+        if (settings.Notifications.ToastDurationSeconds is
+            < NotificationSettings.MinToastDurationSeconds or
+            > NotificationSettings.MaxToastDurationSeconds)
+        {
+            errors.Add(CoreStrings.Format(
+                "NotificationDurationRange",
+                NotificationSettings.MinToastDurationSeconds,
+                NotificationSettings.MaxToastDurationSeconds));
+        }
+
+        if (settings.Notifications.QuietHoursEnabled)
+        {
+            if (!TryParseTime(settings.Notifications.QuietHoursStart, out _))
+            {
+                errors.Add(CoreStrings.Get("QuietHoursStartFormat"));
+            }
+
+            if (!TryParseTime(settings.Notifications.QuietHoursEnd, out _))
+            {
+                errors.Add(CoreStrings.Get("QuietHoursEndFormat"));
+            }
+        }
+
         if (settings.WorkDays is not { Length: 7 })
         {
             errors.Add(CoreStrings.Get("WorkDaysCorrupt"));

@@ -10,4 +10,6 @@ public interface IUserDialogs
         bool destructive = false);
 
     Task<bool> ShowSessionEditorAsync(long? sessionId);
+
+    Task ShowSettingsAsync();
 }

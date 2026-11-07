@@ -30,6 +30,8 @@ public sealed class AppSettings
     public int ForgotTimerAfterMinutes { get; set; } = 15;
     public int ReminderRepeatMinutes { get; set; } = 30;
 
+    public NotificationSettings Notifications { get; set; } = new();
+
     // Monday-first: Monday, Tuesday, ... Sunday.
     public bool[] WorkDays { get; set; } = { true, true, true, true, true, false, false };
     public string WorkStart { get; set; } = "09:00";
@@ -54,6 +56,7 @@ public sealed class AppSettings
         ReminderRepeatMinutes = ReminderRepeatMinutes,
         WorkDays = WorkDays.ToArray(),
         WorkStart = WorkStart,
-        WorkEnd = WorkEnd
+        WorkEnd = WorkEnd,
+        Notifications = Notifications.Clone()
     };
 }

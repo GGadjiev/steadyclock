@@ -84,6 +84,11 @@
                         Content="{loc:Loc Key=Back}"
                         Command="{Binding ShowTimerCommand}"
                         IsVisible="{Binding IsHistoryPage}" />
+                <Button Classes="nav"
+                        Content="⚙"
+                        Command="{Binding OpenSettingsCommand}"
+                        ToolTip.Tip="{loc:Loc Key=SettingsOpenTooltip}"
+                        AutomationProperties.Name="{loc:Loc Key=SettingsOpenTooltip}" />
             </StackPanel>
         </Grid>
 

@@ -282,6 +282,25 @@ public sealed class TimelineAndValidationTests
     }
 
     [Fact]
+    public void Notification_settings_validate_duration_and_quiet_hours()
+    {
+        var settings = AppSettings.CreateDefault();
+        settings.Notifications.ToastDurationSeconds = 2;
+        var durationErrors = SettingsValidator.Validate(settings);
+        Assert.Contains(
+            durationErrors,
+            error => error.Contains("уведомления", StringComparison.OrdinalIgnoreCase));
+
+        settings.Notifications.ToastDurationSeconds = 8;
+        settings.Notifications.QuietHoursEnabled = true;
+        settings.Notifications.QuietHoursStart = "25:00";
+        var quietErrors = SettingsValidator.Validate(settings);
+        Assert.Contains(
+            quietErrors,
+            error => error.Contains("тихих часов", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void Reminder_policy_obeys_work_hours_and_repeat_interval()
     {
         // Monday 5 January 2026, 10:00 UTC (time zone is UTC in tests).
