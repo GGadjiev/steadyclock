@@ -68,21 +68,43 @@ public sealed class AvaloniaDialogService : IUserDialogs
                 return;
             }
 
-            var viewModel = new SettingsViewModel(
-                _controller.CurrentSettings,
-                _controller,
-                _settingsStore,
-                _sounds,
-                _processCatalog,
-                _autostart,
-                _hotkeys);
-            var window = new SettingsWindow(viewModel);
-            await window.ShowDialog<bool>(owner);
+            SuspendHotkeys();
+            try
+            {
+                var viewModel = new SettingsViewModel(
+                    _controller.CurrentSettings,
+                    _controller,
+                    _settingsStore,
+                    _sounds,
+                    _processCatalog,
+                    _autostart,
+                    _hotkeys);
+                var window = new SettingsWindow(viewModel);
+                await window.ShowDialog<bool>(owner);
+            }
+            finally
+            {
+                var hotkeyResult = _hotkeys.Apply(_controller.CurrentSettings);
+                if (!hotkeyResult.Success)
+                {
+                    _logger.Warn(
+                        $"Не удалось восстановить горячие клавиши: {hotkeyResult.ConflictDisplayName}.");
+                }
+            }
         }
         catch (Exception exception)
         {
             _logger.Error("Не удалось открыть настройки.", exception);
         }
+    }
+
+    private void SuspendHotkeys()
+    {
+        var suspended = _controller.CurrentSettings.DeepClone();
+        suspended.ToggleTimerHotkey = new HotkeyBinding();
+        suspended.StopTimerHotkey = new HotkeyBinding();
+        suspended.ShowHideHotkey = new HotkeyBinding();
+        _hotkeys.Apply(suspended);
     }
 
     public async Task<ExitChoice> ShowExitChoiceAsync()

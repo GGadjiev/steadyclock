@@ -58,6 +58,38 @@ public sealed class ProcessCatalog : IProcessCatalog
                 return false;
             }
 
+            if (!OperatingSystem.IsLinux() && !string.IsNullOrWhiteSpace(target.Name))
+            {
+                // Fast path: ask Windows/macOS only for processes with the saved
+                // name instead of inspecting every process twice per second.
+                foreach (var process in Process.GetProcessesByName(target.Name))
+                {
+                    try
+                    {
+                        var path = process.MainModule?.FileName;
+                        if (string.IsNullOrWhiteSpace(target.Path) ||
+                            (!string.IsNullOrWhiteSpace(path) &&
+                             PathsEqual(target.Path, path)))
+                        {
+                            return true;
+                        }
+                    }
+                    catch
+                    {
+                        // MainModule access can be denied; try the full scan below.
+                    }
+                    finally
+                    {
+                        process.Dispose();
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(target.Path))
+                {
+                    return false;
+                }
+            }
+
             foreach (var process in OperatingSystem.IsLinux()
                          ? GetLinuxProcesses()
                          : GetDotNetProcesses())

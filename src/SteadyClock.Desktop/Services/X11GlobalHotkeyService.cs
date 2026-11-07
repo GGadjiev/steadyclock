@@ -100,48 +100,58 @@ internal sealed class X11GlobalHotkeyService : IGlobalHotkeyService
         UngrabAll();
 
         _grabError = false;
-        foreach (var (id, binding) in new (int Id, HotkeyBinding? Binding)[]
-                 {
-                     (ToggleId, settings.ToggleTimerHotkey),
-                     (StopId, settings.StopTimerHotkey),
-                     (ShowHideId, settings.ShowHideHotkey)
-                 })
+        var previousHandler = XSetErrorHandler(
+            Marshal.GetFunctionPointerForDelegate(_errorHandler));
+        try
         {
-            if (binding is null || binding.IsEmpty)
+            foreach (var (id, binding) in new (int Id, HotkeyBinding? Binding)[]
+                     {
+                         (ToggleId, settings.ToggleTimerHotkey),
+                         (StopId, settings.StopTimerHotkey),
+                         (ShowHideId, settings.ShowHideHotkey)
+                     })
             {
-                continue;
+                if (binding is null || binding.IsEmpty)
+                {
+                    continue;
+                }
+
+                var keysymName = KeysymName(binding.VirtualKey);
+                var keysym = keysymName is null ? UIntPtr.Zero : XStringToKeysym(keysymName);
+                var keycode = keysym == UIntPtr.Zero ? 0 : XKeysymToKeycode(_display, keysym);
+                if (keycode == 0)
+                {
+                    _logger.Warn(
+                        $"Клавиша {binding.DisplayName} не поддерживается в X11.");
+                    Restore(previousLookup, previousGrabs);
+                    return new HotkeyApplyResult(false, binding.DisplayName);
+                }
+
+                var modifiers = ToModifiers(binding);
+                foreach (var lockMask in new[] { 0u, LockMask, Mod2Mask, LockMask | Mod2Mask })
+                {
+                    var fullModifiers = modifiers | lockMask;
+                    XGrabKey(
+                        _display,
+                        keycode,
+                        fullModifiers,
+                        _root,
+                        ownerEvents: false,
+                        GrabModeAsync,
+                        GrabModeAsync);
+                    _grabs.Add(new GrabDefinition(keycode, fullModifiers));
+                }
+
+                _lookup.Add(new HotkeyLookup(id, keycode, modifiers));
             }
 
-            var keysymName = KeysymName(binding.VirtualKey);
-            var keysym = keysymName is null ? UIntPtr.Zero : XStringToKeysym(keysymName);
-            var keycode = keysym == UIntPtr.Zero ? 0 : XKeysymToKeycode(_display, keysym);
-            if (keycode == 0)
-            {
-                _logger.Warn(
-                    $"Клавиша {binding.DisplayName} не поддерживается в X11.");
-                Restore(previousLookup, previousGrabs);
-                return new HotkeyApplyResult(false, binding.DisplayName);
-            }
-
-            var modifiers = ToModifiers(binding);
-            foreach (var lockMask in new[] { 0u, LockMask, Mod2Mask, LockMask | Mod2Mask })
-            {
-                var fullModifiers = modifiers | lockMask;
-                XGrabKey(
-                    _display,
-                    keycode,
-                    fullModifiers,
-                    _root,
-                    ownerEvents: false,
-                    GrabModeAsync,
-                    GrabModeAsync);
-                _grabs.Add(new GrabDefinition(keycode, fullModifiers));
-            }
-
-            _lookup.Add(new HotkeyLookup(id, keycode, modifiers));
+            XSync(_display, discard: false);
+        }
+        finally
+        {
+            XSetErrorHandler(previousHandler);
         }
 
-        XSync(_display, discard: false);
         if (_grabError)
         {
             _logger.Warn("Одна из глобальных горячих клавиш уже занята в X11.");
@@ -198,7 +208,6 @@ internal sealed class X11GlobalHotkeyService : IGlobalHotkeyService
             }
 
             _root = XDefaultRootWindow(_display);
-            XSetErrorHandler(_errorHandler);
             _ready.Set();
 
             while (!_disposed)
@@ -415,5 +424,5 @@ internal sealed class X11GlobalHotkeyService : IGlobalHotkeyService
     private static extern int XNextEvent(IntPtr display, out XEvent xevent);
 
     [DllImport("libX11.so.6", EntryPoint = "XSetErrorHandler")]
-    private static extern IntPtr XSetErrorHandler(XErrorHandlerDelegate handler);
+    private static extern IntPtr XSetErrorHandler(IntPtr handler);
 }

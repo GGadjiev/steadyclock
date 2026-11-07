@@ -40,6 +40,9 @@ public partial class App : Application
     private TrayIcon? _trayIcon;
     private NativeMenuItem? _trayToggleItem;
     private NativeMenuItem? _trayStopItem;
+    private readonly Dictionary<TimerStatus, WindowIcon> _trayIcons = new();
+    private WindowIcon? _fallbackTrayIcon;
+    private TimerStatus? _trayIconStatus;
     private DispatcherTimer? _pollTimer;
     private DispatcherTimer? _processTimer;
     private bool _isInitialized;
@@ -172,7 +175,9 @@ public partial class App : Application
             _controller.TimerStateChanged += OnTimerStateChanged;
             _controller.TickCompleted += OnControllerTick;
 
-            if (settings.AutoStartTimer && _controller.Status == TimerStatus.Stopped)
+            if (settings.AutoStartTimer &&
+                settings.TrackerMode != TrackingMode.Process &&
+                _controller.Status == TimerStatus.Stopped)
             {
                 await _controller.StartIfStoppedAsync(_lifetime.Token);
             }
@@ -339,6 +344,9 @@ public partial class App : Application
         {
             using var iconStream = AssetLoader.Open(
                 new Uri("avares://SteadyClock/Assets/app.png"));
+            _fallbackTrayIcon = new WindowIcon(iconStream);
+            LoadTrayIcons();
+
             var menu = new NativeMenu();
             var showItem = new NativeMenuItem(Strings.Get("TrayShow"));
             showItem.Click += (_, _) => ShowMainWindow();
@@ -373,11 +381,12 @@ public partial class App : Application
 
             _trayIcon = new TrayIcon
             {
-                Icon = new WindowIcon(iconStream),
+                Icon = GetTrayIcon(TimerStatus.Stopped),
                 ToolTipText = Strings.Get("AppTitle"),
                 Menu = menu,
                 IsVisible = true
             };
+            _trayIconStatus = TimerStatus.Stopped;
             _trayIcon.Clicked += (_, _) => ShowMainWindow();
             TrayIcon.SetIcons(this, new TrayIcons { _trayIcon });
         }
@@ -387,6 +396,32 @@ public partial class App : Application
             _trayIcon = null;
         }
     }
+
+    private void LoadTrayIcons()
+    {
+        try
+        {
+            _trayIcons[TimerStatus.Stopped] = LoadTrayIcon("tray-stopped.png");
+            _trayIcons[TimerStatus.Running] = LoadTrayIcon("tray-running.png");
+            _trayIcons[TimerStatus.PausedManual] = LoadTrayIcon("tray-paused.png");
+            _trayIcons[TimerStatus.PausedIdle] = LoadTrayIcon("tray-paused.png");
+        }
+        catch (Exception exception)
+        {
+            _logger?.Warn($"Значки состояния трея недоступны: {exception.Message}");
+            _trayIcons.Clear();
+        }
+    }
+
+    private static WindowIcon LoadTrayIcon(string fileName)
+    {
+        using var stream = AssetLoader.Open(
+            new Uri($"avares://SteadyClock/Assets/Tray/{fileName}"));
+        return new WindowIcon(stream);
+    }
+
+    private WindowIcon? GetTrayIcon(TimerStatus status) =>
+        _trayIcons.TryGetValue(status, out var icon) ? icon : _fallbackTrayIcon;
 
     private void OnPollTick(object? sender, EventArgs e)
     {
@@ -630,6 +665,12 @@ public partial class App : Application
         }
 
         var status = _controller.Status;
+        if (_trayIconStatus != status)
+        {
+            _trayIcon.Icon = GetTrayIcon(status);
+            _trayIconStatus = status;
+        }
+
         _trayToggleItem!.Header = status switch
         {
             TimerStatus.Running => Strings.Get("PauseTimerFromTray"),
