@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:SteadyClock.Desktop.ViewModels"
         xmlns:svc="using:SteadyClock.Desktop.Services"
+        xmlns:controls="using:SteadyClock.Desktop.Views.Controls"
         xmlns:loc="using:SteadyClock.Desktop.Resources"
         x:Class="SteadyClock.Desktop.Views.SettingsWindow"
         x:DataType="vm:SettingsViewModel"
@@ -79,6 +80,49 @@
                         <TextBlock Text="{loc:Loc Key=SettingsSectionTray}" Classes="section" />
                         <CheckBox Content="{loc:Loc Key=CloseToTray}"
                                   IsChecked="{Binding CloseToTray}" />
+                        <CheckBox Content="{loc:Loc Key=AutoStartWindows}"
+                                  IsChecked="{Binding AutoStartWithWindows}" />
+                        <CheckBox Content="{loc:Loc Key=StartInTrayAuto}"
+                                  IsChecked="{Binding LaunchInTrayOnAutoStart}"
+                                  IsEnabled="{Binding AutoStartWithWindows}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="card" Padding="16">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="{loc:Loc Key=SettingsSectionHotkeys}" Classes="section" />
+                        <TextBlock Text="{loc:Loc Key=HotkeysHint}"
+                                   Classes="caption"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Text="{loc:Loc Key=HotkeysUnavailableHint}"
+                                   Classes="caption"
+                                   Foreground="#B45309"
+                                   TextWrapping="Wrap"
+                                   IsVisible="{Binding !HotkeysSupported}" />
+                        <Grid ColumnDefinitions="*,220"
+                              RowDefinitions="Auto,Auto,Auto"
+                              RowSpacing="8"
+                              IsEnabled="{Binding HotkeysSupported}">
+                            <TextBlock Text="{loc:Loc Key=HotkeyToggle}"
+                                       VerticalAlignment="Center" />
+                            <controls:HotkeyTextBox Grid.Column="1"
+                                                    Hotkey="{Binding ToggleHotkey}"
+                                                    AutomationProperties.Name="{loc:Loc Key=HotkeyToggle}" />
+                            <TextBlock Grid.Row="1"
+                                       Text="{loc:Loc Key=HotkeyStop}"
+                                       VerticalAlignment="Center" />
+                            <controls:HotkeyTextBox Grid.Row="1"
+                                                    Grid.Column="1"
+                                                    Hotkey="{Binding StopHotkey}"
+                                                    AutomationProperties.Name="{loc:Loc Key=HotkeyStop}" />
+                            <TextBlock Grid.Row="2"
+                                       Text="{loc:Loc Key=HotkeyShowHide}"
+                                       VerticalAlignment="Center" />
+                            <controls:HotkeyTextBox Grid.Row="2"
+                                                    Grid.Column="1"
+                                                    Hotkey="{Binding ShowHideHotkey}"
+                                                    AutomationProperties.Name="{loc:Loc Key=HotkeyShowHide}" />
+                        </Grid>
                     </StackPanel>
                 </Border>
 

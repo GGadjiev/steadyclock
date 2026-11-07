@@ -13,6 +13,8 @@ public sealed class AvaloniaDialogService : IUserDialogs
     private readonly ISettingsStore _settingsStore;
     private readonly SoundService _sounds;
     private readonly IProcessCatalog _processCatalog;
+    private readonly AutostartService _autostart;
+    private readonly IGlobalHotkeyService _hotkeys;
     private readonly IAppLogger _logger;
     private readonly Func<Window?> _ownerProvider;
 
@@ -21,6 +23,8 @@ public sealed class AvaloniaDialogService : IUserDialogs
         ISettingsStore settingsStore,
         SoundService sounds,
         IProcessCatalog processCatalog,
+        AutostartService autostart,
+        IGlobalHotkeyService hotkeys,
         IAppLogger logger,
         Func<Window?> ownerProvider)
     {
@@ -28,6 +32,8 @@ public sealed class AvaloniaDialogService : IUserDialogs
         _settingsStore = settingsStore;
         _sounds = sounds;
         _processCatalog = processCatalog;
+        _autostart = autostart;
+        _hotkeys = hotkeys;
         _logger = logger;
         _ownerProvider = ownerProvider;
     }
@@ -67,13 +73,36 @@ public sealed class AvaloniaDialogService : IUserDialogs
                 _controller,
                 _settingsStore,
                 _sounds,
-                _processCatalog);
+                _processCatalog,
+                _autostart,
+                _hotkeys);
             var window = new SettingsWindow(viewModel);
             await window.ShowDialog<bool>(owner);
         }
         catch (Exception exception)
         {
             _logger.Error("Не удалось открыть настройки.", exception);
+        }
+    }
+
+    public async Task<ExitChoice> ShowExitChoiceAsync()
+    {
+        try
+        {
+            var owner = _ownerProvider();
+            if (owner is not { IsVisible: true })
+            {
+                return ExitChoice.StopAndExit;
+            }
+
+            var window = new ExitChoiceWindow();
+            var result = await window.ShowDialog<bool>(owner);
+            return result ? window.Choice : ExitChoice.Cancel;
+        }
+        catch (Exception exception)
+        {
+            _logger.Error("Не удалось показать окно завершения.", exception);
+            return ExitChoice.Cancel;
         }
     }
 

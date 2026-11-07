@@ -17,10 +17,27 @@ public partial class SettingsViewModel : ObservableObject
     private readonly ISettingsStore _settingsStore;
     private readonly SoundService _sounds;
     private readonly IProcessCatalog _processCatalog;
+    private readonly AutostartService _autostart;
+    private readonly IGlobalHotkeyService _hotkeys;
     private bool _isRefreshingProcesses;
 
     [ObservableProperty]
     private bool _autoStartTimer;
+
+    [ObservableProperty]
+    private bool _autoStartWithWindows;
+
+    [ObservableProperty]
+    private bool _launchInTrayOnAutoStart;
+
+    [ObservableProperty]
+    private HotkeyBinding _toggleHotkey;
+
+    [ObservableProperty]
+    private HotkeyBinding _stopHotkey;
+
+    [ObservableProperty]
+    private HotkeyBinding _showHideHotkey;
 
     [ObservableProperty]
     private bool _useProcessMode;
@@ -102,15 +119,24 @@ public partial class SettingsViewModel : ObservableObject
         TimeTrackingController controller,
         ISettingsStore settingsStore,
         SoundService sounds,
-        IProcessCatalog processCatalog)
+        IProcessCatalog processCatalog,
+        AutostartService autostart,
+        IGlobalHotkeyService hotkeys)
     {
         _original = settings.DeepClone();
         _controller = controller;
         _settingsStore = settingsStore;
         _sounds = sounds;
         _processCatalog = processCatalog;
+        _autostart = autostart;
+        _hotkeys = hotkeys;
 
         AutoStartTimer = settings.AutoStartTimer;
+        AutoStartWithWindows = settings.AutoStartWithWindows;
+        LaunchInTrayOnAutoStart = settings.LaunchInTrayOnAutoStart;
+        ToggleHotkey = settings.ToggleTimerHotkey.Clone();
+        StopHotkey = settings.StopTimerHotkey.Clone();
+        ShowHideHotkey = settings.ShowHideHotkey.Clone();
         UseProcessMode = settings.TrackerMode == TrackingMode.Process;
         StopWhenClosed = settings.ProcessTrigger?.StopWhenClosed ?? true;
         ProcessOptions = new ObservableCollection<ProcessOptionViewModel>();
@@ -183,6 +209,7 @@ public partial class SettingsViewModel : ObservableObject
     public string CancelButtonText => Strings.Get("CancelButton");
     public ObservableCollection<NotificationRuleViewModel> Rules { get; }
     public ObservableCollection<ProcessOptionViewModel> ProcessOptions { get; }
+    public bool HotkeysSupported => _hotkeys.IsSupported;
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
 
     partial void OnErrorMessageChanged(string value) => OnPropertyChanged(nameof(HasError));
@@ -209,6 +236,11 @@ public partial class SettingsViewModel : ObservableObject
 
         var settings = _original.DeepClone();
         settings.AutoStartTimer = AutoStartTimer;
+        settings.AutoStartWithWindows = AutoStartWithWindows;
+        settings.LaunchInTrayOnAutoStart = LaunchInTrayOnAutoStart;
+        settings.ToggleTimerHotkey = ToggleHotkey.Clone();
+        settings.StopTimerHotkey = StopHotkey.Clone();
+        settings.ShowHideHotkey = ShowHideHotkey.Clone();
         settings.TrackerMode = UseProcessMode ? TrackingMode.Process : TrackingMode.Normal;
         if (SelectedProcess is not null)
         {
@@ -281,6 +313,24 @@ public partial class SettingsViewModel : ObservableObject
             return;
         }
 
+        var hotkeyResult = _hotkeys.Apply(settings);
+        if (!hotkeyResult.Success)
+        {
+            ErrorMessage = Strings.Format(
+                "HotkeyConflictFormat",
+                hotkeyResult.ConflictDisplayName ?? string.Empty);
+            return;
+        }
+
+        var autostartChanged = settings.AutoStartWithWindows != _original.AutoStartWithWindows;
+        if (autostartChanged &&
+            !_autostart.TrySetEnabled(settings.AutoStartWithWindows, out _))
+        {
+            _hotkeys.Apply(_original);
+            ErrorMessage = Strings.Get("AutostartFailed");
+            return;
+        }
+
         IsBusy = true;
         try
         {
@@ -290,6 +340,12 @@ public partial class SettingsViewModel : ObservableObject
         }
         catch (Exception)
         {
+            _hotkeys.Apply(_original);
+            if (autostartChanged)
+            {
+                _autostart.TrySetEnabled(_original.AutoStartWithWindows, out _);
+            }
+
             ErrorMessage = Strings.Get("SettingsSaveFailed");
         }
         finally

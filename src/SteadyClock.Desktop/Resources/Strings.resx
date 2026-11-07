@@ -65,7 +65,7 @@
     <value>Кроссплатформенная версия · beta</value>
   </data>
   <data name="BetaFoundationNotice" xml:space="preserve">
-    <value>Кроссплатформенная версия. Настройки, уведомления и режим «По приложению» появятся на следующих этапах.</value>
+    <value>Кроссплатформенная версия. Горячие клавиши работают в Windows и Linux X11, автозапуск — в Windows, Linux и macOS.</value>
   </data>
   <data name="DateFormatExample" xml:space="preserve">
     <value>ДД.ММ.ГГГГ</value>
@@ -353,7 +353,7 @@
     <value>{0} сессий</value>
   </data>
   <data name="AutoStartWindows" xml:space="preserve">
-    <value>Запускать при входе в Windows</value>
+    <value>Запускать при входе в систему</value>
   </data>
   <data name="StartInTrayAuto" xml:space="preserve">
     <value>При автозапуске стартовать свёрнутым в трей</value>
@@ -366,6 +366,9 @@
   </data>
   <data name="HotkeysHint" xml:space="preserve">
     <value>Нажмите на поле и введите сочетание. Delete очищает назначение.</value>
+  </data>
+  <data name="HotkeysUnavailableHint" xml:space="preserve">
+    <value>Глобальные горячие клавиши недоступны на этой платформе. Используйте кнопки в окне и трее.</value>
   </data>
   <data name="HotkeyToggle" xml:space="preserve">
     <value>Старт / пауза</value>
@@ -449,7 +452,7 @@
     <value>Комбинация {0} уже занята другой программой.</value>
   </data>
   <data name="AutostartFailed" xml:space="preserve">
-    <value>Не удалось изменить автозапуск Windows. Проверьте права текущего пользователя.</value>
+    <value>Не удалось изменить автозапуск. Проверьте права текущего пользователя.</value>
   </data>
   <data name="UnknownError" xml:space="preserve">
     <value>Произошла ошибка. Подробности записаны в локальный журнал.</value>

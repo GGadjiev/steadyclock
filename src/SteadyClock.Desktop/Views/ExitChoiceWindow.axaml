@@ -1,0 +1,43 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:loc="using:SteadyClock.Desktop.Resources"
+        x:Class="SteadyClock.Desktop.Views.ExitChoiceWindow"
+        Title="{loc:Loc Key=ExitTitle}"
+        Width="460"
+        SizeToContent="Height"
+        CanResize="False"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource AppBackgroundBrush}">
+    <Border Classes="card"
+            Margin="20"
+            Padding="20">
+        <StackPanel Spacing="12">
+            <TextBlock Text="{loc:Loc Key=ExitTitle}"
+                       FontSize="20"
+                       FontWeight="SemiBold" />
+            <TextBlock Text="{loc:Loc Key=ExitMessage}"
+                       FontSize="13.5"
+                       Foreground="{DynamicResource TextSecondaryBrush}"
+                       TextWrapping="Wrap" />
+            <StackPanel Spacing="8" Margin="0,8,0,0">
+                <Button x:Name="StopAndExitButton"
+                        Classes="primary"
+                        Content="{loc:Loc Key=ExitStopAndExit}"
+                        HorizontalAlignment="Stretch"
+                        IsDefault="True"
+                        Click="StopAndExitClicked" />
+                <Button x:Name="MinimizeButton"
+                        Classes="secondary"
+                        Content="{loc:Loc Key=ExitMinimizeTray}"
+                        HorizontalAlignment="Stretch"
+                        Click="MinimizeClicked" />
+                <Button Classes="link"
+                        Content="{loc:Loc Key=CancelButton}"
+                        HorizontalAlignment="Center"
+                        IsCancel="True"
+                        Click="CancelClicked" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

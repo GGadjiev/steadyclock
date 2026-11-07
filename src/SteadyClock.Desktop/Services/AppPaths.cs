@@ -9,8 +9,9 @@ public sealed class AppPaths
     public AppPaths()
     {
         var overrideRoot = Environment.GetEnvironmentVariable("STEADYCLOCK_DATA_DIR");
-        Root = !string.IsNullOrWhiteSpace(overrideRoot)
-            ? overrideRoot
+        UsesDataDirectoryOverride = !string.IsNullOrWhiteSpace(overrideRoot);
+        Root = UsesDataDirectoryOverride
+            ? overrideRoot!
             : GetDefaultRoot();
 
         DatabasePath = Path.Combine(Root, "data.db");
@@ -22,6 +23,7 @@ public sealed class AppPaths
     public string DatabasePath { get; }
     public string SettingsPath { get; }
     public string LogsDirectory { get; }
+    public bool UsesDataDirectoryOverride { get; }
 
     public void EnsureCreated()
     {

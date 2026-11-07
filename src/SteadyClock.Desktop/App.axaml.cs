@@ -31,6 +31,9 @@ public partial class App : Application
     private ProcessModeService? _processMode;
     private SoundService? _sounds;
     private NotificationService? _notifications;
+    private AutostartService? _autostart;
+    private IGlobalHotkeyService? _hotkeys;
+    private IUserDialogs? _dialogs;
     private MainViewModel? _viewModel;
     private MainWindow? _mainWindow;
     private TrayIcon? _trayIcon;
@@ -42,6 +45,7 @@ public partial class App : Application
     private bool _isExiting;
     private bool _pendingShow;
     private bool _disposed;
+    private bool _exitRequestInProgress;
 
     public override void Initialize()
     {
@@ -114,6 +118,19 @@ public partial class App : Application
             _controller.UpdateSettings(settings);
             await _controller.InitializeAsync(_lifetime.Token);
 
+            _autostart = new AutostartService(_logger!);
+            _hotkeys = GlobalHotkeyServiceFactory.Create(_logger!);
+            var hotkeyResult = _hotkeys.Apply(settings);
+            if (!hotkeyResult.Success)
+            {
+                _logger!.Warn(
+                    $"Горячие клавиши не зарегистрированы: {hotkeyResult.ConflictDisplayName}.");
+            }
+
+            if (!_paths.UsesDataDirectoryOverride)
+            {
+                SynchronizeAutostart(settings.AutoStartWithWindows);
+            }
             _sounds = new SoundService(_logger!);
             _processCatalog = new ProcessCatalog();
             _processMode = new ProcessModeService(_controller, _processCatalog, _logger!);
@@ -123,12 +140,19 @@ public partial class App : Application
                 settingsStore,
                 _sounds,
                 _processCatalog,
+                _autostart,
+                _hotkeys,
                 _logger!,
                 () => _mainWindow);
+            _dialogs = dialogs;
             _viewModel = new MainViewModel(_controller, dialogs, _logger!);
             _mainWindow = new MainWindow { DataContext = _viewModel };
             _mainWindow.Closing += OnMainWindowClosing;
             desktop.MainWindow = _mainWindow;
+
+            _hotkeys.ToggleRequested += OnHotkeyToggle;
+            _hotkeys.StopRequested += OnHotkeyStop;
+            _hotkeys.ShowHideRequested += OnHotkeyShowHide;
 
             await _viewModel.InitializeAsync();
 
@@ -181,6 +205,63 @@ public partial class App : Application
         CultureInfo.CurrentUICulture = culture;
     }
 
+    private void SynchronizeAutostart(bool enabled)
+    {
+        if (_autostart is null)
+        {
+            return;
+        }
+
+        try
+        {
+            if (enabled)
+            {
+                // Re-apply the command so a portable copy that has been moved still
+                // starts from its current location.
+                if (!_autostart.TrySetEnabled(true, out var error))
+                {
+                    _logger?.Warn($"Не удалось синхронизировать автозапуск: {error}");
+                }
+            }
+            else if (_autostart.IsEnabled() &&
+                     !_autostart.TrySetEnabled(false, out var error))
+            {
+                _logger?.Warn($"Не удалось отключить автозапуск: {error}");
+            }
+        }
+        catch (Exception exception)
+        {
+            _logger?.Error("Не удалось проверить автозапуск.", exception);
+        }
+    }
+
+    private void OnHotkeyToggle(object? sender, EventArgs e) =>
+        Dispatcher.UIThread.Post(() => _ = ToggleFromTrayAsync());
+
+    private void OnHotkeyStop(object? sender, EventArgs e) =>
+        Dispatcher.UIThread.Post(() => _ = StopFromTrayAsync());
+
+    private void OnHotkeyShowHide(object? sender, EventArgs e) =>
+        Dispatcher.UIThread.Post(ToggleMainWindowVisibility);
+
+    private void ToggleMainWindowVisibility()
+    {
+        if (_mainWindow is null)
+        {
+            return;
+        }
+
+        if (_mainWindow.IsVisible &&
+            _mainWindow.WindowState != WindowState.Minimized)
+        {
+            _mainWindow.Hide();
+        }
+        else
+        {
+            ShowMainWindow();
+        }
+    }
+
     private void CreateTray()
     {
         try
@@ -197,13 +278,25 @@ public partial class App : Application
             _trayStopItem = new NativeMenuItem(Strings.Get("StopTimerFromTray"));
             _trayStopItem.Click += async (_, _) => await StopFromTrayAsync();
 
+            var settingsItem = new NativeMenuItem(Strings.Get("TraySettings"));
+            settingsItem.Click += async (_, _) =>
+            {
+                ShowMainWindow();
+                if (_dialogs is not null)
+                {
+                    await _dialogs.ShowSettingsAsync();
+                }
+            };
+
             var exitItem = new NativeMenuItem(Strings.Get("TrayExit"));
-            exitItem.Click += async (_, _) => await ExitAsync(stopActiveSession: true);
+            exitItem.Click += async (_, _) => await RequestExitAsync();
 
             menu.Add(showItem);
             menu.Add(new NativeMenuItemSeparator());
             menu.Add(_trayToggleItem);
             menu.Add(_trayStopItem);
+            menu.Add(new NativeMenuItemSeparator());
+            menu.Add(settingsItem);
             menu.Add(new NativeMenuItemSeparator());
             menu.Add(exitItem);
 
@@ -363,7 +456,61 @@ public partial class App : Application
         }
 
         e.Cancel = true;
-        _ = ExitAsync(stopActiveSession: true);
+        _ = RequestExitAsync();
+    }
+
+    private async Task RequestExitAsync()
+    {
+        if (_isExiting || _exitRequestInProgress)
+        {
+            return;
+        }
+
+        _exitRequestInProgress = true;
+        try
+        {
+            if (_controller?.HasActiveSession == true)
+            {
+                var choice = _dialogs is null
+                    ? ExitChoice.Cancel
+                    : await _dialogs.ShowExitChoiceAsync();
+                switch (choice)
+                {
+                    case ExitChoice.StopAndExit:
+                        try
+                        {
+                            await _controller.StopAsync(_lifetime.Token);
+                        }
+                        catch (Exception exception)
+                        {
+                            _logger?.Error(
+                                "Не удалось сохранить сессию перед выходом.",
+                                exception);
+                        }
+
+                        break;
+                    case ExitChoice.MinimizeToTray:
+                        if (_trayIcon is not null)
+                        {
+                            _mainWindow?.Hide();
+                        }
+                        else
+                        {
+                            ShowMainWindow();
+                        }
+
+                        return;
+                    default:
+                        return;
+                }
+            }
+
+            await ExitAsync(stopActiveSession: false);
+        }
+        finally
+        {
+            _exitRequestInProgress = false;
+        }
     }
 
     private async Task ExitAsync(bool stopActiveSession)
@@ -462,6 +609,15 @@ public partial class App : Application
         _processTimer = null;
         _lifetime.Cancel();
         DisposeTray();
+
+        try
+        {
+            _hotkeys?.Dispose();
+        }
+        catch
+        {
+            // Ignore shutdown races.
+        }
 
         try
         {

@@ -1,5 +1,12 @@
 namespace SteadyClock.Desktop.Services;
 
+public enum ExitChoice
+{
+    Cancel = 0,
+    StopAndExit = 1,
+    MinimizeToTray = 2
+}
+
 public interface IUserDialogs
 {
     Task<bool> ConfirmAsync(
@@ -12,4 +19,6 @@ public interface IUserDialogs
     Task<bool> ShowSessionEditorAsync(long? sessionId);
 
     Task ShowSettingsAsync();
+
+    Task<ExitChoice> ShowExitChoiceAsync();
 }
