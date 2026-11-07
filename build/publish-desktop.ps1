@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $project = Join-Path $root 'src\SteadyClock.Desktop\SteadyClock.Desktop.csproj'
 $publishRoot = Join-Path $root 'publish'
-$rids = @('win-x64', 'linux-x64', 'osx-x64', 'osx-arm64')
+$rids = @('win-x64', 'win-arm64', 'linux-x64', 'linux-arm64', 'osx-x64', 'osx-arm64')
 
 foreach ($rid in $rids) {
     $output = Join-Path $publishRoot "SteadyClock-$rid"
