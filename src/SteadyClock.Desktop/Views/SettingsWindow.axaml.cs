@@ -12,6 +12,13 @@ public partial class SettingsWindow : Window
     {
         InitializeComponent();
         InputFocusHelper.Attach(this);
+
+        var scroll = this.FindControl<ScrollViewer>("SettingsScroll");
+        var content = this.FindControl<StackPanel>("SettingsContent");
+        if (scroll is not null && content is not null)
+        {
+            ScrollGutterBalancer.Attach(scroll, content, 12, 0);
+        }
     }
 
     public SettingsWindow(SettingsViewModel viewModel)

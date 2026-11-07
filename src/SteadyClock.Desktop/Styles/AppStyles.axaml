@@ -18,6 +18,24 @@
         <SolidColorBrush x:Key="DangerSoftBrush">#FBEDEB</SolidColorBrush>
         <SolidColorBrush x:Key="HoverSurfaceBrush">#EBF1EE</SolidColorBrush>
 
+        <!-- Fluent theme overrides: keep inputs borderless at rest and show a
+             soft border on hover instead of the stock dark outline. -->
+        <SolidColorBrush x:Key="TextControlBorderBrushPointerOver">#AFC2BA</SolidColorBrush>
+        <SolidColorBrush x:Key="TextControlBorderBrushFocused">#2F7A70</SolidColorBrush>
+        <SolidColorBrush x:Key="TextControlBackgroundPointerOver">#F4F7F5</SolidColorBrush>
+        <SolidColorBrush x:Key="ComboBoxBackground">#F4F7F5</SolidColorBrush>
+        <SolidColorBrush x:Key="ComboBoxBackgroundPointerOver">#EBF1EE</SolidColorBrush>
+        <SolidColorBrush x:Key="ComboBoxBackgroundPressed">#E6EEE9</SolidColorBrush>
+        <SolidColorBrush x:Key="ComboBoxBackgroundDisabled">#EDF1EF</SolidColorBrush>
+        <SolidColorBrush x:Key="ComboBoxBorderBrush">Transparent</SolidColorBrush>
+        <SolidColorBrush x:Key="ComboBoxBorderBrushPointerOver">#AFC2BA</SolidColorBrush>
+        <SolidColorBrush x:Key="ComboBoxBorderBrushPressed">#AFC2BA</SolidColorBrush>
+        <SolidColorBrush x:Key="ComboBoxBorderBrushDisabled">Transparent</SolidColorBrush>
+        <SolidColorBrush x:Key="ComboBoxBackgroundBorderBrushFocused">#2F7A70</SolidColorBrush>
+        <SolidColorBrush x:Key="ComboBoxDropDownBorderBrush">#D6DFDA</SolidColorBrush>
+        <SolidColorBrush x:Key="ComboBoxDropDownBackground">#FFFFFF</SolidColorBrush>
+        <SolidColorBrush x:Key="ComboBoxDropDownGlyphForeground">#66746F</SolidColorBrush>
+
         <SolidColorBrush x:Key="StatusRunningBackgroundBrush">#E5F4EC</SolidColorBrush>
         <SolidColorBrush x:Key="StatusRunningForegroundBrush">#176548</SolidColorBrush>
         <SolidColorBrush x:Key="StatusRunningDotBrush">#24865F</SolidColorBrush>
@@ -45,10 +63,10 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Transitions">
             <Transitions>
-                <BrushTransition Property="Background" Duration="0:0:0.16" />
-                <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
-                <BrushTransition Property="Foreground" Duration="0:0:0.16" />
-                <DoubleTransition Property="Opacity" Duration="0:0:0.16" />
+                <BrushTransition Property="Background" Duration="0:0:0.10" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.10" />
+                <BrushTransition Property="Foreground" Duration="0:0:0.10" />
+                <DoubleTransition Property="Opacity" Duration="0:0:0.10" />
             </Transitions>
         </Setter>
     </Style>
@@ -56,9 +74,9 @@
     <Style Selector="Button /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Transitions">
             <Transitions>
-                <BrushTransition Property="Background" Duration="0:0:0.16" />
-                <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
-                <BrushTransition Property="Foreground" Duration="0:0:0.16" />
+                <BrushTransition Property="Background" Duration="0:0:0.10" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.10" />
+                <BrushTransition Property="Foreground" Duration="0:0:0.10" />
             </Transitions>
         </Setter>
     </Style>
@@ -205,14 +223,18 @@
         <Setter Property="FontSize" Value="13.5" />
         <Setter Property="Transitions">
             <Transitions>
-                <BrushTransition Property="Background" Duration="0:0:0.16" />
-                <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
+                <BrushTransition Property="Background" Duration="0:0:0.10" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.10" />
             </Transitions>
         </Setter>
     </Style>
 
     <Style Selector="TextBox:pointerover">
-        <Setter Property="BorderBrush" Value="#B9C8C1" />
+        <Setter Property="BorderBrush" Value="#AFC2BA" />
+    </Style>
+
+    <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="#AFC2BA" />
     </Style>
 
     <Style Selector="TextBox:focus">
@@ -220,14 +242,25 @@
         <Setter Property="BorderThickness" Value="2" />
     </Style>
 
+    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+    </Style>
+
     <Style Selector="controls|HotkeyTextBox">
         <Setter Property="MinHeight" Value="38" />
         <Setter Property="Background" Value="#F4F7F5" />
-        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="Transparent" />
     </Style>
 
     <Style Selector="controls|HotkeyTextBox:pointerover">
         <Setter Property="Background" Value="{DynamicResource HoverSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="#AFC2BA" />
+    </Style>
+
+    <Style Selector="controls|HotkeyTextBox:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{DynamicResource HoverSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="#AFC2BA" />
     </Style>
 
     <Style Selector="controls|HotkeyTextBox:focus">
@@ -237,30 +270,46 @@
 
     <Style Selector="ComboBox">
         <Setter Property="Background" Value="#F4F7F5" />
-        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="CornerRadius" Value="9" />
         <Setter Property="Transitions">
             <Transitions>
-                <BrushTransition Property="Background" Duration="0:0:0.16" />
-                <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
+                <BrushTransition Property="Background" Duration="0:0:0.10" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.10" />
             </Transitions>
         </Setter>
     </Style>
 
     <Style Selector="ComboBox:pointerover">
         <Setter Property="Background" Value="{DynamicResource HoverSurfaceBrush}" />
-        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="#AFC2BA" />
+    </Style>
+
+    <Style Selector="ComboBox:pointerover /template/ Border#Background">
+        <Setter Property="Background" Value="{DynamicResource HoverSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="#AFC2BA" />
     </Style>
 
     <Style Selector="ComboBox:focus">
-        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+    </Style>
+
+    <Style Selector="ComboBox /template/ Border#HighlightBackground">
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+    </Style>
+
+    <Style Selector="ComboBox /template/ Border#PopupBorder">
+        <Setter Property="BorderBrush" Value="{DynamicResource InputBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
     </Style>
 
     <Style Selector="ComboBoxItem">
         <Setter Property="Transitions">
             <Transitions>
-                <BrushTransition Property="Background" Duration="0:0:0.16" />
-                <BrushTransition Property="Foreground" Duration="0:0:0.16" />
+                <BrushTransition Property="Background" Duration="0:0:0.10" />
+                <BrushTransition Property="Foreground" Duration="0:0:0.10" />
             </Transitions>
         </Setter>
     </Style>
@@ -268,7 +317,7 @@
     <Style Selector="CheckBox">
         <Setter Property="Transitions">
             <Transitions>
-                <BrushTransition Property="Foreground" Duration="0:0:0.16" />
+                <BrushTransition Property="Foreground" Duration="0:0:0.10" />
             </Transitions>
         </Setter>
     </Style>
@@ -309,10 +358,10 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Transitions">
             <Transitions>
-                <BrushTransition Property="Background" Duration="0:0:0.16" />
-                <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
-                <BrushTransition Property="Foreground" Duration="0:0:0.16" />
-                <DoubleTransition Property="Opacity" Duration="0:0:0.16" />
+                <BrushTransition Property="Background" Duration="0:0:0.10" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.10" />
+                <BrushTransition Property="Foreground" Duration="0:0:0.10" />
+                <DoubleTransition Property="Opacity" Duration="0:0:0.10" />
             </Transitions>
         </Setter>
     </Style>

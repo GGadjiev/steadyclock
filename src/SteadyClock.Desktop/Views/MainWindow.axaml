@@ -108,12 +108,13 @@
             </StackPanel>
         </Grid>
 
-        <ScrollViewer Grid.Row="1"
+        <ScrollViewer x:Name="TimerScroll"
+                      Grid.Row="1"
                       Margin="20,2,20,0"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled"
                       IsVisible="{Binding IsTimerPage}">
-            <StackPanel Margin="22,0,12,22">
+            <StackPanel x:Name="TimerContent" Margin="12,0,12,22">
                 <Border Classes="card" Padding="18,20,18,16">
                     <StackPanel>
                         <TextBlock Text="{Binding TimerText}" Classes="timer" />
@@ -227,12 +228,13 @@
             </StackPanel>
         </ScrollViewer>
 
-        <ScrollViewer Grid.Row="1"
+        <ScrollViewer x:Name="HistoryScroll"
+                      Grid.Row="1"
                       Margin="20,2,20,0"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled"
                       IsVisible="{Binding IsHistoryPage}">
-            <StackPanel Margin="22,0,12,22">
+            <StackPanel x:Name="HistoryContent" Margin="12,0,12,22">
                 <TextBlock Text="{loc:Loc Key=Loading}"
                            FontSize="13"
                            Foreground="{DynamicResource TextSecondaryBrush}"
