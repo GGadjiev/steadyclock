@@ -44,6 +44,18 @@ public static class GlobalHotkeyServiceFactory
                 logger.Warn("Глобальные горячие клавиши недоступны: X11 display не найден.");
                 return new NullGlobalHotkeyService();
             }
+
+            if (OperatingSystem.IsMacOS())
+            {
+                var mac = new MacGlobalHotkeyService(logger);
+                if (mac.IsSupported)
+                {
+                    return mac;
+                }
+
+                mac.Dispose();
+                return new NullGlobalHotkeyService();
+            }
         }
         catch (Exception exception)
         {

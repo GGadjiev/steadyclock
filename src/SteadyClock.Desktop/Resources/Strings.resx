@@ -65,7 +65,7 @@
     <value>Кроссплатформенная версия · beta</value>
   </data>
   <data name="BetaFoundationNotice" xml:space="preserve">
-    <value>Кроссплатформенная версия. Горячие клавиши работают в Windows и Linux X11, автозапуск — в Windows, Linux и macOS. На macOS глобальные горячие клавиши пока недоступны.</value>
+    <value>Кроссплатформенная версия. Горячие клавиши работают в Windows и Linux X11; на macOS используется Carbon. Автозапуск работает в Windows, Linux и macOS.</value>
   </data>
   <data name="DateFormatExample" xml:space="preserve">
     <value>ДД.ММ.ГГГГ</value>
