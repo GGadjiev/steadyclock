@@ -2,29 +2,29 @@
   <title id="title">SteadyClock</title>
   <desc id="desc">Тихий офлайн-трекер времени для Windows. Локальные данные, без облака и телеметрии.</desc>
 
-  <rect width="1280" height="320" rx="28" fill="#F3F6F4"/>
+  <rect width="1280" height="320" rx="28" fill="#F5F2EA"/>
 
   <g transform="translate(64 64)">
-    <rect x="0" y="0" width="192" height="192" rx="48" fill="#2F7A70"/>
-    <circle cx="96" cy="96" r="58" fill="#F7FBFA"/>
-    <circle cx="96" cy="96" r="47" fill="none" stroke="#E9F4F1" stroke-width="5"/>
-    <g stroke="#275E56" stroke-width="10" stroke-linecap="round">
+    <rect x="0" y="0" width="192" height="192" rx="48" fill="#1E5B54"/>
+    <circle cx="96" cy="96" r="58" fill="#F5F2EA"/>
+    <circle cx="96" cy="96" r="47" fill="none" stroke="#E7EFEA" stroke-width="5"/>
+    <g stroke="#174A45" stroke-width="10" stroke-linecap="round">
       <line x1="96" y1="96" x2="96" y2="58"/>
       <line x1="96" y1="96" x2="126" y2="113"/>
     </g>
-    <circle cx="96" cy="96" r="8" fill="#2F7A70"/>
-    <line x1="68" y1="31" x2="124" y2="31" stroke="#D4EDE8" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="96" cy="96" r="8" fill="#1E5B54"/>
+    <line x1="68" y1="31" x2="124" y2="31" stroke="#A9C6BB" stroke-width="7" stroke-linecap="round"/>
   </g>
 
-  <text x="304" y="137" fill="#1C2925" font-family="Segoe UI, Arial, sans-serif" font-size="70" font-weight="700" letter-spacing="-1.5">SteadyClock</text>
-  <text x="308" y="187" fill="#66746F" font-family="Segoe UI, Arial, sans-serif" font-size="27">Тихий офлайн-трекер времени для Windows</text>
+  <text x="304" y="137" fill="#18211F" font-family="Segoe UI, Arial, sans-serif" font-size="70" font-weight="700" letter-spacing="-1.5">SteadyClock</text>
+  <text x="308" y="187" fill="#6F7E78" font-family="Segoe UI, Arial, sans-serif" font-size="27">Тихий офлайн-трекер времени для Windows</text>
 
   <g font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="600">
-    <rect x="308" y="224" width="132" height="38" rx="19" fill="#E6F2EF"/>
-    <text x="374" y="249" text-anchor="middle" fill="#2F7A70">local-first</text>
-    <rect x="452" y="224" width="124" height="38" rx="19" fill="#E6F2EF"/>
-    <text x="514" y="249" text-anchor="middle" fill="#2F7A70">no cloud</text>
-    <rect x="588" y="224" width="168" height="38" rx="19" fill="#E6F2EF"/>
-    <text x="672" y="249" text-anchor="middle" fill="#2F7A70">no telemetry</text>
+    <rect x="308" y="224" width="132" height="38" rx="19" fill="#E7EFEA"/>
+    <text x="374" y="249" text-anchor="middle" fill="#1E5B54">local-first</text>
+    <rect x="452" y="224" width="124" height="38" rx="19" fill="#E7EFEA"/>
+    <text x="514" y="249" text-anchor="middle" fill="#1E5B54">no cloud</text>
+    <rect x="588" y="224" width="168" height="38" rx="19" fill="#E7EFEA"/>
+    <text x="672" y="249" text-anchor="middle" fill="#1E5B54">no telemetry</text>
   </g>
 </svg>
