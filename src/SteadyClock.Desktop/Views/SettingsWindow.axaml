@@ -229,7 +229,7 @@
                                            Classes="caption"
                                            Foreground="{DynamicResource DangerBrush}"
                                            IsVisible="{Binding !HotkeysSupported}" />
-                                <Grid ColumnDefinitions="*,200"
+                                <Grid ColumnDefinitions="*,185"
                                       RowDefinitions="Auto,Auto,Auto"
                                       RowSpacing="10"
                                       IsEnabled="{Binding HotkeysSupported}">
