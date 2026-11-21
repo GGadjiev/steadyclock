@@ -195,19 +195,19 @@ public partial class SettingsViewModel : ObservableObject
         Sections = new ObservableCollection<SettingsSectionViewModel>
         {
             new(SettingsSection.Timer, Strings.Get("SettingsSectionTimer"),
-                "M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"),
+                "M12,2.5A9.5,9.5 0 1,0 12,21.5A9.5,9.5 0 1,0 12,2.5 M12,7V12L15.5,14"),
             new(SettingsSection.TrackerMode, Strings.Get("SettingsSectionMode"),
-                "M4,4H20V20H4V4M6,6V18H18V6H6Z"),
+                "M5,3L19,12L12,13L9,20L5,3Z"),
             new(SettingsSection.Idle, Strings.Get("SettingsSectionIdle"),
-                "M6,2H18V4H16V8L12,12L8,8V4H6V2M6,22V20H8V16L12,12L16,16V20H18V22H6Z"),
+                "M7,3H17 M7,21H17 M8,3V7.5L12,11.5L16,7.5V3 M8,21V16.5L12,12.5L16,16.5V21"),
             new(SettingsSection.Tray, Strings.Get("SettingsSectionTray"),
-                "M3,5H21V17H3V5M5,7V15H19V7H5M8,19H16V21H8V19Z"),
+                "M3,13H8L10,16H14L16,13H21 M5,5H19L21,13V19H3V13L5,5Z"),
             new(SettingsSection.Hotkeys, Strings.Get("SettingsSectionHotkeys"),
-                "M3,6H21V18H3V6M5,8V16H19V8H5M7,10H9V12H7V10M11,10H13V12H11V10M15,10H17V12H15V10M7,13H17V15H7V13Z"),
+                "M2.5,6.5H21.5V17.5H2.5V6.5 M6,10H6.01 M9,10H9.01 M12,10H12.01 M15,10H15.01 M18,10H18.01 M6,14H18"),
             new(SettingsSection.Notifications, Strings.Get("SettingsSectionNotifications"),
-                "M12,2A2,2 0 0,1 14,4C14,4.55 13.78,5.05 13.41,5.41C16.1,6.3 18,8.8 18,12V16L20,18V19H4V18L6,16V12C6,8.8 7.9,6.3 10.59,5.41C10.22,5.05 10,4.55 10,4A2,2 0 0,1 12,2M12,22A2,2 0 0,1 10,20H14A2,2 0 0,1 12,22Z"),
+                "M18,8.5A6,6 0 0,0 6,8.5C6,15 3,17 3,17H21C21,17 18,15 18,8.5 M10,21H14"),
             new(SettingsSection.Reminders, Strings.Get("SettingsSectionReminders"),
-                "M12,2A7,7 0 0,0 5,9V13L3,15V16H21V15L19,13V9A7,7 0 0,0 12,2M12,22A2,2 0 0,0 14,20H10A2,2 0 0,0 12,22Z")
+                "M12,2.5A6,6 0 0,0 6,8.5V13L4,15V16H20V15L18,13V8.5A6,6 0 0,0 12,2.5 M12,6.5V9.5L14,10.5 M10,20A2,2 0 0,0 14,20")
         };
         SelectedSection = Sections[0];
         CloseToTray = settings.CloseToTray;

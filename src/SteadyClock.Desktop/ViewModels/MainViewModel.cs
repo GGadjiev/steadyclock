@@ -50,9 +50,6 @@ public partial class MainViewModel : ObservableObject, IDisposable
     private string _historyTotalText = "0 мин";
 
     [ObservableProperty]
-    private string _hotkeyHintText = string.Empty;
-
-    [ObservableProperty]
     private string _primaryActionIconData = "M8,5V19L19,12L8,5Z";
 
     [ObservableProperty]
@@ -308,7 +305,6 @@ public partial class MainViewModel : ObservableObject, IDisposable
             : TimeText.FormatClock(_controller.CurrentDuration);
         ApplyStatus(_controller.Status);
         SyncCommentFromEngine();
-        HotkeyHintText = _controller.CurrentSettings.ToggleTimerHotkey.DisplayName;
 
         var summary = BuildTodaySummary(now);
         TodayTotalText = TimeText.FormatDuration(summary.TotalDuration);
@@ -384,7 +380,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
                 HistoryGroups.Add(new HistoryGroupViewModel(
                     summary.Date,
                     summary.TotalDuration,
-                    BuildRows(summary.Sessions),
+                    BuildRows(summary.Sessions, connectToHeader: true),
                     summary.Date == _today));
             }
 
@@ -446,7 +442,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
             var seconds = totals.TryGetValue(date, out var total)
                 ? total.TotalSeconds
                 : 0;
-            var height = 8 + 36 * seconds / maxSeconds;
+            var height = 10 + 46 * seconds / maxSeconds;
             SparklineBars.Add(new SparklineBarViewModel(height, date == _today));
         }
 
@@ -487,15 +483,23 @@ public partial class MainViewModel : ObservableObject, IDisposable
         return sessions;
     }
 
-    private List<SessionLineViewModel> BuildRows(IReadOnlyList<SessionDaySlice> slices)
+    private List<SessionLineViewModel> BuildRows(
+        IReadOnlyList<SessionDaySlice> slices,
+        bool connectToHeader = false)
     {
-        return slices
+        var ordered = slices
             .OrderBy(slice => slice.StartUtc)
-            .Select(slice => new SessionLineViewModel(
+            .ToList();
+        return ordered
+            .Select((slice, index) => new SessionLineViewModel(
                 slice,
                 _timeZone,
                 EditSessionAsync,
-                DeleteSessionAsync))
+                DeleteSessionAsync)
+            {
+                ShowTopConnector = connectToHeader || index > 0,
+                ShowConnector = index < ordered.Count - 1
+            })
             .ToList();
     }
 

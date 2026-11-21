@@ -1,4 +1,4 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:SteadyClock.Desktop.ViewModels"
         xmlns:controls="using:SteadyClock.Desktop.Views.Controls"
@@ -8,9 +8,9 @@
         Title="{loc:Loc Key=AppTitle}"
         Icon="avares://SteadyClock/Assets/app.ico"
         Width="540"
-        Height="840"
+        Height="800"
         MinWidth="460"
-        MinHeight="620"
+        MinHeight="600"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource AppBackgroundBrush}">
 
@@ -20,23 +20,31 @@
                     BorderThickness="0,0,0,1"
                     Padding="14,11">
                 <Grid ColumnDefinitions="18,*,Auto,Auto">
-                    <Grid Grid.Column="0">
+                    <Panel Grid.Column="0">
                         <Border Width="1"
-                                Background="{DynamicResource DividerBrush}"
+                                Height="16"
+                                Background="{DynamicResource TimelineBrush}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                IsVisible="{Binding ShowTopConnector}" />
+                        <Border Width="1"
+                                Background="{DynamicResource TimelineBrush}"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Stretch"
-                                Margin="0,12,0,-11" />
+                                Margin="0,23,0,0"
+                                IsVisible="{Binding ShowConnector}" />
                         <Ellipse Width="7"
                                  Height="7"
+                                 Margin="0,16,0,0"
                                  Fill="{DynamicResource SageBrush}"
                                  HorizontalAlignment="Center"
-                                 VerticalAlignment="Center" />
-                    </Grid>
+                                 VerticalAlignment="Top" />
+                    </Panel>
 
                     <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <TextBlock Text="{Binding TimeRangeText}"
-                                       FontSize="14"
+                                       FontSize="14.5"
                                        FontWeight="Medium"
                                        VerticalAlignment="Center" />
                             <Border Classes="badge" IsVisible="{Binding HasBadge}">
@@ -50,39 +58,44 @@
 
                     <TextBlock Grid.Column="2"
                                Text="{Binding DurationText}"
-                               FontFamily="{DynamicResource MonoFontFamily}"
                                FontSize="14"
-                               FontWeight="SemiBold"
+                               FontWeight="Medium"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Right"
-                               Margin="12,0,6,0" />
+                               Margin="12,0,10,0" />
 
                     <StackPanel Grid.Column="3"
                                 Orientation="Horizontal"
-                                Spacing="2"
+                                Spacing="4"
                                 VerticalAlignment="Center"
                                 IsVisible="{Binding CanManage}">
                         <Button Classes="rowAction"
                                 Command="{Binding EditCommand}"
                                 AutomationProperties.Name="{Binding EditLabel}">
                             <ToolTip.Tip>
-                                <TextBlock Text="{Binding EditLabel}" Foreground="White" />
+                                <TextBlock Text="{Binding EditLabel}" />
                             </ToolTip.Tip>
-                            <PathIcon Width="13"
-                                      Height="13"
-                                      Foreground="{Binding $parent[Button].Foreground}"
-                                      Data="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.13,5.12L18.88,8.87M3,17.25V21H6.75L17.81,9.94L14.06,6.19L3,17.25Z" />
+                            <Path Width="15"
+                                  Height="15"
+                                  Stretch="Uniform"
+                                  Stroke="{Binding $parent[Button].Foreground}"
+                                  StrokeThickness="1.5"
+                                  StrokeLineCap="Round"
+                                  Data="M4,20L4,16L16,4L20,8L8,20Z M14,6L18,10" />
                         </Button>
                         <Button Classes="rowAction"
                                 Command="{Binding DeleteCommand}"
                                 AutomationProperties.Name="{Binding DeleteLabel}">
                             <ToolTip.Tip>
-                                <TextBlock Text="{Binding DeleteLabel}" Foreground="White" />
+                                <TextBlock Text="{Binding DeleteLabel}" />
                             </ToolTip.Tip>
-                            <PathIcon Width="13"
-                                      Height="13"
-                                      Foreground="{Binding $parent[Button].Foreground}"
-                                      Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                            <Path Width="15"
+                                  Height="15"
+                                  Stretch="Uniform"
+                                  Stroke="{Binding $parent[Button].Foreground}"
+                                  StrokeThickness="1.5"
+                                  StrokeLineCap="Round"
+                                  Data="M4,6H20 M9,6V4H15V6 M6,6V20H18V6 M10,10V16 M14,10V16" />
                         </Button>
                     </StackPanel>
                 </Grid>
@@ -90,12 +103,22 @@
         </DataTemplate>
     </Window.Resources>
 
-    <Grid RowDefinitions="Auto,*,Auto">
-        <Grid Grid.Row="0" Margin="24,18,24,10" ColumnDefinitions="Auto,*,Auto">
-            <Image Width="40"
-                   Height="40"
-                   Source="avares://SteadyClock/Assets/app.png"
-                   VerticalAlignment="Center" />
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" Margin="24,18,24,12" ColumnDefinitions="Auto,*,Auto">
+            <Border Width="40"
+                    Height="40"
+                    CornerRadius="13"
+                    Background="{DynamicResource AccentBrush}"
+                    VerticalAlignment="Center">
+                <Viewbox Width="25" Height="25">
+                    <Canvas Width="24" Height="24">
+                        <Path Stroke="{DynamicResource AccentForegroundBrush}"
+                              StrokeThickness="1.8"
+                              StrokeLineCap="Round"
+                              Data="M9,3H15 M12,3V5.5 M4.5,13A7.5,7.5 0 1,0 19.5,13A7.5,7.5 0 1,0 4.5,13 M12,13V8.5 M12,13L15.5,15" />
+                    </Canvas>
+                </Viewbox>
+            </Border>
             <StackPanel Grid.Column="1"
                         Orientation="Horizontal"
                         Spacing="10"
@@ -104,31 +127,33 @@
                 <TextBlock Text="{loc:Loc Key=AppTitle}" Classes="brand" />
                 <Border Classes="pill" Padding="9,2">
                     <TextBlock Text="beta"
-                               FontSize="11"
-                               FontWeight="SemiBold"
+                               FontSize="11.5"
+                               FontWeight="Medium"
                                Foreground="{DynamicResource TextSecondaryBrush}" />
                 </Border>
             </StackPanel>
             <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
                 <Button Classes="nav"
                         Content="{loc:Loc Key=HistoryTitle}"
-                        Foreground="{DynamicResource TextPrimaryBrush}"
                         Command="{Binding ShowHistoryCommand}"
                         IsVisible="{Binding IsTimerPage}" />
                 <Button Classes="nav"
                         Content="{loc:Loc Key=Back}"
-                        Foreground="{DynamicResource TextPrimaryBrush}"
                         Command="{Binding ShowTimerCommand}"
                         IsVisible="{Binding IsHistoryPage}" />
                 <Button Classes="icon"
                         Command="{Binding OpenSettingsCommand}"
                         AutomationProperties.Name="{loc:Loc Key=SettingsOpenTooltip}">
                     <ToolTip.Tip>
-                        <TextBlock Text="{loc:Loc Key=SettingsOpenTooltip}" Foreground="White" />
+                        <TextBlock Text="{loc:Loc Key=SettingsOpenTooltip}" />
                     </ToolTip.Tip>
-                    <PathIcon Width="18"
-                              Height="18"
-                              Data="M19.43,12.98C19.47,12.66 19.5,12.34 19.5,12C19.5,11.66 19.47,11.34 19.43,11.02L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11.02C4.53,11.34 4.5,11.66 4.5,12C4.5,12.34 4.53,12.66 4.57,12.98L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.04 4.95,18.95L7.44,17.95C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.95L19.05,18.95C19.27,19.04 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.98M12,15.5A3.5,3.5 0 1,1 15.5,12A3.5,3.5 0 0,1 12,15.5Z" />
+                    <Path Width="19"
+                          Height="19"
+                          Stretch="Uniform"
+                          Stroke="{Binding $parent[Button].Foreground}"
+                          StrokeThickness="1.5"
+                          StrokeLineCap="Round"
+                          Data="M12.22,2H11.78A2,2 0 0,0 9.78,4V4.18A2,2 0 0,1 8.78,5.91L8.35,6.16A2,2 0 0,1 6.35,6.16L6.2,6.08A2,2 0 0,0 3.47,6.81L3.25,7.19A2,2 0 0,0 3.98,9.92L4.13,10.01A2,2 0 0,1 5.13,11.75V12.25A2,2 0 0,1 4.13,13.99L3.98,14.08A2,2 0 0,0 3.25,16.81L3.47,17.19A2,2 0 0,0 6.2,17.92L6.35,17.84A2,2 0 0,1 8.35,17.84L8.78,18.09A2,2 0 0,1 9.78,19.82V20A2,2 0 0,0 11.78,22H12.22A2,2 0 0,0 14.22,20V19.82A2,2 0 0,1 15.22,18.09L15.65,17.84A2,2 0 0,1 17.65,17.84L17.8,17.92A2,2 0 0,0 20.53,17.19L20.75,16.81A2,2 0 0,0 20.02,14.08L19.87,13.99A2,2 0 0,1 18.87,12.25V11.75A2,2 0 0,1 19.87,10.01L20.02,9.92A2,2 0 0,0 20.75,7.19L20.53,6.81A2,2 0 0,0 17.8,6.08L17.65,6.16A2,2 0 0,1 15.65,6.16L15.22,5.91A2,2 0 0,1 14.22,4.18V4A2,2 0 0,0 12.22,2Z M15,12A3,3 0 1,1 9,12A3,3 0 1,1 15,12Z" />
                 </Button>
             </StackPanel>
         </Grid>
@@ -140,16 +165,18 @@
                       HorizontalScrollBarVisibility="Disabled"
                       IsVisible="{Binding IsTimerPage}">
             <StackPanel x:Name="TimerContent" Margin="0,0,10,18">
-                <Border Classes="card" Padding="20,18,20,18" ClipToBounds="True">
+                <Border Classes="card" Padding="20,16,20,18" ClipToBounds="True">
                     <Grid>
                         <controls:RingsBackground RingBrush="{DynamicResource RingBrush}"
-                                                  Opacity="0.35"
+                                                  Opacity="0.30"
                                                   IsHitTestVisible="False" />
                         <StackPanel Margin="4,0">
-                            <TextBlock Text="{Binding TimerText}" Classes="timer" />
+                            <TextBlock x:Name="TimerTextBlock"
+                                       Text="{Binding TimerText}"
+                                       Classes="timer" />
                             <Border HorizontalAlignment="Center"
-                                    Margin="0,4,0,0"
-                                    Padding="12,5"
+                                    Margin="0,2,0,0"
+                                    Padding="13,5"
                                     CornerRadius="999"
                                     Background="{Binding Status, Converter={StaticResource StatusBrush}, ConverterParameter=Background}">
                                 <StackPanel Orientation="Horizontal" Spacing="7">
@@ -158,8 +185,8 @@
                                              VerticalAlignment="Center"
                                              Fill="{Binding Status, Converter={StaticResource StatusBrush}, ConverterParameter=Dot}" />
                                     <TextBlock Text="{Binding StatusText}"
-                                               FontSize="12.5"
-                                               FontWeight="SemiBold"
+                                               FontSize="13"
+                                               FontWeight="Medium"
                                                Foreground="{Binding Status, Converter={StaticResource StatusBrush}, ConverterParameter=Foreground}" />
                                 </StackPanel>
                             </Border>
@@ -167,9 +194,9 @@
                             <Button Command="{Binding PrimaryActionCommand}"
                                     Classes="primary"
                                     HorizontalAlignment="Stretch"
-                                    Margin="0,18,0,0">
-                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
-                                    <PathIcon Width="14"
+                                    Margin="0,16,0,0">
+                                <StackPanel Orientation="Horizontal" Spacing="9" HorizontalAlignment="Center">
+                                    <PathIcon Width="13"
                                               Height="14"
                                               Data="{Binding PrimaryActionIconData}" />
                                     <TextBlock Text="{Binding PrimaryActionText}" />
@@ -192,7 +219,7 @@
                                 <TextBlock Text="{loc:Loc Key=CommentPlaceholder}"
                                            Margin="12,0,0,0"
                                            VerticalAlignment="Center"
-                                           FontSize="12.5"
+                                           FontSize="13"
                                            Foreground="{DynamicResource TextTertiaryBrush}"
                                            IsHitTestVisible="False"
                                            IsVisible="{Binding IsCommentEmpty}" />
@@ -210,31 +237,31 @@
                 <Border Classes="card" Margin="0,12,0,0" Padding="20,16">
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel VerticalAlignment="Center">
-                            <StackPanel Orientation="Horizontal" Spacing="6">
-                                <TextBlock Text="{loc:Loc Key=Today}" FontSize="16" FontWeight="SemiBold" />
+                            <StackPanel Orientation="Horizontal" Spacing="7">
+                                <TextBlock Text="{loc:Loc Key=Today}" FontSize="16.5" FontWeight="SemiBold" />
                                 <TextBlock Text="{Binding TodayDateText}"
-                                           FontSize="13"
+                                           FontSize="13.5"
                                            Foreground="{DynamicResource TextSecondaryBrush}"
                                            VerticalAlignment="Center" />
                             </StackPanel>
                             <TextBlock Text="{Binding TodayTotalText}"
                                        FontSize="30"
                                        FontWeight="SemiBold"
-                                       Margin="0,5,0,0" />
+                                       Margin="0,4,0,0" />
                             <TextBlock Text="{Binding TodaySessionCountText}"
-                                       FontSize="12.5"
+                                       FontSize="13"
                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                        Margin="0,1,0,0" />
                         </StackPanel>
                         <ItemsControl Grid.Column="1"
                                       ItemsSource="{Binding SparklineBars}"
-                                      Height="44"
+                                      Height="56"
                                       VerticalAlignment="Bottom"
                                       Margin="18,0,0,2">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <StackPanel Orientation="Horizontal"
-                                                Spacing="4"
+                                                Spacing="6"
                                                 VerticalAlignment="Bottom" />
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
@@ -265,11 +292,22 @@
                                    Margin="20,22"
                                    IsVisible="{Binding IsEmpty}" />
                         <Border Classes="divider" />
-                        <Button Content="{loc:Loc Key=AddManualEntry}"
-                                Classes="link"
+                        <Button Classes="link"
+                                Foreground="{DynamicResource TextPrimaryBrush}"
                                 Command="{Binding AddManualCommand}"
                                 HorizontalAlignment="Center"
-                                Margin="0,6" />
+                                Margin="0,6">
+                            <StackPanel Orientation="Horizontal" Spacing="7">
+                                <Path Width="14"
+                                      Height="14"
+                                      Stretch="Uniform"
+                                      Stroke="{Binding $parent[Button].Foreground}"
+                                      StrokeThickness="1.7"
+                                      StrokeLineCap="Round"
+                                      Data="M12,5V19 M5,12H19" />
+                                <TextBlock Text="{loc:Loc Key=AddManualEntry}" />
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
                 </Border>
 
@@ -335,26 +373,39 @@
                                             CornerRadius="2"
                                             Margin="0,18,0,18"
                                             IsVisible="{Binding IsToday}" />
-                                    <StackPanel Grid.Column="1" Margin="16,14,8,0">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="14,14,12,0">
+                                        <Grid ColumnDefinitions="18,*,Auto" Margin="14,0,0,0">
+                                            <Panel Grid.Column="0">
+                                                <Border Width="1"
+                                                        Background="{DynamicResource TimelineBrush}"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Stretch"
+                                                        Margin="0,16,0,-4" />
+                                                <Ellipse Width="8"
+                                                         Height="8"
+                                                         Margin="0,8,0,0"
+                                                         Fill="{DynamicResource SageBrush}"
+                                                         HorizontalAlignment="Center"
+                                                         VerticalAlignment="Top" />
+                                            </Panel>
+                                            <StackPanel Grid.Column="1" Spacing="2" Margin="0,0,8,0">
                                                 <TextBlock Text="{Binding DateText}"
-                                                           FontSize="16"
+                                                           FontSize="17"
                                                            FontWeight="SemiBold" />
                                                 <TextBlock Text="{Binding SessionCountText}"
                                                            Classes="caption"
-                                                           Margin="0,2,0,0" />
+                                                           Margin="0,1,0,0" />
                                             </StackPanel>
-                                            <TextBlock Grid.Column="1"
+                                            <TextBlock Grid.Column="2"
                                                        Text="{Binding TotalText}"
-                                                       FontSize="15"
+                                                       FontSize="16"
                                                        FontWeight="SemiBold"
                                                        VerticalAlignment="Top"
                                                        HorizontalAlignment="Right" />
                                         </Grid>
                                         <ItemsControl ItemsSource="{Binding Sessions}"
                                                       ItemTemplate="{StaticResource SessionRowTemplate}"
-                                                      Margin="0,6,0,0" />
+                                                      Margin="0,4,0,0" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -384,17 +435,5 @@
                         Margin="0,2,0,0" />
             </StackPanel>
         </ScrollViewer>
-
-        <Grid Grid.Row="2" Margin="24,8,24,14" ColumnDefinitions="*,Auto">
-            <TextBlock Text="{loc:Loc Key=PlatformsWindows}"
-                       Classes="caption"
-                       VerticalAlignment="Center" />
-            <Border Grid.Column="1" Classes="pill" Padding="10,5">
-                <TextBlock Text="{Binding HotkeyHintText}"
-                           FontFamily="{DynamicResource MonoFontFamily}"
-                           FontSize="11.5"
-                           Foreground="{DynamicResource TextSecondaryBrush}" />
-            </Border>
-        </Grid>
     </Grid>
 </Window>

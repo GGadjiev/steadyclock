@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Media;
 using SteadyClock.Desktop.Services;
 
 namespace SteadyClock.Desktop.Views;
@@ -9,6 +10,13 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         InputFocusHelper.Attach(this);
+
+        var timerText = this.FindControl<TextBlock>("TimerTextBlock");
+        if (timerText is not null)
+        {
+            TextOptions.SetTextHintingMode(timerText, TextHintingMode.Strong);
+            TextOptions.SetTextRenderingMode(timerText, TextRenderingMode.SubpixelAntialias);
+        }
 
         var timerScroll = this.FindControl<ScrollViewer>("TimerScroll");
         var timerContent = this.FindControl<StackPanel>("TimerContent");

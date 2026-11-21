@@ -7,14 +7,19 @@
         x:Class="SteadyClock.Desktop.Views.SettingsWindow"
         x:DataType="vm:SettingsViewModel"
         Title="{loc:Loc Key=SettingsTitle}"
-        Width="840"
-        Height="740"
-        MinWidth="700"
-        MinHeight="560"
+        Width="700"
+        Height="800"
+        MinWidth="600"
+        MinHeight="600"
         CanResize="True"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         Background="{DynamicResource AppBackgroundBrush}">
+    <Window.Styles>
+        <Style Selector="TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+    </Window.Styles>
     <Grid RowDefinitions="*,Auto,Auto" Margin="24,20,24,0">
         <Grid ColumnDefinitions="212,1,*">
             <StackPanel>
@@ -24,11 +29,14 @@
                          SelectedItem="{Binding SelectedSection}">
                     <ListBox.ItemTemplate>
                         <DataTemplate x:DataType="vm:SettingsSectionViewModel">
-                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                <PathIcon Width="17"
-                                          Height="17"
-                                          Data="{Binding IconData}"
-                                          Foreground="{Binding $parent[ListBoxItem].Foreground}" />
+                            <StackPanel Orientation="Horizontal" Spacing="11">
+                                <Path Width="19"
+                                      Height="19"
+                                      Stretch="Uniform"
+                                      Stroke="{Binding $parent[ListBoxItem].Foreground}"
+                                      StrokeThickness="1.5"
+                                      StrokeLineCap="Round"
+                                      Data="{Binding IconData}" />
                                 <TextBlock Text="{Binding Title}"
                                            VerticalAlignment="Center" />
                             </StackPanel>
@@ -129,9 +137,9 @@
                             <StackPanel Spacing="8">
                                 <TextBlock Text="{loc:Loc Key=IdleThresholdTitle}" Classes="section" />
                                 <TextBlock Text="{Binding IdleThresholdDisplay}"
-                                           FontSize="28"
+                                           FontSize="30"
                                            FontWeight="SemiBold"
-                                           Foreground="{DynamicResource AccentBrush}" />
+                                           Foreground="{DynamicResource AccentBorderBrush}" />
                                 <Slider Minimum="30"
                                         Maximum="3600"
                                         TickFrequency="30"
@@ -170,7 +178,9 @@
                                              GroupName="IdleDeduction"
                                              IsChecked="{Binding IdleFromLastActivity}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{loc:Loc Key=IdleDeductionLastActivityTitle}" />
+                                        <TextBlock Text="{loc:Loc Key=IdleDeductionLastActivityTitle}"
+                                                   FontSize="14.5"
+                                                   FontWeight="Medium" />
                                         <TextBlock Text="{loc:Loc Key=IdleDeductionLastActivityHint}" Classes="caption" />
                                     </StackPanel>
                                 </RadioButton>
@@ -178,7 +188,9 @@
                                              GroupName="IdleDeduction"
                                              IsChecked="{Binding IdleFromDetection}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{loc:Loc Key=IdleDeductionDetectionTitle}" />
+                                        <TextBlock Text="{loc:Loc Key=IdleDeductionDetectionTitle}"
+                                                   FontSize="14.5"
+                                                   FontWeight="Medium" />
                                         <TextBlock Text="{loc:Loc Key=IdleDeductionDetectionHint}" Classes="caption" />
                                     </StackPanel>
                                 </RadioButton>
@@ -217,7 +229,7 @@
                                            Classes="caption"
                                            Foreground="{DynamicResource DangerBrush}"
                                            IsVisible="{Binding !HotkeysSupported}" />
-                                <Grid ColumnDefinitions="*,260"
+                                <Grid ColumnDefinitions="*,200"
                                       RowDefinitions="Auto,Auto,Auto"
                                       RowSpacing="10"
                                       IsEnabled="{Binding HotkeysSupported}">
@@ -414,7 +426,8 @@
                 <Button Content="{Binding CancelButtonText}"
                         Command="{Binding CancelCommand}"
                         Classes="secondary"
-                        MinWidth="104" />
+                        MinWidth="104"
+                        Height="46" />
                 <Button Content="{Binding SaveButtonText}"
                         Command="{Binding SaveCommand}"
                         Classes="primary"

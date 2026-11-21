@@ -48,6 +48,8 @@ public sealed class SessionLineViewModel
     public bool IsProcess { get; }
     public bool IsActive { get; }
     public bool CanManage { get; }
+    public bool ShowTopConnector { get; init; } = true;
+    public bool ShowConnector { get; init; } = true;
     public string Badge { get; }
     public bool HasComment => !string.IsNullOrWhiteSpace(Comment);
     public bool HasBadge => !string.IsNullOrWhiteSpace(Badge);

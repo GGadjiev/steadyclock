@@ -1,4 +1,4 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:SteadyClock.Desktop.ViewModels"
         xmlns:loc="using:SteadyClock.Desktop.Resources"
@@ -6,75 +6,143 @@
         x:DataType="vm:SessionEditViewModel"
         Title="{Binding Title}"
         Width="520"
-        Height="660"
+        Height="640"
         CanResize="False"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
-        Background="{DynamicResource AppBackgroundBrush}">
-    <Border Classes="card"
-            Margin="16"
-            Padding="24,20,24,18">
-        <Grid RowDefinitions="*,Auto">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <StackPanel Spacing="14">
-                    <StackPanel Spacing="3">
-                        <TextBlock Text="{Binding Title}" Classes="h1" />
-                        <TextBlock Text="{Binding NewEntrySubtitle}" Classes="subtitle" />
-                    </StackPanel>
+        WindowDecorations="None"
+        TransparencyLevelHint="Transparent"
+        Background="Transparent">
+    <Border Background="{DynamicResource CardBackgroundBrush}"
+            BorderBrush="{DynamicResource CardBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="24"
+            Margin="20"
+            Padding="26,20,24,18"
+            BoxShadow="0 24 64 0 #33000000">
+        <Grid RowDefinitions="Auto,*,Auto">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+                <StackPanel Spacing="3">
+                    <TextBlock Text="{Binding Title}" Classes="h1" FontSize="28" />
+                    <TextBlock Text="{Binding NewEntrySubtitle}" Classes="subtitle" />
+                </StackPanel>
+                <Button Grid.Column="1"
+                        Classes="icon"
+                        Width="32"
+                        Height="32"
+                        VerticalAlignment="Top"
+                        Command="{Binding CancelCommand}"
+                        AutomationProperties.Name="{loc:Loc Key=Close}">
+                    <Path Width="14"
+                          Height="14"
+                          Stretch="Uniform"
+                          Stroke="{Binding $parent[Button].Foreground}"
+                          StrokeThickness="1.6"
+                          StrokeLineCap="Round"
+                          Data="M6,6L18,18 M18,6L6,18" />
+                </Button>
+            </Grid>
 
-                    <StackPanel Spacing="6">
-                        <TextBlock Text="{loc:Loc Key=DateLabel}" Classes="label" />
-                        <TextBox Text="{Binding DateText}"
-                                 PlaceholderText="{loc:Loc Key=DateFormatExample}"
-                                 AutomationProperties.Name="{loc:Loc Key=DateLabel}" />
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel Spacing="13">
+                    <StackPanel Spacing="7">
+                        <TextBlock Text="{loc:Loc Key=DateLabel}" Classes="label" FontSize="14.5" />
+                        <Grid>
+                            <TextBox Text="{Binding DateText}"
+                                     Padding="12,0,40,0"
+                                     PlaceholderText="{loc:Loc Key=DateFormatExample}"
+                                     AutomationProperties.Name="{loc:Loc Key=DateLabel}" />
+                            <Path Width="17"
+                                  Height="17"
+                                  Margin="0,0,13,0"
+                                  Stretch="Uniform"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  Stroke="{DynamicResource TextSecondaryBrush}"
+                                  StrokeThickness="1.5"
+                                  StrokeLineCap="Round"
+                                  IsHitTestVisible="False"
+                                  Data="M4,5.5H20V20.5H4V5.5 M8,3V7.5 M16,3V7.5 M4,9.5H20" />
+                        </Grid>
                     </StackPanel>
 
                     <Grid ColumnDefinitions="*,14,*">
-                        <StackPanel Spacing="6">
-                            <TextBlock Text="{loc:Loc Key=StartTimeLabel}" Classes="label" />
-                            <TextBox Text="{Binding StartTimeText}"
-                                     PlaceholderText="{loc:Loc Key=TimeFormatExample}"
-                                     AutomationProperties.Name="{loc:Loc Key=StartTimeLabel}" />
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="{loc:Loc Key=StartTimeLabel}" Classes="label" FontSize="14.5" />
+                            <Grid>
+                                <TextBox Text="{Binding StartTimeText}"
+                                         Padding="12,0,40,0"
+                                         PlaceholderText="{loc:Loc Key=TimeFormatExample}"
+                                         AutomationProperties.Name="{loc:Loc Key=StartTimeLabel}" />
+                                <Path Width="17"
+                                      Height="17"
+                                      Margin="0,0,13,0"
+                                      Stretch="Uniform"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Stroke="{DynamicResource TextSecondaryBrush}"
+                                      StrokeThickness="1.5"
+                                      StrokeLineCap="Round"
+                                      IsHitTestVisible="False"
+                                      Data="M12,2.5A9.5,9.5 0 1,0 12,21.5A9.5,9.5 0 1,0 12,2.5 M12,7V12L15.5,14" />
+                            </Grid>
                         </StackPanel>
-                        <StackPanel Grid.Column="2" Spacing="6">
-                            <TextBlock Text="{loc:Loc Key=EndTimeLabel}" Classes="label" />
-                            <TextBox Text="{Binding EndTimeText}"
-                                     PlaceholderText="{loc:Loc Key=TimeFormatExample}"
-                                     AutomationProperties.Name="{loc:Loc Key=EndTimeLabel}" />
+                        <StackPanel Grid.Column="2" Spacing="7">
+                            <TextBlock Text="{loc:Loc Key=EndTimeLabel}" Classes="label" FontSize="14.5" />
+                            <Grid>
+                                <TextBox Text="{Binding EndTimeText}"
+                                         Padding="12,0,40,0"
+                                         PlaceholderText="{loc:Loc Key=TimeFormatExample}"
+                                         AutomationProperties.Name="{loc:Loc Key=EndTimeLabel}" />
+                                <Path Width="17"
+                                      Height="17"
+                                      Margin="0,0,13,0"
+                                      Stretch="Uniform"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Stroke="{DynamicResource TextSecondaryBrush}"
+                                      StrokeThickness="1.5"
+                                      StrokeLineCap="Round"
+                                      IsHitTestVisible="False"
+                                      Data="M12,2.5A9.5,9.5 0 1,0 12,21.5A9.5,9.5 0 1,0 12,2.5 M12,7V12L15.5,14" />
+                            </Grid>
                         </StackPanel>
                     </Grid>
 
-                    <Border Background="{DynamicResource AccentSoftBrush}"
+                    <Border Background="{DynamicResource SageBrush}"
                             CornerRadius="12"
-                            Padding="14,11">
+                            Padding="15,10">
                         <Grid ColumnDefinitions="*,Auto">
                             <TextBlock Text="{loc:Loc Key=DurationLabel}"
-                                       FontSize="14"
+                                       FontSize="14.5"
                                        FontWeight="Medium"
+                                       Foreground="{DynamicResource SageForegroundBrush}"
                                        VerticalAlignment="Center" />
                             <TextBlock Grid.Column="1"
                                        Text="{Binding DurationValue}"
-                                       FontFamily="{DynamicResource MonoFontFamily}"
                                        FontSize="16"
-                                       FontWeight="SemiBold"
-                                       Foreground="{DynamicResource AccentBrush}"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource SageForegroundBrush}"
                                        VerticalAlignment="Center" />
                         </Grid>
                     </Border>
 
-                    <TextBlock Text="{Binding EntryHistoryNote}" Classes="caption" />
-                    <TextBlock Text="{loc:Loc Key=EndTimeHint}" Classes="caption" />
-                    <TextBlock Text="{Binding AutoConversionNote}"
-                               Classes="caption"
-                               IsVisible="{Binding IsAutomaticExisting}" />
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="{Binding EntryHistoryNote}" Classes="caption" />
+                        <TextBlock Text="{Binding AutoConversionNote}"
+                                   Classes="caption"
+                                   IsVisible="{Binding IsAutomaticExisting}" />
+                    </StackPanel>
 
-                    <StackPanel Spacing="6">
-                        <TextBlock Text="{loc:Loc Key=CommentLabel}" Classes="label" />
+                    <StackPanel Spacing="7">
+                        <TextBlock Text="{loc:Loc Key=CommentLabel}" Classes="label" FontSize="14.5" />
                         <TextBox Text="{Binding Comment}"
                                  AcceptsReturn="True"
                                  TextWrapping="Wrap"
-                                 MinHeight="96"
+                                 MinHeight="100"
                                  MaxLength="1000"
+                                 Padding="12,10"
+                                 VerticalContentAlignment="Top"
                                  PlaceholderText="{loc:Loc Key=CommentPlaceholderShort}"
                                  AutomationProperties.Name="{loc:Loc Key=CommentLabel}" />
                     </StackPanel>
@@ -85,23 +153,23 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <Border Grid.Row="1"
-                    BorderBrush="{DynamicResource DividerBrush}"
-                    BorderThickness="0,1,0,0"
-                    Padding="0,14,0,0"
-                    Margin="0,14,0,0">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-                    <Button Content="{Binding CancelButtonText}"
-                            Command="{Binding CancelCommand}"
-                            Classes="secondary"
-                            MinWidth="104" />
-                    <Button Content="{Binding SaveButtonText}"
-                            Command="{Binding SaveCommand}"
-                            Classes="primary"
-                            MinWidth="124"
-                            IsDefault="True" />
-                </StackPanel>
-            </Border>
+            <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="10"
+                        Margin="0,16,0,0">
+                <Button Content="{Binding CancelButtonText}"
+                        Command="{Binding CancelCommand}"
+                        Classes="secondary"
+                        MinWidth="112"
+                        Height="46"
+                        IsCancel="True" />
+                <Button Content="{Binding SaveButtonText}"
+                        Command="{Binding SaveCommand}"
+                        Classes="primary"
+                        MinWidth="132"
+                        IsDefault="True" />
+            </StackPanel>
         </Grid>
     </Border>
 </Window>

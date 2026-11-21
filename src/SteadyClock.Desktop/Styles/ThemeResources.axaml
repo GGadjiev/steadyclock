@@ -11,14 +11,20 @@
             <SolidColorBrush x:Key="TextTertiaryBrush">#8A9892</SolidColorBrush>
             <SolidColorBrush x:Key="AccentBrush">#1E5B54</SolidColorBrush>
             <SolidColorBrush x:Key="AccentHoverBrush">#174A45</SolidColorBrush>
+            <SolidColorBrush x:Key="AccentBorderBrush">#1E5B54</SolidColorBrush>
+            <SolidColorBrush x:Key="AccentBorderHoverBrush">#174A45</SolidColorBrush>
             <SolidColorBrush x:Key="AccentSoftBrush">#E7EFEA</SolidColorBrush>
             <SolidColorBrush x:Key="AccentForegroundBrush">#FFFFFF</SolidColorBrush>
             <SolidColorBrush x:Key="SageBrush">#A9C6BB</SolidColorBrush>
+            <SolidColorBrush x:Key="SageForegroundBrush">#1E5B54</SolidColorBrush>
+            <SolidColorBrush x:Key="BadgeBackgroundBrush">#DCE7E0</SolidColorBrush>
+            <SolidColorBrush x:Key="BadgeForegroundBrush">#52665F</SolidColorBrush>
             <SolidColorBrush x:Key="CoralBrush">#E08A6A</SolidColorBrush>
             <SolidColorBrush x:Key="InputBorderBrush">#E6E4DC</SolidColorBrush>
             <SolidColorBrush x:Key="InputBorderHoverBrush">#B9CEC5</SolidColorBrush>
             <SolidColorBrush x:Key="InputBackgroundBrush">#FFFFFF</SolidColorBrush>
             <SolidColorBrush x:Key="DividerBrush">#E6E4DC</SolidColorBrush>
+            <SolidColorBrush x:Key="TimelineBrush">#D8DDD7</SolidColorBrush>
             <SolidColorBrush x:Key="DangerBrush">#BC5B45</SolidColorBrush>
             <SolidColorBrush x:Key="DangerSoftBrush">#F8E7E0</SolidColorBrush>
             <SolidColorBrush x:Key="HoverSurfaceBrush">#E7EFEA</SolidColorBrush>
@@ -72,6 +78,23 @@
             <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver">#174A45</SolidColorBrush>
             <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver">#174A45</SolidColorBrush>
             <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver">#FFFFFF</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderTrackValueFill">#1E5B54</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderTrackValueFillPointerOver">#174A45</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderTrackValueFillPressed">#174A45</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderTrackFill">#D6DDD8</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderTrackFillPointerOver">#C5D2CB</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderTrackFillPressed">#C5D2CB</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderThumbBackground">#1E5B54</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderThumbBackgroundPointerOver">#174A45</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderThumbBackgroundPressed">#123C38</SolidColorBrush>
+            <SolidColorBrush x:Key="ScrollBarPanningThumbBackground">#C9D6CF</SolidColorBrush>
+            <SolidColorBrush x:Key="ScrollBarThumbFillPointerOver">#B7C9C0</SolidColorBrush>
+            <SolidColorBrush x:Key="ScrollBarThumbFillPressed">#A9C6BB</SolidColorBrush>
+            <SolidColorBrush x:Key="ScrollBarTrackFill">Transparent</SolidColorBrush>
+            <SolidColorBrush x:Key="ScrollBarTrackFillPointerOver">Transparent</SolidColorBrush>
+            <SolidColorBrush x:Key="ScrollBarTrackStroke">Transparent</SolidColorBrush>
+            <SolidColorBrush x:Key="ScrollBarTrackStrokePointerOver">Transparent</SolidColorBrush>
+            <x:Double x:Key="ScrollBarTrackBorderThemeThickness">0</x:Double>
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Dark">
@@ -82,16 +105,22 @@
             <SolidColorBrush x:Key="TextPrimaryBrush">#F3EFE4</SolidColorBrush>
             <SolidColorBrush x:Key="TextSecondaryBrush">#9DB0A8</SolidColorBrush>
             <SolidColorBrush x:Key="TextTertiaryBrush">#7C8E86</SolidColorBrush>
-            <SolidColorBrush x:Key="AccentBrush">#63C2B2</SolidColorBrush>
-            <SolidColorBrush x:Key="AccentHoverBrush">#7DD3C3</SolidColorBrush>
+            <SolidColorBrush x:Key="AccentBrush">#2F7A70</SolidColorBrush>
+            <SolidColorBrush x:Key="AccentHoverBrush">#3A8F84</SolidColorBrush>
+            <SolidColorBrush x:Key="AccentBorderBrush">#63C2B2</SolidColorBrush>
+            <SolidColorBrush x:Key="AccentBorderHoverBrush">#7DD3C3</SolidColorBrush>
             <SolidColorBrush x:Key="AccentSoftBrush">#1E2D28</SolidColorBrush>
-            <SolidColorBrush x:Key="AccentForegroundBrush">#0E1715</SolidColorBrush>
+            <SolidColorBrush x:Key="AccentForegroundBrush">#F3EFE4</SolidColorBrush>
             <SolidColorBrush x:Key="SageBrush">#A9C6BB</SolidColorBrush>
+            <SolidColorBrush x:Key="SageForegroundBrush">#0E1715</SolidColorBrush>
+            <SolidColorBrush x:Key="BadgeBackgroundBrush">#263A33</SolidColorBrush>
+            <SolidColorBrush x:Key="BadgeForegroundBrush">#A9C6BB</SolidColorBrush>
             <SolidColorBrush x:Key="CoralBrush">#E08A6A</SolidColorBrush>
             <SolidColorBrush x:Key="InputBorderBrush">#2A3A35</SolidColorBrush>
             <SolidColorBrush x:Key="InputBorderHoverBrush">#4A665C</SolidColorBrush>
             <SolidColorBrush x:Key="InputBackgroundBrush">#16221F</SolidColorBrush>
             <SolidColorBrush x:Key="DividerBrush">#2A3A35</SolidColorBrush>
+            <SolidColorBrush x:Key="TimelineBrush">#31443D</SolidColorBrush>
             <SolidColorBrush x:Key="DangerBrush">#E08A6A</SolidColorBrush>
             <SolidColorBrush x:Key="DangerSoftBrush">#32221D</SolidColorBrush>
             <SolidColorBrush x:Key="HoverSurfaceBrush">#1E2D28</SolidColorBrush>
@@ -103,15 +132,15 @@
             <SolidColorBrush x:Key="SwitchOffBrush">#34463F</SolidColorBrush>
             <SolidColorBrush x:Key="SwitchKnobBrush">#F3EFE4</SolidColorBrush>
 
-            <SolidColorBrush x:Key="StatusRunningBackgroundBrush">#1B3A33</SolidColorBrush>
-            <SolidColorBrush x:Key="StatusRunningForegroundBrush">#A8E6D9</SolidColorBrush>
-            <SolidColorBrush x:Key="StatusRunningDotBrush">#63C2B2</SolidColorBrush>
-            <SolidColorBrush x:Key="StatusPausedManualBackgroundBrush">#3A3020</SolidColorBrush>
-            <SolidColorBrush x:Key="StatusPausedManualForegroundBrush">#E8C98D</SolidColorBrush>
-            <SolidColorBrush x:Key="StatusPausedManualDotBrush">#D1A45E</SolidColorBrush>
-            <SolidColorBrush x:Key="StatusPausedIdleBackgroundBrush">#3A2620</SolidColorBrush>
-            <SolidColorBrush x:Key="StatusPausedIdleForegroundBrush">#F0B79E</SolidColorBrush>
-            <SolidColorBrush x:Key="StatusPausedIdleDotBrush">#E08A6A</SolidColorBrush>
+            <SolidColorBrush x:Key="StatusRunningBackgroundBrush">#63C2B2</SolidColorBrush>
+            <SolidColorBrush x:Key="StatusRunningForegroundBrush">#0E1715</SolidColorBrush>
+            <SolidColorBrush x:Key="StatusRunningDotBrush">#1E5B54</SolidColorBrush>
+            <SolidColorBrush x:Key="StatusPausedManualBackgroundBrush">#E8C98D</SolidColorBrush>
+            <SolidColorBrush x:Key="StatusPausedManualForegroundBrush">#0E1715</SolidColorBrush>
+            <SolidColorBrush x:Key="StatusPausedManualDotBrush">#7A5A22</SolidColorBrush>
+            <SolidColorBrush x:Key="StatusPausedIdleBackgroundBrush">#F0B79E</SolidColorBrush>
+            <SolidColorBrush x:Key="StatusPausedIdleForegroundBrush">#0E1715</SolidColorBrush>
+            <SolidColorBrush x:Key="StatusPausedIdleDotBrush">#8B5138</SolidColorBrush>
             <SolidColorBrush x:Key="StatusStoppedBackgroundBrush">#202A27</SolidColorBrush>
             <SolidColorBrush x:Key="StatusStoppedForegroundBrush">#9DB0A8</SolidColorBrush>
             <SolidColorBrush x:Key="StatusStoppedDotBrush">#7C8E86</SolidColorBrush>
@@ -145,9 +174,30 @@
             <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver">#7DD3C3</SolidColorBrush>
             <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver">#7DD3C3</SolidColorBrush>
             <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver">#0E1715</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderTrackValueFill">#63C2B2</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderTrackValueFillPointerOver">#7DD3C3</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderTrackValueFillPressed">#7DD3C3</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderTrackFill">#34463F</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderTrackFillPointerOver">#42574F</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderTrackFillPressed">#42574F</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderThumbBackground">#63C2B2</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderThumbBackgroundPointerOver">#7DD3C3</SolidColorBrush>
+            <SolidColorBrush x:Key="SliderThumbBackgroundPressed">#A8E6D9</SolidColorBrush>
+            <SolidColorBrush x:Key="ScrollBarPanningThumbBackground">#3B524A</SolidColorBrush>
+            <SolidColorBrush x:Key="ScrollBarThumbFillPointerOver">#4A655C</SolidColorBrush>
+            <SolidColorBrush x:Key="ScrollBarThumbFillPressed">#63C2B2</SolidColorBrush>
+            <SolidColorBrush x:Key="ScrollBarTrackFill">Transparent</SolidColorBrush>
+            <SolidColorBrush x:Key="ScrollBarTrackFillPointerOver">Transparent</SolidColorBrush>
+            <SolidColorBrush x:Key="ScrollBarTrackStroke">Transparent</SolidColorBrush>
+            <SolidColorBrush x:Key="ScrollBarTrackStrokePointerOver">Transparent</SolidColorBrush>
+            <x:Double x:Key="ScrollBarTrackBorderThemeThickness">0</x:Double>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
     <FontFamily x:Key="UiFontFamily">avares://SteadyClock/Assets/Fonts#Inter, Segoe UI, Segoe UI Variable</FontFamily>
     <FontFamily x:Key="MonoFontFamily">avares://SteadyClock/Assets/Fonts#JetBrains Mono, Cascadia Mono, Consolas</FontFamily>
+    <x:Double x:Key="SliderTrackThemeHeight">4</x:Double>
+    <x:Double x:Key="SliderHorizontalThumbWidth">18</x:Double>
+    <x:Double x:Key="SliderHorizontalThumbHeight">18</x:Double>
+    <CornerRadius x:Key="SliderThumbCornerRadius">9</CornerRadius>
 </ResourceDictionary>

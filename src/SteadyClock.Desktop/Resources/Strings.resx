@@ -592,9 +592,6 @@
   <data name="HistoryTotal" xml:space="preserve">
     <value>Всего</value>
   </data>
-  <data name="PlatformsWindows" xml:space="preserve">
-    <value>Windows</value>
-  </data>
   <data name="SettingsTimerSubtitle" xml:space="preserve">
     <value>Запуск и оформление</value>
   </data>
