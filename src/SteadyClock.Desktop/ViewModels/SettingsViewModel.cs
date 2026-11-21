@@ -49,7 +49,34 @@ public partial class SettingsViewModel : ObservableObject
     private bool _stopWhenClosed;
 
     [ObservableProperty]
-    private string _idleThresholdText;
+    private double _idleThresholdValue;
+
+    [ObservableProperty]
+    private bool _autoPauseOnIdle;
+
+    [ObservableProperty]
+    private bool _autoResumeOnActivity;
+
+    [ObservableProperty]
+    private bool _pauseOnScreenLock;
+
+    [ObservableProperty]
+    private bool _idleFromLastActivity;
+
+    [ObservableProperty]
+    private bool _idleFromDetection;
+
+    [ObservableProperty]
+    private bool _themeLight;
+
+    [ObservableProperty]
+    private bool _themeDark;
+
+    [ObservableProperty]
+    private bool _themeSystem;
+
+    [ObservableProperty]
+    private SettingsSectionViewModel _selectedSection = null!;
 
     [ObservableProperty]
     private bool _closeToTray;
@@ -151,7 +178,38 @@ public partial class SettingsViewModel : ObservableObject
                 IsRunning: false));
             SelectedProcess = ProcessOptions[0];
         }
-        IdleThresholdText = settings.IdleThresholdSeconds.ToString(CultureInfo.InvariantCulture);
+        IdleThresholdValue = settings.IdleThresholdSeconds;
+        AutoPauseOnIdle = settings.AutoPauseOnIdle;
+        AutoResumeOnActivity = settings.AutoResumeOnActivity;
+        PauseOnScreenLock = settings.PauseOnScreenLock;
+        IdleFromLastActivity = settings.IdleDeductionMode == IdleDeductionMode.FromLastActivity;
+        IdleFromDetection = !IdleFromLastActivity;
+        ThemeLight = settings.Theme == AppTheme.Light;
+        ThemeDark = settings.Theme == AppTheme.Dark;
+        ThemeSystem = settings.Theme == AppTheme.System;
+        if (!ThemeLight && !ThemeDark && !ThemeSystem)
+        {
+            ThemeLight = true;
+        }
+
+        Sections = new ObservableCollection<SettingsSectionViewModel>
+        {
+            new(SettingsSection.Timer, Strings.Get("SettingsSectionTimer"),
+                "M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"),
+            new(SettingsSection.TrackerMode, Strings.Get("SettingsSectionMode"),
+                "M4,4H20V20H4V4M6,6V18H18V6H6Z"),
+            new(SettingsSection.Idle, Strings.Get("SettingsSectionIdle"),
+                "M6,2H18V4H16V8L12,12L8,8V4H6V2M6,22V20H8V16L12,12L16,16V20H18V22H6Z"),
+            new(SettingsSection.Tray, Strings.Get("SettingsSectionTray"),
+                "M3,5H21V17H3V5M5,7V15H19V7H5M8,19H16V21H8V19Z"),
+            new(SettingsSection.Hotkeys, Strings.Get("SettingsSectionHotkeys"),
+                "M3,6H21V18H3V6M5,8V16H19V8H5M7,10H9V12H7V10M11,10H13V12H11V10M15,10H17V12H15V10M7,13H17V15H7V13Z"),
+            new(SettingsSection.Notifications, Strings.Get("SettingsSectionNotifications"),
+                "M12,2A2,2 0 0,1 14,4C14,4.55 13.78,5.05 13.41,5.41C16.1,6.3 18,8.8 18,12V16L20,18V19H4V18L6,16V12C6,8.8 7.9,6.3 10.59,5.41C10.22,5.05 10,4.55 10,4A2,2 0 0,1 12,2M12,22A2,2 0 0,1 10,20H14A2,2 0 0,1 12,22Z"),
+            new(SettingsSection.Reminders, Strings.Get("SettingsSectionReminders"),
+                "M12,2A7,7 0 0,0 5,9V13L3,15V16H21V15L19,13V9A7,7 0 0,0 12,2M12,22A2,2 0 0,0 14,20H10A2,2 0 0,0 12,22Z")
+        };
+        SelectedSection = Sections[0];
         CloseToTray = settings.CloseToTray;
         NotificationsEnabled = settings.Notifications.Enabled;
         ToastDurationText = settings.Notifications.ToastDurationSeconds.ToString(CultureInfo.InvariantCulture);
@@ -209,8 +267,34 @@ public partial class SettingsViewModel : ObservableObject
     public string CancelButtonText => Strings.Get("CancelButton");
     public ObservableCollection<NotificationRuleViewModel> Rules { get; }
     public ObservableCollection<ProcessOptionViewModel> ProcessOptions { get; }
+    public ObservableCollection<SettingsSectionViewModel> Sections { get; }
     public bool HotkeysSupported => _hotkeys.IsSupported;
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
+
+    public string IdleThresholdDisplay =>
+        TimeText.FormatDuration(TimeSpan.FromSeconds(IdleThresholdValue));
+
+    public bool IsTimerSection => SelectedSection?.Section == SettingsSection.Timer;
+    public bool IsTrackerModeSection => SelectedSection?.Section == SettingsSection.TrackerMode;
+    public bool IsIdleSection => SelectedSection?.Section == SettingsSection.Idle;
+    public bool IsTraySection => SelectedSection?.Section == SettingsSection.Tray;
+    public bool IsHotkeysSection => SelectedSection?.Section == SettingsSection.Hotkeys;
+    public bool IsNotificationsSection => SelectedSection?.Section == SettingsSection.Notifications;
+    public bool IsRemindersSection => SelectedSection?.Section == SettingsSection.Reminders;
+
+    partial void OnIdleThresholdValueChanged(double value) =>
+        OnPropertyChanged(nameof(IdleThresholdDisplay));
+
+    partial void OnSelectedSectionChanged(SettingsSectionViewModel value)
+    {
+        OnPropertyChanged(nameof(IsTimerSection));
+        OnPropertyChanged(nameof(IsTrackerModeSection));
+        OnPropertyChanged(nameof(IsIdleSection));
+        OnPropertyChanged(nameof(IsTraySection));
+        OnPropertyChanged(nameof(IsHotkeysSection));
+        OnPropertyChanged(nameof(IsNotificationsSection));
+        OnPropertyChanged(nameof(IsRemindersSection));
+    }
 
     partial void OnErrorMessageChanged(string value) => OnPropertyChanged(nameof(HasError));
 
@@ -225,8 +309,7 @@ public partial class SettingsViewModel : ObservableObject
         }
 
         ErrorMessage = string.Empty;
-        if (!int.TryParse(IdleThresholdText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var idle) ||
-            !int.TryParse(ToastDurationText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var toastDuration) ||
+        if (!int.TryParse(ToastDurationText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var toastDuration) ||
             !int.TryParse(ForgotTimerAfterText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var after) ||
             !int.TryParse(ReminderRepeatText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var repeat))
         {
@@ -258,7 +341,18 @@ public partial class SettingsViewModel : ObservableObject
             return;
         }
 
-        settings.IdleThresholdSeconds = idle;
+        settings.IdleThresholdSeconds = Math.Clamp((int)Math.Round(IdleThresholdValue), 30, 3600);
+        settings.AutoPauseOnIdle = AutoPauseOnIdle;
+        settings.AutoResumeOnActivity = AutoResumeOnActivity;
+        settings.PauseOnScreenLock = PauseOnScreenLock;
+        settings.IdleDeductionMode = IdleFromDetection
+            ? IdleDeductionMode.FromDetection
+            : IdleDeductionMode.FromLastActivity;
+        settings.Theme = ThemeDark
+            ? AppTheme.Dark
+            : ThemeSystem
+                ? AppTheme.System
+                : AppTheme.Light;
         settings.CloseToTray = CloseToTray;
         settings.RemindersEnabled = RemindersEnabled;
         settings.ForgotTimerReminderEnabled = ForgotTimerReminderEnabled;
@@ -336,6 +430,7 @@ public partial class SettingsViewModel : ObservableObject
         {
             await _settingsStore.SaveAsync(settings);
             _controller.UpdateSettings(settings);
+            ThemeManager.Apply(settings.Theme);
             CloseRequested?.Invoke(true);
         }
         catch (Exception)
@@ -417,9 +512,7 @@ public partial class SettingsViewModel : ObservableObject
         ProcessOptionViewModel left,
         ProcessOptionViewModel right)
     {
-        var comparison = OperatingSystem.IsLinux()
-            ? StringComparison.Ordinal
-            : StringComparison.OrdinalIgnoreCase;
+        var comparison = StringComparison.OrdinalIgnoreCase;
 
         if (!string.IsNullOrWhiteSpace(left.Path) &&
             !string.IsNullOrWhiteSpace(right.Path) &&

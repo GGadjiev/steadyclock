@@ -1,4 +1,4 @@
-name: cross-platform
+name: windows
 
 on:
   push:
@@ -11,17 +11,9 @@ on:
       - feature/cross-platform
 
 jobs:
-  build-and-test:
-    name: Avalonia (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - windows-latest
-          - ubuntu-latest
-          - macos-latest
-
+  avalonia:
+    name: Avalonia (windows)
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -37,7 +29,7 @@ jobs:
       - name: Run core tests
         run: dotnet test tests/MyTimeTracker.Tests/MyTimeTracker.Tests.csproj -c Release
 
-  wpf-windows:
+  wpf:
     name: WPF (windows)
     runs-on: windows-latest
     steps:

@@ -18,11 +18,7 @@ public interface IProcessCatalog
         CancellationToken cancellationToken = default);
 }
 
-/// <summary>
-/// Local process discovery. Windows/macOS use System.Diagnostics; Linux reads
-/// /proc so that regular native packages work without extra permissions.
-/// Flatpak/Snap sandboxes may hide host processes.
-/// </summary>
+/// <summary>Windows process discovery for the application-triggered mode.</summary>
 public sealed class ProcessCatalog : IProcessCatalog
 {
     public Task<IReadOnlyList<RunningProcessInfo>> GetRunningProcessesAsync(
@@ -30,10 +26,7 @@ public sealed class ProcessCatalog : IProcessCatalog
     {
         return Task.Run(() =>
         {
-            var processes = OperatingSystem.IsLinux()
-                ? GetLinuxProcesses()
-                : GetDotNetProcesses();
-
+            var processes = GetWindowsProcesses();
             return (IReadOnlyList<RunningProcessInfo>)processes
                 .Where(process => !string.IsNullOrWhiteSpace(process.Name))
                 .GroupBy(
@@ -58,10 +51,8 @@ public sealed class ProcessCatalog : IProcessCatalog
                 return false;
             }
 
-            if (!OperatingSystem.IsLinux() && !string.IsNullOrWhiteSpace(target.Name))
+            if (!string.IsNullOrWhiteSpace(target.Name))
             {
-                // Fast path: ask Windows/macOS only for processes with the saved
-                // name instead of inspecting every process twice per second.
                 foreach (var process in Process.GetProcessesByName(target.Name))
                 {
                     try
@@ -76,33 +67,24 @@ public sealed class ProcessCatalog : IProcessCatalog
                     }
                     catch
                     {
-                        // MainModule access can be denied; try the full scan below.
+                        // Fall through to the full scan when MainModule is denied.
                     }
                     finally
                     {
                         process.Dispose();
                     }
                 }
-
-                if (string.IsNullOrWhiteSpace(target.Path))
-                {
-                    return false;
-                }
             }
 
-            foreach (var process in OperatingSystem.IsLinux()
-                         ? GetLinuxProcesses()
-                         : GetDotNetProcesses())
+            if (string.IsNullOrWhiteSpace(target.Path))
             {
-                if (!string.IsNullOrWhiteSpace(target.Path) &&
-                    !string.IsNullOrWhiteSpace(process.Path) &&
-                    PathsEqual(target.Path, process.Path))
-                {
-                    return true;
-                }
+                return false;
+            }
 
-                if (!string.IsNullOrWhiteSpace(target.Name) &&
-                    string.Equals(target.Name, process.Name, StringComparison.OrdinalIgnoreCase))
+            foreach (var process in GetWindowsProcesses())
+            {
+                if (!string.IsNullOrWhiteSpace(process.Path) &&
+                    PathsEqual(target.Path, process.Path))
                 {
                     return true;
                 }
@@ -112,7 +94,7 @@ public sealed class ProcessCatalog : IProcessCatalog
         }, cancellationToken);
     }
 
-    private static List<RunningProcessInfo> GetDotNetProcesses()
+    private static List<RunningProcessInfo> GetWindowsProcesses()
     {
         var result = new List<RunningProcessInfo>();
         foreach (var process in Process.GetProcesses())
@@ -128,13 +110,12 @@ public sealed class ProcessCatalog : IProcessCatalog
                 catch
                 {
                     // MainModule can be denied for system or other-user processes.
-                    // The process name is still a usable fallback.
                 }
 
                 result.Add(new RunningProcessInfo(
                     name,
                     path,
-                    BuildDisplayName(name, path)));
+                    string.IsNullOrWhiteSpace(path) ? name : $"{name} — {path}"));
             }
             catch
             {
@@ -149,60 +130,14 @@ public sealed class ProcessCatalog : IProcessCatalog
         return result;
     }
 
-    private static List<RunningProcessInfo> GetLinuxProcesses()
-    {
-        var result = new List<RunningProcessInfo>();
-        if (!Directory.Exists("/proc"))
-        {
-            return result;
-        }
-
-        foreach (var directory in Directory.EnumerateDirectories("/proc"))
-        {
-            if (!int.TryParse(Path.GetFileName(directory), out var pid))
-            {
-                continue;
-            }
-
-            try
-            {
-                var path = new FileInfo(Path.Combine(directory, "exe")).LinkTarget ?? string.Empty;
-
-                var nameFile = Path.Combine(directory, "comm");
-                var name = File.Exists(nameFile)
-                    ? File.ReadAllText(nameFile).Trim()
-                    : Path.GetFileName(path);
-                result.Add(new RunningProcessInfo(
-                    name,
-                    path,
-                    BuildDisplayName(name, path)));
-            }
-            catch
-            {
-                // Process exited or is not readable.
-            }
-        }
-
-        return result;
-    }
-
-    private static string BuildDisplayName(string name, string path)
-    {
-        return string.IsNullOrWhiteSpace(path)
-            ? name
-            : $"{name} — {path}";
-    }
-
     private static bool PathsEqual(string left, string right)
     {
         try
         {
-            var normalizedLeft = Path.GetFullPath(left);
-            var normalizedRight = Path.GetFullPath(right);
             return string.Equals(
-                normalizedLeft,
-                normalizedRight,
-                OperatingSystem.IsLinux() ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+                Path.GetFullPath(left),
+                Path.GetFullPath(right),
+                StringComparison.OrdinalIgnoreCase);
         }
         catch
         {

@@ -324,6 +324,26 @@ public sealed class TimelineAndValidationTests
     }
 
     [Fact]
+    public void Settings_clone_preserves_appearance_and_idle_preferences()
+    {
+        var settings = AppSettings.CreateDefault();
+        settings.Theme = AppTheme.Dark;
+        settings.AutoPauseOnIdle = false;
+        settings.AutoResumeOnActivity = false;
+        settings.PauseOnScreenLock = false;
+        settings.IdleDeductionMode = IdleDeductionMode.FromDetection;
+
+        var clone = settings.DeepClone();
+        settings.Theme = AppTheme.Light;
+
+        Assert.Equal(AppTheme.Dark, clone.Theme);
+        Assert.False(clone.AutoPauseOnIdle);
+        Assert.False(clone.AutoResumeOnActivity);
+        Assert.False(clone.PauseOnScreenLock);
+        Assert.Equal(IdleDeductionMode.FromDetection, clone.IdleDeductionMode);
+    }
+
+    [Fact]
     public void Notification_settings_validate_duration_and_quiet_hours()
     {
         var settings = AppSettings.CreateDefault();

@@ -346,6 +346,58 @@ public sealed class TimerEngineTests
     }
 
     [Fact]
+    public void Auto_pause_can_be_disabled()
+    {
+        var (engine, clocks) = CreateEngine();
+        engine.Start();
+        RunActive(engine, clocks, TimeSpan.FromMinutes(1));
+
+        for (var second = 0; second < 180; second++)
+        {
+            clocks.AdvanceIdle(TimeSpan.FromSeconds(1));
+            engine.Tick(IdleThreshold, autoPauseOnIdle: false);
+        }
+
+        Assert.Equal(TimerStatus.Running, engine.Status);
+        Assert.InRange(engine.CurrentDuration.TotalMinutes, 3.99, 4.01);
+    }
+
+    [Fact]
+    public void Idle_detection_mode_keeps_time_until_detection()
+    {
+        var (engine, clocks) = CreateEngine();
+        engine.Start();
+        RunActive(engine, clocks, TimeSpan.FromMinutes(2));
+
+        for (var second = 0; second < 120; second++)
+        {
+            clocks.AdvanceIdle(TimeSpan.FromSeconds(1));
+            engine.Tick(
+                IdleThreshold,
+                idleDeductionMode: IdleDeductionMode.FromDetection);
+        }
+
+        Assert.Equal(TimerStatus.PausedIdle, engine.Status);
+        Assert.InRange(engine.CurrentDuration.TotalMinutes, 3.99, 4.01);
+    }
+
+    [Fact]
+    public void Auto_resume_can_be_disabled()
+    {
+        var (engine, clocks) = CreateEngine();
+        engine.Start();
+        RunActive(engine, clocks, TimeSpan.FromMinutes(1));
+        RunIdle(engine, clocks, TimeSpan.FromMinutes(2));
+
+        Assert.Equal(TimerStatus.PausedIdle, engine.Status);
+
+        clocks.ReturnFromIdle(TimeSpan.FromSeconds(1));
+        engine.Tick(IdleThreshold, autoResumeOnActivity: false);
+
+        Assert.Equal(TimerStatus.PausedIdle, engine.Status);
+    }
+
+    [Fact]
     public void Snapshot_while_running_keeps_segment_open_and_heartbeat_current()
     {
         var (engine, clocks) = CreateEngine();

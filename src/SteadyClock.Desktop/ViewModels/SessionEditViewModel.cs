@@ -33,6 +33,9 @@ public partial class SessionEditViewModel : ObservableObject
     private string _durationPreview = string.Empty;
 
     [ObservableProperty]
+    private string _durationValue = string.Empty;
+
+    [ObservableProperty]
     private string _errorMessage = string.Empty;
 
     [ObservableProperty]
@@ -110,13 +113,20 @@ public partial class SessionEditViewModel : ObservableObject
     public string AutoConversionNote => Strings.Get("AutoEditNote");
     public string SaveButtonText => Strings.Get("SaveEntry");
     public string CancelButtonText => Strings.Get("CancelButton");
+    public string NewEntrySubtitle => Strings.Get("NewEntrySubtitle");
+    public string EntryHistoryNote => Strings.Format("EntryHistoryNoteFormat", DateText);
     public string ExistingStatusLabel => IsAutomaticExisting
         ? Strings.Get("ManualBadge")
         : string.Empty;
 
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
 
-    partial void OnDateTextChanged(string value) => UpdatePreview();
+    partial void OnDateTextChanged(string value)
+    {
+        OnPropertyChanged(nameof(EntryHistoryNote));
+        UpdatePreview();
+    }
+
     partial void OnStartTimeTextChanged(string value) => UpdatePreview();
     partial void OnEndTimeTextChanged(string value) => UpdatePreview();
     partial void OnErrorMessageChanged(string value) => OnPropertyChanged(nameof(HasError));
@@ -213,9 +223,10 @@ public partial class SessionEditViewModel : ObservableObject
     {
         if (ExistingSessionId.HasValue && _existingDuration.HasValue && IsInitialRangeUnchanged())
         {
+            DurationValue = TimeText.FormatDuration(_existingDuration.Value);
             DurationPreview = Strings.Format(
                 "DurationFormat",
-                TimeText.FormatDuration(_existingDuration.Value));
+                DurationValue);
             return;
         }
 
@@ -225,6 +236,7 @@ public partial class SessionEditViewModel : ObservableObject
             startTime == endTime)
         {
             DurationPreview = string.Empty;
+            DurationValue = string.Empty;
             return;
         }
 
@@ -233,13 +245,15 @@ public partial class SessionEditViewModel : ObservableObject
             var start = TimeText.LocalToUtc(date, startTime, _timeZone);
             var endDate = endTime < startTime ? date.AddDays(1) : date;
             var end = TimeText.LocalToUtc(endDate, endTime, _timeZone);
+            DurationValue = TimeText.FormatDuration(end - start);
             DurationPreview = Strings.Format(
                 "DurationFormat",
-                TimeText.FormatDuration(end - start));
+                DurationValue);
         }
         catch (ArgumentException)
         {
             DurationPreview = Strings.Get("DstInvalidTime");
+            DurationValue = string.Empty;
         }
     }
 

@@ -17,6 +17,13 @@ public sealed class AppSettings
 
     // Idle detection
     public int IdleThresholdSeconds { get; set; } = 120;
+    public bool AutoPauseOnIdle { get; set; } = true;
+    public bool AutoResumeOnActivity { get; set; } = true;
+    public bool PauseOnScreenLock { get; set; } = true;
+    public IdleDeductionMode IdleDeductionMode { get; set; } = IdleDeductionMode.FromLastActivity;
+
+    // Appearance
+    public AppTheme Theme { get; set; } = AppTheme.Light;
 
     // Tray / startup
     public bool CloseToTray { get; set; } = true;
@@ -50,6 +57,11 @@ public sealed class AppSettings
         TrackerMode = TrackerMode,
         ProcessTrigger = ProcessTrigger.Clone(),
         IdleThresholdSeconds = IdleThresholdSeconds,
+        AutoPauseOnIdle = AutoPauseOnIdle,
+        AutoResumeOnActivity = AutoResumeOnActivity,
+        PauseOnScreenLock = PauseOnScreenLock,
+        IdleDeductionMode = IdleDeductionMode,
+        Theme = Theme,
         CloseToTray = CloseToTray,
         AutoStartWithWindows = AutoStartWithWindows,
         LaunchInTrayOnAutoStart = LaunchInTrayOnAutoStart,

@@ -86,6 +86,37 @@ public sealed class RepositoryTests : IDisposable
     }
 
     [Fact]
+    public async Task Repository_returns_all_sessions()
+    {
+        var repository = CreateRepository();
+        await repository.InitializeAsync();
+        var start = new DateTimeOffset(2026, 2, 4, 9, 0, 0, TimeSpan.Zero);
+        for (var index = 0; index < 2; index++)
+        {
+            var session = new TimeSession
+            {
+                StartUtc = start.AddHours(index),
+                EndUtc = start.AddHours(index).AddMinutes(10),
+                Source = SessionSource.Automatic,
+                State = TimerStatus.Stopped,
+                CreatedUtc = start.AddHours(index),
+                UpdatedUtc = start.AddHours(index).AddMinutes(10)
+            };
+            session.Segments.Add(new SessionSegment
+            {
+                StartUtc = session.StartUtc,
+                EndUtc = session.EndUtc,
+                DurationMs = 10 * 60_000,
+                CreatedUtc = session.StartUtc
+            });
+            await repository.SaveSessionAsync(session);
+        }
+
+        var all = await repository.GetAllSessionsAsync();
+        Assert.Equal(2, all.Count);
+    }
+
+    [Fact]
     public async Task Repository_uses_wal_foreign_keys_and_user_version()
     {
         var repository = CreateRepository();

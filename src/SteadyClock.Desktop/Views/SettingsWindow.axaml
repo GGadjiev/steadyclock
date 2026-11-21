@@ -7,177 +7,296 @@
         x:Class="SteadyClock.Desktop.Views.SettingsWindow"
         x:DataType="vm:SettingsViewModel"
         Title="{loc:Loc Key=SettingsTitle}"
-        Width="600"
+        Width="840"
         Height="740"
-        MinWidth="500"
-        MinHeight="500"
+        MinWidth="700"
+        MinHeight="560"
         CanResize="True"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         Background="{DynamicResource AppBackgroundBrush}">
     <Grid RowDefinitions="*,Auto,Auto" Margin="24,20,24,0">
-        <ScrollViewer x:Name="SettingsScroll" VerticalScrollBarVisibility="Auto">
-            <StackPanel x:Name="SettingsContent" Spacing="12" Margin="12,0,12,0">
-                <TextBlock Text="{loc:Loc Key=SettingsTitle}" FontSize="23" FontWeight="SemiBold" />
-
-                <Border Classes="card" Padding="16">
-                    <StackPanel Spacing="10">
-                        <TextBlock Text="{loc:Loc Key=SettingsSectionTimer}" Classes="section" />
-                        <CheckBox Content="{loc:Loc Key=AutoStartOnLaunch}"
-                                  IsChecked="{Binding AutoStartTimer}" />
-                    </StackPanel>
-                </Border>
-
-                <Border Classes="card" Padding="16">
-                    <StackPanel Spacing="10">
-                        <TextBlock Text="{loc:Loc Key=SettingsSectionMode}" Classes="section" />
-                        <CheckBox Content="{loc:Loc Key=UseProcessModeLabel}"
-                                  IsChecked="{Binding UseProcessMode}" />
-                        <StackPanel Spacing="8" IsEnabled="{Binding UseProcessMode}">
-                            <TextBlock Text="{loc:Loc Key=ProcessPickerLabel}" Classes="caption" />
-                            <Grid ColumnDefinitions="*,Auto">
-                                <ComboBox ItemsSource="{Binding ProcessOptions}"
-                                          SelectedItem="{Binding SelectedProcess}"
-                                          Height="38"
-                                          VerticalAlignment="Center"
-                                          HorizontalAlignment="Stretch"
-                                          AutomationProperties.Name="{loc:Loc Key=ProcessPickerLabel}">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:ProcessOptionViewModel">
-                                            <TextBlock Text="{Binding Label}"
-                                                       TextTrimming="CharacterEllipsis"
-                                                       MaxWidth="420" />
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
-                                <Button Grid.Column="1"
-                                        Classes="secondary"
-                                        Height="38"
-                                        Content="{loc:Loc Key=ProcessRefreshButton}"
-                                        Command="{Binding RefreshProcessesCommand}"
-                                        VerticalAlignment="Center"
-                                        Margin="8,0,0,0" />
-                            </Grid>
-                            <CheckBox Content="{loc:Loc Key=StopWhenClosedLabel}"
-                                      IsChecked="{Binding StopWhenClosed}" />
-                            <TextBlock Text="{loc:Loc Key=ProcessModeHint}"
-                                       Classes="caption"
-                                       TextWrapping="Wrap" />
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-
-                <Border Classes="card" Padding="16">
-                    <StackPanel Spacing="7">
-                        <TextBlock Text="{loc:Loc Key=SettingsSectionIdle}" Classes="section" />
-                        <TextBlock Text="{loc:Loc Key=IdleThresholdSecondsLabel}" Classes="caption" />
-                        <TextBox Text="{Binding IdleThresholdText}"
-                                 Width="120"
-                                 HorizontalAlignment="Left"
-                                 AutomationProperties.Name="{loc:Loc Key=IdleThresholdSecondsLabel}" />
-                        <TextBlock Text="{loc:Loc Key=IdleThresholdHint}" Classes="caption" />
-                    </StackPanel>
-                </Border>
-
-                <Border Classes="card" Padding="16">
-                    <StackPanel Spacing="10">
-                        <TextBlock Text="{loc:Loc Key=SettingsSectionTray}" Classes="section" />
-                        <CheckBox Content="{loc:Loc Key=CloseToTray}"
-                                  IsChecked="{Binding CloseToTray}" />
-                        <CheckBox Content="{loc:Loc Key=AutoStartWindows}"
-                                  IsChecked="{Binding AutoStartWithWindows}" />
-                        <CheckBox Content="{loc:Loc Key=StartInTrayAuto}"
-                                  IsChecked="{Binding LaunchInTrayOnAutoStart}"
-                                  IsEnabled="{Binding AutoStartWithWindows}" />
-                    </StackPanel>
-                </Border>
-
-                <Border Classes="card" Padding="16">
-                    <StackPanel Spacing="10">
-                        <TextBlock Text="{loc:Loc Key=SettingsSectionHotkeys}" Classes="section" />
-                        <TextBlock Text="{loc:Loc Key=HotkeysHint}"
-                                   Classes="caption"
-                                   TextWrapping="Wrap" />
-                        <TextBlock Text="{loc:Loc Key=HotkeysUnavailableHint}"
-                                   Classes="caption"
-                                   Foreground="#B45309"
-                                   TextWrapping="Wrap"
-                                   IsVisible="{Binding !HotkeysSupported}" />
-                        <Grid ColumnDefinitions="*,220"
-                              RowDefinitions="Auto,Auto,Auto"
-                              RowSpacing="8"
-                              IsEnabled="{Binding HotkeysSupported}">
-                            <TextBlock Text="{loc:Loc Key=HotkeyToggle}"
-                                       VerticalAlignment="Center" />
-                            <controls:HotkeyTextBox Grid.Column="1"
-                                                    MinHeight="38"
-                                                    Hotkey="{Binding ToggleHotkey}"
-                                                    AutomationProperties.Name="{loc:Loc Key=HotkeyToggle}" />
-                            <TextBlock Grid.Row="1"
-                                       Text="{loc:Loc Key=HotkeyStop}"
-                                       VerticalAlignment="Center" />
-                            <controls:HotkeyTextBox Grid.Row="1"
-                                                    Grid.Column="1"
-                                                    MinHeight="38"
-                                                    Hotkey="{Binding StopHotkey}"
-                                                    AutomationProperties.Name="{loc:Loc Key=HotkeyStop}" />
-                            <TextBlock Grid.Row="2"
-                                       Text="{loc:Loc Key=HotkeyShowHide}"
-                                       VerticalAlignment="Center" />
-                            <controls:HotkeyTextBox Grid.Row="2"
-                                                    Grid.Column="1"
-                                                    MinHeight="38"
-                                                    Hotkey="{Binding ShowHideHotkey}"
-                                                    AutomationProperties.Name="{loc:Loc Key=HotkeyShowHide}" />
-                        </Grid>
-                    </StackPanel>
-                </Border>
-
-                <Border Classes="card" Padding="16">
-                    <StackPanel Spacing="12">
-                        <TextBlock Text="{loc:Loc Key=SettingsSectionNotifications}" Classes="section" />
-                        <CheckBox Content="{loc:Loc Key=NotificationsEnabledLabel}"
-                                  IsChecked="{Binding NotificationsEnabled}" />
-
-                        <StackPanel Spacing="5">
-                            <TextBlock Text="{loc:Loc Key=NotificationDurationLabel}" Classes="caption" />
-                            <TextBox Text="{Binding ToastDurationText}"
-                                     Width="120"
-                                     HorizontalAlignment="Left"
-                                     AutomationProperties.Name="{loc:Loc Key=NotificationDurationLabel}" />
-                        </StackPanel>
-
-                        <CheckBox Content="{loc:Loc Key=QuietHoursEnabledLabel}"
-                                  IsChecked="{Binding QuietHoursEnabled}" />
-                        <StackPanel Orientation="Horizontal" Spacing="8" IsEnabled="{Binding QuietHoursEnabled}">
-                            <StackPanel Spacing="4">
-                                <TextBlock Text="{loc:Loc Key=QuietHoursRangeLabel}" Classes="caption" />
-                                <TextBox Text="{Binding QuietHoursStart}"
-                                         PlaceholderText="{loc:Loc Key=QuietHoursFormatHint}"
-                                         Width="92" />
+        <Grid ColumnDefinitions="212,1,*">
+            <StackPanel>
+                <TextBlock Text="{loc:Loc Key=SettingsTitle}" Classes="h1" Margin="2,0,0,16" />
+                <ListBox Classes="settingsNav"
+                         ItemsSource="{Binding Sections}"
+                         SelectedItem="{Binding SelectedSection}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SettingsSectionViewModel">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <PathIcon Width="17"
+                                          Height="17"
+                                          Data="{Binding IconData}"
+                                          Foreground="{Binding $parent[ListBoxItem].Foreground}" />
+                                <TextBlock Text="{Binding Title}"
+                                           VerticalAlignment="Center" />
                             </StackPanel>
-                            <StackPanel Spacing="4">
-                                <TextBlock Text="{loc:Loc Key=QuietHoursEndLabel}" Classes="caption" />
-                                <TextBox Text="{Binding QuietHoursEnd}"
-                                         PlaceholderText="{loc:Loc Key=QuietHoursFormatHint}"
-                                         Width="92" />
-                            </StackPanel>
-                        </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
 
-                        <TextBlock Text="{loc:Loc Key=NotificationSoundLabel}" Classes="caption" Margin="0,4,0,0" />
+            <Border Grid.Column="1"
+                    Width="1"
+                    Background="{DynamicResource DividerBrush}"
+                    Margin="0,4,0,4" />
+
+            <ScrollViewer x:Name="SettingsScroll"
+                          Grid.Column="2"
+                          Margin="18,0,0,0"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <StackPanel x:Name="SettingsContent" Spacing="12" Margin="0,0,12,16">
+                    <StackPanel IsVisible="{Binding IsTimerSection}">
+                        <TextBlock Text="{loc:Loc Key=SettingsSectionTimer}" Classes="h1" />
+                        <TextBlock Text="{loc:Loc Key=SettingsTimerSubtitle}" Classes="subtitle" Margin="0,4,0,14" />
+
+                        <Border Classes="card" Padding="16" Margin="0,0,0,12">
+                            <CheckBox Classes="toggle"
+                                      Content="{loc:Loc Key=AutoStartOnLaunch}"
+                                      IsChecked="{Binding AutoStartTimer}" />
+                        </Border>
+
+                        <Border Classes="card" Padding="16">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="{loc:Loc Key=ThemeLabel}" Classes="section" />
+                                <RadioButton Classes="option"
+                                             GroupName="Theme"
+                                             Content="{loc:Loc Key=ThemeSystem}"
+                                             IsChecked="{Binding ThemeSystem}" />
+                                <RadioButton Classes="option"
+                                             GroupName="Theme"
+                                             Content="{loc:Loc Key=ThemeLight}"
+                                             IsChecked="{Binding ThemeLight}" />
+                                <RadioButton Classes="option"
+                                             GroupName="Theme"
+                                             Content="{loc:Loc Key=ThemeDark}"
+                                             IsChecked="{Binding ThemeDark}" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel IsVisible="{Binding IsTrackerModeSection}">
+                        <TextBlock Text="{loc:Loc Key=SettingsSectionMode}" Classes="h1" />
+                        <TextBlock Text="{loc:Loc Key=SettingsModeSubtitle}" Classes="subtitle" Margin="0,4,0,14" />
+
+                        <Border Classes="card" Padding="16">
+                            <StackPanel Spacing="12">
+                                <CheckBox Classes="toggle"
+                                          Content="{loc:Loc Key=UseProcessModeLabel}"
+                                          IsChecked="{Binding UseProcessMode}" />
+                                <StackPanel Spacing="8" IsEnabled="{Binding UseProcessMode}">
+                                    <TextBlock Text="{loc:Loc Key=ProcessPickerLabel}" Classes="caption" />
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <ComboBox ItemsSource="{Binding ProcessOptions}"
+                                                  SelectedItem="{Binding SelectedProcess}"
+                                                  Height="42"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Stretch"
+                                                  AutomationProperties.Name="{loc:Loc Key=ProcessPickerLabel}">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:ProcessOptionViewModel">
+                                                    <TextBlock Text="{Binding Label}"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               MaxWidth="420" />
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <Button Grid.Column="1"
+                                                Classes="secondary"
+                                                Height="42"
+                                                Content="{loc:Loc Key=ProcessRefreshButton}"
+                                                Command="{Binding RefreshProcessesCommand}"
+                                                VerticalAlignment="Center"
+                                                Margin="8,0,0,0" />
+                                    </Grid>
+                                    <CheckBox Classes="toggle"
+                                              Content="{loc:Loc Key=StopWhenClosedLabel}"
+                                              IsChecked="{Binding StopWhenClosed}" />
+                                    <TextBlock Text="{loc:Loc Key=ProcessModeHint}"
+                                               Classes="caption" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel IsVisible="{Binding IsIdleSection}">
+                        <TextBlock Text="{loc:Loc Key=SettingsSectionIdle}" Classes="h1" />
+                        <TextBlock Text="{loc:Loc Key=SettingsIdleSubtitle}" Classes="subtitle" Margin="0,4,0,14" />
+
+                        <Border Classes="card" Padding="18" Margin="0,0,0,12">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="{loc:Loc Key=IdleThresholdTitle}" Classes="section" />
+                                <TextBlock Text="{Binding IdleThresholdDisplay}"
+                                           FontSize="28"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource AccentBrush}" />
+                                <Slider Minimum="30"
+                                        Maximum="3600"
+                                        TickFrequency="30"
+                                        IsSnapToTickEnabled="True"
+                                        Value="{Binding IdleThresholdValue}"
+                                        Margin="0,4,0,0" />
+                                <Grid ColumnDefinitions="*,*">
+                                    <TextBlock Text="{loc:Loc Key=IdleRangeMin}" Classes="caption" />
+                                    <TextBlock Grid.Column="1"
+                                               Text="{loc:Loc Key=IdleRangeMax}"
+                                               Classes="caption"
+                                               HorizontalAlignment="Right" />
+                                </Grid>
+                                <TextBlock Text="{loc:Loc Key=IdleThresholdHint}" Classes="caption" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="card" Padding="16" Margin="0,0,0,12">
+                            <StackPanel Spacing="14">
+                                <CheckBox Classes="toggle"
+                                          Content="{loc:Loc Key=IdlePauseToggle}"
+                                          IsChecked="{Binding AutoPauseOnIdle}" />
+                                <CheckBox Classes="toggle"
+                                          Content="{loc:Loc Key=IdleResumeToggle}"
+                                          IsChecked="{Binding AutoResumeOnActivity}" />
+                                <CheckBox Classes="toggle"
+                                          Content="{loc:Loc Key=IdleLockToggle}"
+                                          IsChecked="{Binding PauseOnScreenLock}" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="card" Padding="16">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="{loc:Loc Key=IdleDeductionTitle}" Classes="section" />
+                                <RadioButton Classes="option"
+                                             GroupName="IdleDeduction"
+                                             IsChecked="{Binding IdleFromLastActivity}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{loc:Loc Key=IdleDeductionLastActivityTitle}" />
+                                        <TextBlock Text="{loc:Loc Key=IdleDeductionLastActivityHint}" Classes="caption" />
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton Classes="option"
+                                             GroupName="IdleDeduction"
+                                             IsChecked="{Binding IdleFromDetection}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{loc:Loc Key=IdleDeductionDetectionTitle}" />
+                                        <TextBlock Text="{loc:Loc Key=IdleDeductionDetectionHint}" Classes="caption" />
+                                    </StackPanel>
+                                </RadioButton>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel IsVisible="{Binding IsTraySection}">
+                        <TextBlock Text="{loc:Loc Key=SettingsSectionTray}" Classes="h1" />
+                        <TextBlock Text="{loc:Loc Key=SettingsTraySubtitle}" Classes="subtitle" Margin="0,4,0,14" />
+
+                        <Border Classes="card" Padding="16">
+                            <StackPanel Spacing="14">
+                                <CheckBox Classes="toggle"
+                                          Content="{loc:Loc Key=CloseToTray}"
+                                          IsChecked="{Binding CloseToTray}" />
+                                <CheckBox Classes="toggle"
+                                          Content="{loc:Loc Key=AutoStartWindows}"
+                                          IsChecked="{Binding AutoStartWithWindows}" />
+                                <CheckBox Classes="toggle"
+                                          Content="{loc:Loc Key=StartInTrayAuto}"
+                                          IsChecked="{Binding LaunchInTrayOnAutoStart}"
+                                          IsEnabled="{Binding AutoStartWithWindows}" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel IsVisible="{Binding IsHotkeysSection}">
+                        <TextBlock Text="{loc:Loc Key=SettingsSectionHotkeys}" Classes="h1" />
+                        <TextBlock Text="{loc:Loc Key=SettingsHotkeysSubtitle}" Classes="subtitle" Margin="0,4,0,14" />
+
+                        <Border Classes="card" Padding="18">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="{loc:Loc Key=HotkeysHint}" Classes="caption" />
+                                <TextBlock Text="{loc:Loc Key=HotkeysUnavailableHint}"
+                                           Classes="caption"
+                                           Foreground="{DynamicResource DangerBrush}"
+                                           IsVisible="{Binding !HotkeysSupported}" />
+                                <Grid ColumnDefinitions="*,260"
+                                      RowDefinitions="Auto,Auto,Auto"
+                                      RowSpacing="10"
+                                      IsEnabled="{Binding HotkeysSupported}">
+                                    <TextBlock Text="{loc:Loc Key=HotkeyToggle}" VerticalAlignment="Center" />
+                                    <controls:HotkeyTextBox Grid.Column="1"
+                                                            MinHeight="42"
+                                                            Hotkey="{Binding ToggleHotkey}"
+                                                            AutomationProperties.Name="{loc:Loc Key=HotkeyToggle}" />
+                                    <TextBlock Grid.Row="1"
+                                               Text="{loc:Loc Key=HotkeyStop}"
+                                               VerticalAlignment="Center" />
+                                    <controls:HotkeyTextBox Grid.Row="1"
+                                                            Grid.Column="1"
+                                                            MinHeight="42"
+                                                            Hotkey="{Binding StopHotkey}"
+                                                            AutomationProperties.Name="{loc:Loc Key=HotkeyStop}" />
+                                    <TextBlock Grid.Row="2"
+                                               Text="{loc:Loc Key=HotkeyShowHide}"
+                                               VerticalAlignment="Center" />
+                                    <controls:HotkeyTextBox Grid.Row="2"
+                                                            Grid.Column="1"
+                                                            MinHeight="42"
+                                                            Hotkey="{Binding ShowHideHotkey}"
+                                                            AutomationProperties.Name="{loc:Loc Key=HotkeyShowHide}" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel IsVisible="{Binding IsNotificationsSection}">
+                        <TextBlock Text="{loc:Loc Key=SettingsSectionNotifications}" Classes="h1" />
+                        <TextBlock Text="{loc:Loc Key=SettingsNotificationsSubtitle}" Classes="subtitle" Margin="0,4,0,14" />
+
+                        <Border Classes="card" Padding="16" Margin="0,0,0,12">
+                            <StackPanel Spacing="12">
+                                <CheckBox Classes="toggle"
+                                          Content="{loc:Loc Key=NotificationsEnabledLabel}"
+                                          IsChecked="{Binding NotificationsEnabled}" />
+                                <StackPanel Spacing="5">
+                                    <TextBlock Text="{loc:Loc Key=NotificationDurationLabel}" Classes="caption" />
+                                    <TextBox Text="{Binding ToastDurationText}"
+                                             Width="120"
+                                             HorizontalAlignment="Left"
+                                             AutomationProperties.Name="{loc:Loc Key=NotificationDurationLabel}" />
+                                </StackPanel>
+                                <CheckBox Classes="toggle"
+                                          Content="{loc:Loc Key=QuietHoursEnabledLabel}"
+                                          IsChecked="{Binding QuietHoursEnabled}" />
+                                <StackPanel Orientation="Horizontal" Spacing="8" IsEnabled="{Binding QuietHoursEnabled}">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="{loc:Loc Key=QuietHoursRangeLabel}" Classes="caption" />
+                                        <TextBox Text="{Binding QuietHoursStart}"
+                                                 PlaceholderText="{loc:Loc Key=QuietHoursFormatHint}"
+                                                 Width="92" />
+                                    </StackPanel>
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="{loc:Loc Key=QuietHoursEndLabel}" Classes="caption" />
+                                        <TextBox Text="{Binding QuietHoursEnd}"
+                                                 PlaceholderText="{loc:Loc Key=QuietHoursFormatHint}"
+                                                 Width="92" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Text="{loc:Loc Key=NotificationSoundLabel}" Classes="section" Margin="2,2,0,8" />
                         <ItemsControl ItemsSource="{Binding Rules}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:NotificationRuleViewModel">
-                                    <Border Background="#F7FAF8"
-                                            BorderBrush="{DynamicResource DividerBrush}"
+                                    <Border Background="{DynamicResource SurfaceBrush}"
+                                            BorderBrush="{DynamicResource CardBorderBrush}"
                                             BorderThickness="1"
-                                            CornerRadius="9"
-                                            Padding="10"
-                                            Margin="0,0,0,6">
+                                            CornerRadius="14"
+                                            Padding="14"
+                                            Margin="0,0,0,8">
                                         <Grid ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto,Auto">
                                             <TextBlock Grid.Row="0" Grid.Column="0"
                                                        Text="{Binding Title}"
-                                                       FontSize="12.5"
+                                                       FontSize="13.5"
                                                        FontWeight="SemiBold"
                                                        VerticalAlignment="Center" />
                                             <CheckBox Grid.Row="0" Grid.Column="1"
@@ -188,8 +307,8 @@
                                                       AutomationProperties.Name="{loc:Loc Key=NotificationSoundLabel}"
                                                       ItemsSource="{Binding SoundOptions}"
                                                       SelectedItem="{Binding SelectedSound}"
-                                                      Margin="0,7,0,0"
-                                                      MinWidth="170"
+                                                      Margin="0,8,0,0"
+                                                      MinWidth="190"
                                                       HorizontalAlignment="Left">
                                                 <ComboBox.ItemTemplate>
                                                     <DataTemplate x:DataType="svc:SoundPreset">
@@ -199,12 +318,12 @@
                                             </ComboBox>
                                             <Button Grid.Row="1" Grid.Column="1"
                                                     Classes="rowAction"
-                                                    Width="20"
-                                                    Height="20"
+                                                    Width="22"
+                                                    Height="22"
                                                     VerticalAlignment="Center"
                                                     Command="{Binding PreviewSoundCommand}"
                                                     AutomationProperties.Name="{loc:Loc Key=NotificationPreviewSound}"
-                                                    Margin="10,7,0,0">
+                                                    Margin="10,8,0,0">
                                                 <ToolTip.Tip>
                                                     <TextBlock Text="{loc:Loc Key=NotificationPreviewSound}" Foreground="White" />
                                                 </ToolTip.Tip>
@@ -218,64 +337,67 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </StackPanel>
-                </Border>
 
-                <Border Classes="card" Padding="16">
-                    <StackPanel Spacing="10">
-                        <TextBlock Text="{loc:Loc Key=SettingsSectionReminders}" Classes="section" />
-                        <CheckBox Content="{loc:Loc Key=RemindersEnabledLabel}"
-                                  IsChecked="{Binding RemindersEnabled}" />
-                        <StackPanel IsEnabled="{Binding RemindersEnabled}" Spacing="10">
-                            <CheckBox Content="{loc:Loc Key=ForgotTimerEnabledLabel}"
-                                      IsChecked="{Binding ForgotTimerReminderEnabled}" />
-                            <StackPanel Spacing="8" IsEnabled="{Binding ForgotTimerReminderEnabled}">
-                                <Grid ColumnDefinitions="*,120" RowDefinitions="Auto,Auto">
-                                    <TextBlock Grid.Row="0" Text="{loc:Loc Key=RemindAfterMinutesLabel}"
-                                               VerticalAlignment="Center" Margin="0,0,12,7" />
-                                    <TextBox Grid.Row="0" Grid.Column="1"
-                                             Text="{Binding ForgotTimerAfterText}"
-                                             Margin="0,0,0,7" />
-                                    <TextBlock Grid.Row="1" Text="{loc:Loc Key=RepeatNotFasterLabel}"
-                                               VerticalAlignment="Center" Margin="0,0,12,0" />
-                                    <TextBox Grid.Row="1" Grid.Column="1"
-                                             Text="{Binding ReminderRepeatText}"
-                                             AutomationProperties.Name="{loc:Loc Key=RepeatNotFasterLabel}" />
-                                </Grid>
+                    <StackPanel IsVisible="{Binding IsRemindersSection}">
+                        <TextBlock Text="{loc:Loc Key=SettingsSectionReminders}" Classes="h1" />
+                        <TextBlock Text="{loc:Loc Key=SettingsRemindersSubtitle}" Classes="subtitle" Margin="0,4,0,14" />
 
-                                <TextBlock Text="{loc:Loc Key=WorkDaysLabel}" Classes="caption" />
-                                <WrapPanel>
-                                    <CheckBox Content="{loc:Loc Key=Monday}" IsChecked="{Binding Monday}" Margin="0,0,12,6" />
-                                    <CheckBox Content="{loc:Loc Key=Tuesday}" IsChecked="{Binding Tuesday}" Margin="0,0,12,6" />
-                                    <CheckBox Content="{loc:Loc Key=Wednesday}" IsChecked="{Binding Wednesday}" Margin="0,0,12,6" />
-                                    <CheckBox Content="{loc:Loc Key=Thursday}" IsChecked="{Binding Thursday}" Margin="0,0,12,6" />
-                                    <CheckBox Content="{loc:Loc Key=Friday}" IsChecked="{Binding Friday}" Margin="0,0,12,6" />
-                                    <CheckBox Content="{loc:Loc Key=Saturday}" IsChecked="{Binding Saturday}" Margin="0,0,12,6" />
-                                    <CheckBox Content="{loc:Loc Key=Sunday}" IsChecked="{Binding Sunday}" Margin="0,0,0,6" />
-                                </WrapPanel>
+                        <Border Classes="card" Padding="16">
+                            <StackPanel Spacing="12">
+                                <CheckBox Classes="toggle"
+                                          Content="{loc:Loc Key=RemindersEnabledLabel}"
+                                          IsChecked="{Binding RemindersEnabled}" />
+                                <StackPanel IsEnabled="{Binding RemindersEnabled}" Spacing="12">
+                                    <CheckBox Classes="toggle"
+                                              Content="{loc:Loc Key=ForgotTimerEnabledLabel}"
+                                              IsChecked="{Binding ForgotTimerReminderEnabled}" />
+                                    <StackPanel Spacing="8" IsEnabled="{Binding ForgotTimerReminderEnabled}">
+                                        <Grid ColumnDefinitions="*,120" RowDefinitions="Auto,Auto">
+                                            <TextBlock Grid.Row="0" Text="{loc:Loc Key=RemindAfterMinutesLabel}"
+                                                       VerticalAlignment="Center" Margin="0,0,12,8" />
+                                            <TextBox Grid.Row="0" Grid.Column="1"
+                                                     Text="{Binding ForgotTimerAfterText}"
+                                                     Margin="0,0,0,8" />
+                                            <TextBlock Grid.Row="1" Text="{loc:Loc Key=RepeatNotFasterLabel}"
+                                                       VerticalAlignment="Center" Margin="0,0,12,0" />
+                                            <TextBox Grid.Row="1" Grid.Column="1"
+                                                     Text="{Binding ReminderRepeatText}" />
+                                        </Grid>
 
-                                <TextBlock Text="{loc:Loc Key=WorkHoursLabel}" Classes="caption" />
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <StackPanel Spacing="4">
-                                        <TextBlock Text="{loc:Loc Key=WorkStartLabel}" Classes="caption" />
-                                        <TextBox Text="{Binding WorkStart}"
-                                                 PlaceholderText="{loc:Loc Key=TimeFormatExample}"
-                                                 Width="92"
-                                                 AutomationProperties.Name="{loc:Loc Key=WorkStartLabel}" />
-                                    </StackPanel>
-                                    <StackPanel Spacing="4">
-                                        <TextBlock Text="{loc:Loc Key=WorkEndLabel}" Classes="caption" />
-                                        <TextBox Text="{Binding WorkEnd}"
-                                                 PlaceholderText="{loc:Loc Key=TimeFormatExample}"
-                                                 Width="92"
-                                                 AutomationProperties.Name="{loc:Loc Key=WorkEndLabel}" />
+                                        <TextBlock Text="{loc:Loc Key=WorkDaysLabel}" Classes="caption" Margin="0,4,0,0" />
+                                        <WrapPanel>
+                                            <CheckBox Content="{loc:Loc Key=Monday}" IsChecked="{Binding Monday}" Margin="0,0,12,6" />
+                                            <CheckBox Content="{loc:Loc Key=Tuesday}" IsChecked="{Binding Tuesday}" Margin="0,0,12,6" />
+                                            <CheckBox Content="{loc:Loc Key=Wednesday}" IsChecked="{Binding Wednesday}" Margin="0,0,12,6" />
+                                            <CheckBox Content="{loc:Loc Key=Thursday}" IsChecked="{Binding Thursday}" Margin="0,0,12,6" />
+                                            <CheckBox Content="{loc:Loc Key=Friday}" IsChecked="{Binding Friday}" Margin="0,0,12,6" />
+                                            <CheckBox Content="{loc:Loc Key=Saturday}" IsChecked="{Binding Saturday}" Margin="0,0,12,6" />
+                                            <CheckBox Content="{loc:Loc Key=Sunday}" IsChecked="{Binding Sunday}" Margin="0,0,0,6" />
+                                        </WrapPanel>
+
+                                        <TextBlock Text="{loc:Loc Key=WorkHoursLabel}" Classes="caption" />
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="{loc:Loc Key=WorkStartLabel}" Classes="caption" />
+                                                <TextBox Text="{Binding WorkStart}"
+                                                         PlaceholderText="{loc:Loc Key=TimeFormatExample}"
+                                                         Width="92" />
+                                            </StackPanel>
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="{loc:Loc Key=WorkEndLabel}" Classes="caption" />
+                                                <TextBox Text="{Binding WorkEnd}"
+                                                         PlaceholderText="{loc:Loc Key=TimeFormatExample}"
+                                                         Width="92" />
+                                            </StackPanel>
+                                        </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
                             </StackPanel>
-                        </StackPanel>
+                        </Border>
                     </StackPanel>
-                </Border>
-            </StackPanel>
-        </ScrollViewer>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
 
         <Border Grid.Row="1"
                 Classes="error"
@@ -287,8 +409,7 @@
         <Border Grid.Row="2"
                 BorderBrush="{DynamicResource CardBorderBrush}"
                 BorderThickness="0,1,0,0"
-                Padding="0,14,0,14"
-                Margin="0,10,0,0">
+                Padding="0,14,0,14">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
                 <Button Content="{Binding CancelButtonText}"
                         Command="{Binding CancelCommand}"

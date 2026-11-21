@@ -3,9 +3,15 @@
              x:Class="SteadyClock.Desktop.App"
              Name="SteadyClock"
              RequestedThemeVariant="Light">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://SteadyClock/Styles/ThemeResources.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://SteadyClock/Styles/AppStyles.axaml" />
     </Application.Styles>
 </Application>
-

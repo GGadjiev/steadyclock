@@ -41,6 +41,10 @@ public sealed class SqliteTimeSessionRepository : ITimeSessionRepository
         await RunReadAsync(() => GetSessionsOverlappingCore(rangeStartUtc, rangeEndUtc), cancellationToken)
             .ConfigureAwait(false);
 
+    public async Task<IReadOnlyList<TimeSession>> GetAllSessionsAsync(
+        CancellationToken cancellationToken = default) =>
+        await RunReadAsync(GetAllSessionsCore, cancellationToken).ConfigureAwait(false);
+
     public async Task<long> SaveSessionAsync(
         TimeSession session,
         CancellationToken cancellationToken = default)
@@ -151,6 +155,21 @@ public sealed class SqliteTimeSessionRepository : ITimeSessionRepository
             """;
         command.Parameters.AddWithValue("$rangeStart", ToIso(rangeStartUtc));
         command.Parameters.AddWithValue("$rangeEnd", ToIso(rangeEndUtc));
+        var sessions = ReadSessions(connection, command);
+        LoadSegments(connection, sessions);
+        return sessions;
+    }
+
+    private List<TimeSession> GetAllSessionsCore()
+    {
+        using var connection = OpenConnection();
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT id, start_utc, end_utc, comment, source, state,
+                   last_heartbeat_utc, created_utc, updated_utc
+            FROM sessions
+            ORDER BY start_utc DESC;
+            """;
         var sessions = ReadSessions(connection, command);
         LoadSegments(connection, sessions);
         return sessions;

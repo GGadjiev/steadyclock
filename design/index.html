@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SteadyClock — Quiet Focus</title>
+  <style>
+    :root {
+      --porcelain: #f5f2ea;
+      --surface: #ffffff;
+      --ink: #18211f;
+      --muted: #6f7e78;
+      --pine: #1e5b54;
+      --pine-hover: #174a45;
+      --sage: #a9c6bb;
+      --sage-soft: #e7efea;
+      --coral: #e08a6a;
+      --border: #e6e4dc;
+      --dark-bg: #0e1715;
+      --dark-surface: #16221f;
+      --dark-text: #f3efe4;
+      --dark-muted: #9db0a8;
+      --mint: #63c2b2;
+      --radius: 24px;
+      --shadow: 0 24px 64px rgba(24, 33, 31, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--porcelain);
+      color: var(--ink);
+      font-family: Inter, Manrope, "Segoe UI", system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--pine); }
+
+    .page {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 48px 28px 80px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: 48px;
+      align-items: center;
+      padding: 24px 0 56px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .mark {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      background: var(--pine);
+      position: relative;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 10px 24px rgba(30, 91, 84, 0.20);
+      flex: 0 0 auto;
+    }
+
+    .mark::before {
+      content: "";
+      width: 34px;
+      height: 34px;
+      border: 2px solid #f5f2ea;
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .mark::after {
+      content: "";
+      width: 2px;
+      height: 15px;
+      background: #f5f2ea;
+      position: absolute;
+      top: 14px;
+      left: 28px;
+      transform-origin: bottom center;
+      transform: rotate(32deg);
+      border-radius: 2px;
+    }
+
+    .brand-name {
+      font-size: 26px;
+      font-weight: 650;
+      letter-spacing: -0.03em;
+    }
+
+    .beta {
+      display: inline-block;
+      margin-left: 10px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      vertical-align: middle;
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: clamp(38px, 5vw, 64px);
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+      font-weight: 650;
+      max-width: 11ch;
+    }
+
+    .lead {
+      margin: 0 0 28px;
+      max-width: 54ch;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .pill {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.55);
+      color: var(--pine);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .hero-visual {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      transform: rotate(1.2deg);
+    }
+
+    .hero-visual img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+    }
+
+    .section {
+      padding: 56px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 34px);
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+      font-weight: 650;
+    }
+
+    .section-note {
+      margin: 0;
+      max-width: 48ch;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: 0 14px 36px rgba(24, 33, 31, 0.06);
+    }
+
+    .card.wide {
+      grid-column: 1 / -1;
+    }
+
+    .card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+      background: var(--porcelain);
+    }
+
+    .caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: baseline;
+      padding: 14px 6px 4px;
+    }
+
+    .caption strong {
+      font-size: 15px;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+
+    .caption span {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .swatch {
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .swatch-color {
+      height: 118px;
+    }
+
+    .swatch-meta {
+      padding: 12px 14px 14px;
+    }
+
+    .swatch-name {
+      font-size: 14px;
+      font-weight: 650;
+      margin-bottom: 2px;
+    }
+
+    .swatch-hex {
+      color: var(--muted);
+      font-family: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+      font-size: 12px;
+    }
+
+    .type-specimen {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .type-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+
+    .timer-type {
+      font-family: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+      font-size: clamp(44px, 7vw, 86px);
+      line-height: 1;
+      letter-spacing: -0.06em;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+      margin: 10px 0 18px;
+    }
+
+    .ui-type {
+      font-size: clamp(38px, 5vw, 58px);
+      line-height: 1.05;
+      letter-spacing: -0.045em;
+      font-weight: 600;
+      margin: 10px 0 18px;
+    }
+
+    .type-label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 650;
+    }
+
+    .type-note {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .dark-section {
+      background: var(--dark-bg);
+      color: var(--dark-text);
+      border-radius: 32px;
+      padding: 40px;
+      margin: 56px 0;
+      border: 1px solid #22332e;
+    }
+
+    .dark-section .section-note,
+    .dark-section .caption span {
+      color: var(--dark-muted);
+    }
+
+    .dark-section h2 {
+      color: var(--dark-text);
+    }
+
+    .dark-section .card {
+      background: var(--dark-surface);
+      border-color: #2a3a35;
+      box-shadow: none;
+    }
+
+    .dark-section .card img {
+      background: #0b1210;
+    }
+
+    .dark-section .caption strong {
+      color: var(--dark-text);
+    }
+
+    .tokens {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .token {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 18px;
+    }
+
+    .token-label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 650;
+      margin-bottom: 6px;
+    }
+
+    .token-value {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .footer {
+      padding-top: 28px;
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer code {
+      font-family: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+      font-size: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .hero, .type-specimen { grid-template-columns: 1fr; }
+      .hero-visual { transform: none; }
+      .palette { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .tokens { grid-template-columns: 1fr 1fr; }
+      .grid { grid-template-columns: 1fr; }
+      .card.wide { grid-column: auto; }
+      .dark-section { padding: 24px; }
+    }
+
+    @media (max-width: 560px) {
+      .page { padding: 28px 16px 56px; }
+      .palette, .tokens { grid-template-columns: 1fr; }
+      .section-head { flex-direction: column; align-items: start; }
+      .caption { flex-direction: column; gap: 2px; }
+      .caption span { text-align: left; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page { max-width: none; padding: 0; }
+      .hero-visual { transform: none; box-shadow: none; }
+      .card, .hero-visual, .dark-section { break-inside: avoid; }
+      .dark-section { color: #18211f; background: #fff; border-color: #e6e4dc; }
+      .dark-section h2, .dark-section .caption strong { color: #18211f; }
+      .dark-section .card { background: #fff; border-color: #e6e4dc; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div>
+        <div class="brand">
+          <div class="mark" aria-hidden="true"></div>
+          <div class="brand-name">SteadyClock<span class="beta">beta</span></div>
+        </div>
+        <h1>Тихая сосредоточенность.</h1>
+        <p class="lead">
+          Концепция интерфейса для трекера времени: тёплый фарфор, глубокий хвойный зелёный,
+          крупный таймер и ничего лишнего. Дизайн помогает удерживать ритм, а не отвлекает от работы.
+        </p>
+        <div class="pill-row">
+          <span class="pill">Windows · Avalonia</span>
+          <span class="pill">Inter + JetBrains Mono</span>
+          <span class="pill">Light / Dark</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img src="final/01-main-light.jpg" alt="Главный экран SteadyClock в светлой теме" />
+      </div>
+    </header>
+
+    <section class="section" id="screens">
+      <div class="section-head">
+        <h2>Экраны</h2>
+        <p class="section-note">
+          Одна визуальная система для таймера, истории, настроек и ручных записей.
+          Композиция сохраняет фокус на текущем действии.
+        </p>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <img src="final/01-main-light.jpg" alt="Главный экран, светлая тема" />
+          <div class="caption">
+            <strong>Главный экран</strong>
+            <span>Таймер, статус, итог дня и таймлайн сессий</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <img src="final/02-history.jpg" alt="История записей" />
+          <div class="caption">
+            <strong>История</strong>
+            <span>Сводка и записи по дням</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <img src="final/03-settings.jpg" alt="Настройки, раздел Простой" />
+          <div class="caption">
+            <strong>Настройки</strong>
+            <span>Боковая навигация вместо длинной простыни</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <img src="final/04-new-entry.jpg" alt="Модальное окно новой записи" />
+          <div class="caption">
+            <strong>Новая запись</strong>
+            <span>Ручное добавление времени</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="palette">
+      <div class="section-head">
+        <h2>Палитра</h2>
+        <p class="section-note">
+          Тёплая база, один глубокий акцент и мягкий шалфей. Коралл — только для редких важных отметок.
+        </p>
+      </div>
+
+      <div class="palette">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#f5f2ea"></div>
+          <div class="swatch-meta"><div class="swatch-name">Porcelain</div><div class="swatch-hex">#F5F2EA</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#1e5b54"></div>
+          <div class="swatch-meta"><div class="swatch-name">Pine</div><div class="swatch-hex">#1E5B54</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#a9c6bb"></div>
+          <div class="swatch-meta"><div class="swatch-name">Sage</div><div class="swatch-hex">#A9C6BB</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#18211f"></div>
+          <div class="swatch-meta"><div class="swatch-name">Ink</div><div class="swatch-hex">#18211F</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#e08a6a"></div>
+          <div class="swatch-meta"><div class="swatch-name">Coral</div><div class="swatch-hex">#E08A6A</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="type">
+      <div class="section-head">
+        <h2>Типографика</h2>
+        <p class="section-note">
+          Inter держит интерфейс, JetBrains Mono — цифры таймера. Обе гарнитуры поддерживают кириллицу.
+        </p>
+      </div>
+
+      <div class="type-specimen">
+        <div class="type-card">
+          <div class="type-label">JetBrains Mono / Timer</div>
+          <div class="timer-type">01:24:36</div>
+          <p class="type-note">Табличные цифры, плотный трекинг, 64–72 px в главном окне.</p>
+        </div>
+        <div class="type-card">
+          <div class="type-label">Inter / UI</div>
+          <div class="ui-type">Aa Бб Вв 123</div>
+          <p class="type-note">400 / 500 / 600. Спокойные заголовки, читаемый вторичный текст.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="dark-section" id="dark">
+      <div class="section-head">
+        <h2>Тёмная тема</h2>
+        <p class="section-note">
+          Не неон и не «киберпанк»: глубокий графитово-зелёный, тёплый светлый текст и мятные акценты.
+        </p>
+      </div>
+      <article class="card">
+        <img src="final/05-main-dark.jpg" alt="Главный экран SteadyClock в тёмной теме" />
+        <div class="caption">
+          <strong>Главный экран, dark</strong>
+          <span>Та же структура, другое настроение</span>
+        </div>
+      </article>
+    </section>
+
+    <section class="section" id="system">
+      <div class="section-head">
+        <h2>Дизайн-система</h2>
+        <p class="section-note">
+          Логотип, палитра, шрифтовая пара и базовые компоненты — всё, из чего собираются экраны.
+        </p>
+      </div>
+      <article class="card wide">
+        <img src="final/06-design-system.jpg" alt="Дизайн-система SteadyClock" />
+        <div class="caption">
+          <strong>SteadyClock — Quiet Focus</strong>
+          <span>Palette · Typography · Components</span>
+        </div>
+      </article>
+
+      <div class="tokens" style="margin-top:24px">
+        <div class="token"><div class="token-label">Радиусы</div><div class="token-value">24 px карточки · 14 px поля · pill</div></div>
+        <div class="token"><div class="token-label">Сетка</div><div class="token-value">4 px база · 16/20/24/32 px отступы</div></div>
+        <div class="token"><div class="token-label">Движение</div><div class="token-value">150–200 ms ease-out</div></div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>SteadyClock · концепция «Quiet Focus» · визуальные концепты, не финальная спецификация</div>
+      <div>Сгенерировано с <code>Nano Banana 2</code></div>
+    </footer>
+  </main>
+</body>
+</html>

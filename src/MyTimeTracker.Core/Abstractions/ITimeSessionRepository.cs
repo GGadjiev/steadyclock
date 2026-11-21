@@ -20,4 +20,8 @@ public interface ITimeSessionRepository
         DateTimeOffset rangeStartUtc,
         DateTimeOffset rangeEndUtc,
         CancellationToken cancellationToken = default);
+
+    /// <summary>Returns every stored session, newest first.</summary>
+    Task<IReadOnlyList<TimeSession>> GetAllSessionsAsync(
+        CancellationToken cancellationToken = default);
 }

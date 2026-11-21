@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -10,10 +10,10 @@
     <RootNamespace>SteadyClock.Desktop</RootNamespace>
     <AssemblyTitle>SteadyClock</AssemblyTitle>
     <Product>SteadyClock</Product>
-    <Description>Тихий офлайн-трекер времени для Windows, macOS и Linux</Description>
+    <Description>Тихий офлайн-трекер времени для Windows</Description>
     <Company>SteadyClock contributors</Company>
     <Version>2.0.0</Version>
-    <RuntimeIdentifiers>win-x64;win-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
     <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
 

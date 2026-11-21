@@ -61,12 +61,6 @@
   <data name="AppTitle" xml:space="preserve">
     <value>SteadyClock</value>
   </data>
-  <data name="CrossPlatformPreview" xml:space="preserve">
-    <value>Кроссплатформенная версия · beta</value>
-  </data>
-  <data name="BetaFoundationNotice" xml:space="preserve">
-    <value>Кроссплатформенная версия. Горячие клавиши работают в Windows и Linux X11; на macOS используется Carbon. Автозапуск работает в Windows, Linux и macOS.</value>
-  </data>
   <data name="DateFormatExample" xml:space="preserve">
     <value>ДД.ММ.ГГГГ</value>
   </data>
@@ -588,5 +582,95 @@
   </data>
   <data name="PersistenceErrorMessage" xml:space="preserve">
     <value>Не удалось сохранить изменения локально. Таймер продолжает работать; приложение повторит попытку автоматически.</value>
+  </data>
+  <data name="HistorySubtitle" xml:space="preserve">
+    <value>Все записи по дням</value>
+  </data>
+  <data name="HistoryWeek" xml:space="preserve">
+    <value>За неделю</value>
+  </data>
+  <data name="HistoryTotal" xml:space="preserve">
+    <value>Всего</value>
+  </data>
+  <data name="PlatformsWindows" xml:space="preserve">
+    <value>Windows</value>
+  </data>
+  <data name="SettingsTimerSubtitle" xml:space="preserve">
+    <value>Запуск и оформление</value>
+  </data>
+  <data name="SettingsModeSubtitle" xml:space="preserve">
+    <value>Автоматический учёт по приложению</value>
+  </data>
+  <data name="SettingsIdleSubtitle" xml:space="preserve">
+    <value>Когда ставить таймер на паузу</value>
+  </data>
+  <data name="SettingsTraySubtitle" xml:space="preserve">
+    <value>Поведение окна и запуск</value>
+  </data>
+  <data name="SettingsHotkeysSubtitle" xml:space="preserve">
+    <value>Глобальные сочетания клавиш</value>
+  </data>
+  <data name="SettingsNotificationsSubtitle" xml:space="preserve">
+    <value>События, звуки и тихие часы</value>
+  </data>
+  <data name="SettingsRemindersSubtitle" xml:space="preserve">
+    <value>Напоминания и рабочие часы</value>
+  </data>
+  <data name="ThemeLabel" xml:space="preserve">
+    <value>Тема</value>
+  </data>
+  <data name="ThemeSystem" xml:space="preserve">
+    <value>Системная</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Светлая</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Тёмная</value>
+  </data>
+  <data name="IdleThresholdTitle" xml:space="preserve">
+    <value>Порог бездействия</value>
+  </data>
+  <data name="IdlePauseToggle" xml:space="preserve">
+    <value>Ставить на паузу при простое</value>
+  </data>
+  <data name="IdleResumeToggle" xml:space="preserve">
+    <value>Возобновлять при активности</value>
+  </data>
+  <data name="IdleLockToggle" xml:space="preserve">
+    <value>Учитывать блокировку экрана</value>
+  </data>
+  <data name="IdleDeductionTitle" xml:space="preserve">
+    <value>Как вычитать простой</value>
+  </data>
+  <data name="IdleDeductionLastActivityTitle" xml:space="preserve">
+    <value>Откатывать к последней активности</value>
+  </data>
+  <data name="IdleDeductionLastActivityHint" xml:space="preserve">
+    <value>Простой не засчитывается полностью</value>
+  </data>
+  <data name="IdleDeductionDetectionTitle" xml:space="preserve">
+    <value>С момента обнаружения</value>
+  </data>
+  <data name="IdleDeductionDetectionHint" xml:space="preserve">
+    <value>Первые минуты засчитываются</value>
+  </data>
+  <data name="IdleRangeMin" xml:space="preserve">
+    <value>30 сек</value>
+  </data>
+  <data name="IdleRangeMax" xml:space="preserve">
+    <value>60 мин</value>
+  </data>
+  <data name="NewEntrySubtitle" xml:space="preserve">
+    <value>Добавьте время вручную</value>
+  </data>
+  <data name="DurationLabel" xml:space="preserve">
+    <value>Длительность</value>
+  </data>
+  <data name="EntryHistoryNoteFormat" xml:space="preserve">
+    <value>Запись появится в истории за {0}</value>
+  </data>
+  <data name="CommentPlaceholderShort" xml:space="preserve">
+    <value>Над чем работали?</value>
   </data>
 </root>

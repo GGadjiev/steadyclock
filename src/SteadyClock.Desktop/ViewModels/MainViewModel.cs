@@ -41,6 +41,21 @@ public partial class MainViewModel : ObservableObject, IDisposable
     private string _todayTotalText = "00:00:00";
 
     [ObservableProperty]
+    private string _historyTodayText = "0 мин";
+
+    [ObservableProperty]
+    private string _historyWeekText = "0 мин";
+
+    [ObservableProperty]
+    private string _historyTotalText = "0 мин";
+
+    [ObservableProperty]
+    private string _hotkeyHintText = string.Empty;
+
+    [ObservableProperty]
+    private string _primaryActionIconData = "M8,5V19L19,12L8,5Z";
+
+    [ObservableProperty]
     private string _todaySessionCountText = Strings.FormatSessionCount(0);
 
     [ObservableProperty]
@@ -93,6 +108,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
 
     public ObservableCollection<SessionLineViewModel> TodaySessions { get; } = new();
     public ObservableCollection<HistoryGroupViewModel> HistoryGroups { get; } = new();
+    public ObservableCollection<SparklineBarViewModel> SparklineBars { get; } = new();
 
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
     public bool IsTimerPage => !IsHistoryPage;
@@ -292,9 +308,11 @@ public partial class MainViewModel : ObservableObject, IDisposable
             : TimeText.FormatClock(_controller.CurrentDuration);
         ApplyStatus(_controller.Status);
         SyncCommentFromEngine();
+        HotkeyHintText = _controller.CurrentSettings.ToggleTimerHotkey.DisplayName;
 
         var summary = BuildTodaySummary(now);
-        TodayTotalText = TimeText.FormatClock(summary.TotalDuration);
+        TodayTotalText = TimeText.FormatDuration(summary.TotalDuration);
+        HistoryTodayText = TodayTotalText;
         TodaySessionCountText = Strings.FormatSessionCount(summary.SessionCount);
         IsEmpty = summary.Sessions.Count == 0;
 
@@ -324,6 +342,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
             TodayDateText = _today.ToDateTime(TimeOnly.MinValue).ToString("dd.MM.yyyy");
             _cachedTodaySessions = await _controller.GetSessionsForLocalDayAsync(_today);
             UpdateLiveView(force: true);
+            await RefreshSparklineAsync();
         }
         catch (Exception exception)
         {
@@ -365,8 +384,18 @@ public partial class MainViewModel : ObservableObject, IDisposable
                 HistoryGroups.Add(new HistoryGroupViewModel(
                     summary.Date,
                     summary.TotalDuration,
-                    BuildRows(summary.Sessions)));
+                    BuildRows(summary.Sessions),
+                    summary.Date == _today));
             }
+
+            var weekStart = _today.AddDays(-6);
+            HistoryWeekText = TimeText.FormatDuration(summaries
+                .Where(summary => summary.Date >= weekStart)
+                .Aggregate(TimeSpan.Zero, (total, summary) => total + summary.TotalDuration));
+
+            var allSessions = await _controller.GetAllSessionsAsync();
+            HistoryTotalText = TimeText.FormatDuration(
+                TimeSpan.FromMilliseconds(allSessions.Sum(session => session.Duration.TotalMilliseconds)));
 
             _historyStartDate = start;
             IsHistoryEmpty = HistoryGroups.Count == 0;
@@ -387,6 +416,42 @@ public partial class MainViewModel : ObservableObject, IDisposable
     {
         var merged = MergeActiveSession(_cachedTodaySessions, now);
         return SessionTimeline.BuildDay(merged, _today, _timeZone, now);
+    }
+
+    private async Task RefreshSparklineAsync()
+    {
+        var weekStart = _today.AddDays(-6);
+        var stored = await _controller.GetSessionsForLocalRangeAsync(weekStart, _today);
+        var now = _controller.Engine.UtcNow;
+        var summaries = SessionTimeline.BuildRange(
+            MergeActiveSession(stored, now),
+            weekStart,
+            _today,
+            _timeZone,
+            now);
+        var totals = summaries.ToDictionary(
+            summary => summary.Date,
+            summary => summary.TotalDuration);
+        var maxSeconds = totals.Count == 0
+            ? 0
+            : totals.Values.Max(duration => duration.TotalSeconds);
+        if (maxSeconds <= 0)
+        {
+            maxSeconds = 1;
+        }
+
+        SparklineBars.Clear();
+        for (var date = weekStart; date <= _today; date = date.AddDays(1))
+        {
+            var seconds = totals.TryGetValue(date, out var total)
+                ? total.TotalSeconds
+                : 0;
+            var height = 8 + 36 * seconds / maxSeconds;
+            SparklineBars.Add(new SparklineBarViewModel(height, date == _today));
+        }
+
+        HistoryWeekText = TimeText.FormatDuration(
+            TimeSpan.FromSeconds(totals.Values.Sum(duration => duration.TotalSeconds)));
     }
 
     private IReadOnlyList<TimeSession> MergeActiveSession(
@@ -425,6 +490,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
     private List<SessionLineViewModel> BuildRows(IReadOnlyList<SessionDaySlice> slices)
     {
         return slices
+            .OrderBy(slice => slice.StartUtc)
             .Select(slice => new SessionLineViewModel(
                 slice,
                 _timeZone,
@@ -449,6 +515,9 @@ public partial class MainViewModel : ObservableObject, IDisposable
             TimerStatus.PausedManual or TimerStatus.PausedIdle => Strings.Get("Continue"),
             _ => Strings.Get("Start")
         };
+        PrimaryActionIconData = status == TimerStatus.Running
+            ? "M7,5H11V19H7V5M13,5H17V19H13V5Z"
+            : "M8,5V19L19,12L8,5Z";
         CanStop = _controller.HasActiveSession;
         OnPropertyChanged(nameof(IsCommentEnabled));
     }

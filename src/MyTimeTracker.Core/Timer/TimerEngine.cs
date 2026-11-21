@@ -232,7 +232,11 @@ public sealed class TimerEngine
     }
 
     /// <summary>Polled roughly once per second by the UI, with a cheap idle check.</summary>
-    public void Tick(TimeSpan idleThreshold)
+    public void Tick(
+        TimeSpan idleThreshold,
+        bool autoPauseOnIdle = true,
+        bool autoResumeOnActivity = true,
+        IdleDeductionMode idleDeductionMode = IdleDeductionMode.FromLastActivity)
     {
         var nowWall = _wallClock.UtcNow;
         var nowMono = _monotonicClock.Elapsed;
@@ -285,14 +289,16 @@ public sealed class TimerEngine
             }
 
             var idle = GetIdleTimeSafe();
-            if (idle >= idleThreshold)
+            if (autoPauseOnIdle && idle >= idleThreshold)
             {
-                AutoPauseForIdle(nowWall, nowMono, idle, idleThreshold);
+                AutoPauseForIdle(nowWall, nowMono, idle, idleThreshold, idleDeductionMode);
                 SetLastTick(nowWall, nowMono);
                 return;
             }
         }
-        else if (Status == TimerStatus.PausedIdle && ActiveSession is not null)
+        else if (Status == TimerStatus.PausedIdle &&
+                 ActiveSession is not null &&
+                 autoResumeOnActivity)
         {
             // A decrease in system idle time can only be caused by new user input.
             // This check is based on GetLastInputInfo, not on the wall clock, so a
@@ -417,7 +423,8 @@ public sealed class TimerEngine
         DateTimeOffset nowWall,
         TimeSpan nowMono,
         TimeSpan idle,
-        TimeSpan idleThreshold)
+        TimeSpan idleThreshold,
+        IdleDeductionMode idleDeductionMode)
     {
         if (ActiveSession is null)
         {
@@ -431,13 +438,14 @@ public sealed class TimerEngine
         }
 
         var elapsed = nowMono - (_openSegmentStartMonotonic ?? nowMono);
-        var counted = elapsed - idle;
+        var fromDetection = idleDeductionMode == IdleDeductionMode.FromDetection;
+        var counted = fromDetection ? elapsed : elapsed - idle;
         if (counted < TimeSpan.Zero)
         {
             counted = TimeSpan.Zero;
         }
 
-        var effectiveEnd = nowWall - idle;
+        var effectiveEnd = fromDetection ? nowWall : nowWall - idle;
         if (effectiveEnd < open.StartUtc)
         {
             effectiveEnd = open.StartUtc;

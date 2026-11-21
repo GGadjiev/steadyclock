@@ -119,6 +119,7 @@ public partial class App : Application
                 _logger!);
 
             var settings = await settingsStore.LoadAsync(_lifetime.Token);
+            ThemeManager.Apply(settings.Theme);
             _controller.UpdateSettings(settings);
             await _controller.InitializeAsync(_lifetime.Token);
 
@@ -210,7 +211,7 @@ public partial class App : Application
         }
         catch (Exception exception)
         {
-            _logger?.Error("Критическая ошибка запуска кроссплатформенной версии.", exception);
+            _logger?.Error("Критическая ошибка запуска Windows-версии.", exception);
             ShowStartupError(desktop, Strings.Get("CouldNotStart"));
         }
     }

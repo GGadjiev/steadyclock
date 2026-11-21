@@ -205,7 +205,12 @@ public sealed class TimeTrackingController : IDisposable
         try
         {
             var previousStatus = _engine.Status;
-            _engine.Tick(TimeSpan.FromSeconds(CurrentSettings.IdleThresholdSeconds));
+            var settings = CurrentSettings;
+            _engine.Tick(
+                TimeSpan.FromSeconds(settings.IdleThresholdSeconds),
+                settings.AutoPauseOnIdle,
+                settings.AutoResumeOnActivity,
+                settings.IdleDeductionMode);
             var statusChanged = _engine.Status != previousStatus;
 
             if (statusChanged)
@@ -255,6 +260,11 @@ public sealed class TimeTrackingController : IDisposable
 
     public async Task HandleSessionLockAsync(CancellationToken cancellationToken = default)
     {
+        if (!CurrentSettings.PauseOnScreenLock)
+        {
+            return;
+        }
+
         await ExecuteLockedAsync(async () =>
         {
             var previous = _engine.Status;
@@ -268,6 +278,11 @@ public sealed class TimeTrackingController : IDisposable
 
     public async Task HandleSessionUnlockAsync(CancellationToken cancellationToken = default)
     {
+        if (!CurrentSettings.AutoResumeOnActivity)
+        {
+            return;
+        }
+
         await ExecuteLockedAsync(async () =>
         {
             var previous = _engine.Status;
@@ -301,6 +316,10 @@ public sealed class TimeTrackingController : IDisposable
         return await _repository.GetSessionsOverlappingAsync(start, end, cancellationToken)
             .ConfigureAwait(true);
     }
+
+    public async Task<IReadOnlyList<TimeSession>> GetAllSessionsAsync(
+        CancellationToken cancellationToken = default) =>
+        await _repository.GetAllSessionsAsync(cancellationToken).ConfigureAwait(true);
 
     public Task<TimeSession?> GetSessionAsync(long id, CancellationToken cancellationToken = default) =>
         _repository.GetSessionAsync(id, cancellationToken);

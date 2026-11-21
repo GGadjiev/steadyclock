@@ -1,8 +1,8 @@
 namespace SteadyClock.Desktop.Services;
 
 /// <summary>
-/// Cross-platform application data locations. On Windows the legacy MyTimeTracker
-/// folder is kept so an existing 1.x installation keeps its history after the rename.
+/// Windows application data locations. The legacy MyTimeTracker folder is kept
+/// so an existing installation keeps its history after the rename.
 /// </summary>
 public sealed class AppPaths
 {
@@ -12,7 +12,9 @@ public sealed class AppPaths
         UsesDataDirectoryOverride = !string.IsNullOrWhiteSpace(overrideRoot);
         Root = UsesDataDirectoryOverride
             ? overrideRoot!
-            : GetDefaultRoot();
+            : Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "MyTimeTracker");
 
         DatabasePath = Path.Combine(Root, "data.db");
         SettingsPath = Path.Combine(Root, "settings.json");
@@ -29,33 +31,5 @@ public sealed class AppPaths
     {
         Directory.CreateDirectory(Root);
         Directory.CreateDirectory(LogsDirectory);
-    }
-
-    private static string GetDefaultRoot()
-    {
-        if (OperatingSystem.IsWindows())
-        {
-            return Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "MyTimeTracker");
-        }
-
-        if (OperatingSystem.IsMacOS())
-        {
-            return Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                "Library",
-                "Application Support",
-                "SteadyClock");
-        }
-
-        var xdgData = Environment.GetEnvironmentVariable("XDG_DATA_HOME");
-        var dataRoot = string.IsNullOrWhiteSpace(xdgData)
-            ? Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                ".local",
-                "share")
-            : xdgData;
-        return Path.Combine(dataRoot, "steadyclock");
     }
 }

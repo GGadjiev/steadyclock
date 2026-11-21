@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $project = Join-Path $root 'src\SteadyClock.Desktop\SteadyClock.Desktop.csproj'
 $publishRoot = Join-Path $root 'publish'
-$rids = @('win-x64', 'win-arm64', 'linux-x64', 'linux-arm64', 'osx-x64', 'osx-arm64')
+$rids = @('win-x64', 'win-arm64')
 
 foreach ($rid in $rids) {
     $output = Join-Path $publishRoot "SteadyClock-$rid"
@@ -28,29 +28,13 @@ foreach ($rid in $rids) {
         throw "Publish failed for $rid."
     }
 
-    $readme = if ($rid -like 'win-*') {
-        @(
-            'SteadyClock',
-            '',
-            'Запуск: SteadyClock.exe',
-            'Права администратора не требуются.',
-            'Данные: %LOCALAPPDATA%\MyTimeTracker'
-        )
-    }
-    else {
-        @(
-            'SteadyClock',
-            '',
-            'Запуск:',
-            '  chmod +x SteadyClock',
-            '  ./SteadyClock',
-            '',
-            'Zip может не сохранить Unix-права на исполнение,'
-            'поэтому chmod нужен после распаковки.',
-            'Linux data: $XDG_DATA_HOME/steadyclock или ~/.local/share/steadyclock',
-            'macOS data: ~/Library/Application Support/SteadyClock'
-        )
-    }
+    $readme = @(
+        'SteadyClock',
+        '',
+        'Запуск: SteadyClock.exe',
+        'Права администратора не требуются.',
+        'Данные: %LOCALAPPDATA%\MyTimeTracker'
+    )
 
     [IO.File]::WriteAllLines(
         (Join-Path $output 'README.txt'),

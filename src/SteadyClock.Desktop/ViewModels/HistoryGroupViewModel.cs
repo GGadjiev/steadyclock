@@ -9,9 +9,11 @@ public sealed class HistoryGroupViewModel
     public HistoryGroupViewModel(
         DateOnly date,
         TimeSpan total,
-        IReadOnlyList<SessionLineViewModel> sessions)
+        IReadOnlyList<SessionLineViewModel> sessions,
+        bool isToday = false)
     {
         Date = date;
+        IsToday = isToday;
         Sessions = sessions;
         var localDate = date.ToDateTime(TimeOnly.MinValue);
         var text = localDate.ToString(
@@ -25,6 +27,7 @@ public sealed class HistoryGroupViewModel
     }
 
     public DateOnly Date { get; }
+    public bool IsToday { get; }
     public string DateText { get; }
     public string TotalText { get; }
     public string SessionCountText { get; }

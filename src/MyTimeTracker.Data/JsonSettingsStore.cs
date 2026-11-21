@@ -129,6 +129,16 @@ public sealed class JsonSettingsStore : ISettingsStore
         }
 
         settings.ProcessTrigger ??= new ProcessTriggerSettings();
+        if (!Enum.IsDefined(settings.Theme))
+        {
+            settings.Theme = AppTheme.Light;
+        }
+
+        if (!Enum.IsDefined(settings.IdleDeductionMode))
+        {
+            settings.IdleDeductionMode = IdleDeductionMode.FromLastActivity;
+        }
+
         settings.Notifications ??= new NotificationSettings();
         settings.Notifications.AutoPause ??= new NotificationRuleSettings { SoundId = "soft" };
         settings.Notifications.Reminder ??= new NotificationRuleSettings { SoundId = "bell" };

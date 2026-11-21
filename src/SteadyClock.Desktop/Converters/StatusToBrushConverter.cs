@@ -14,9 +14,17 @@ public sealed class StatusToBrushConverter : IValueConverter
         var status = value is TimerStatus timerStatus ? timerStatus : TimerStatus.Stopped;
         var suffix = parameter as string ?? "Background";
         var key = $"Status{status}{suffix}Brush";
-        if (Application.Current?.TryFindResource(key, out var brush) == true)
+        if (Application.Current is { } application)
         {
-            return brush;
+            if (application.TryFindResource(key, application.ActualThemeVariant, out var themedBrush))
+            {
+                return themedBrush;
+            }
+
+            if (application.TryFindResource(key, out var brush))
+            {
+                return brush;
+            }
         }
 
         return Brushes.Transparent;
