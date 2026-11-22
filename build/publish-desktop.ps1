@@ -28,6 +28,8 @@ foreach ($rid in $rids) {
         throw "Publish failed for $rid."
     }
 
+    Get-ChildItem $output -Recurse -Filter '*.pdb' -File | Remove-Item -Force
+
     $readme = @(
         'SteadyClock',
         '',
