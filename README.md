@@ -130,3 +130,5 @@ MIT. Copyright © GGadjiev.
 
 Сторонние компоненты: шрифты Inter и JetBrains Mono (SIL OFL 1.1),
 [NAudio](https://github.com/naudio/NAudio) (MS-PL) для импорта пользовательских звуков.
+
+История изменений: [CHANGELOG.md](CHANGELOG.md).
