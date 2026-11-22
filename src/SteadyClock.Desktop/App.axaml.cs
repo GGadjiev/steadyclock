@@ -142,7 +142,7 @@ public partial class App : Application
             {
                 SynchronizeAutostart(settings.AutoStartWithWindows);
             }
-            _sounds = new SoundService(_logger!);
+            _sounds = new SoundService(_logger!, _paths!);
             _processCatalog = new ProcessCatalog();
             _processMode = new ProcessModeService(_controller, _processCatalog, _logger!);
             _notifications = new NotificationService(_controller, _sounds, _processMode, _logger!);

@@ -30,9 +30,12 @@ public static class SoundPresetCatalog
     public static readonly SoundPreset Warning =
         new("warning", "warning.wav", "SoundWarning");
 
+    public static readonly SoundPreset Custom =
+        new("custom", string.Empty, "SoundCustom");
+
     public static readonly IReadOnlyList<SoundPreset> Options = new[]
     {
-        None, Soft, Bell, TwoTone, Click, Warning
+        None, Soft, Bell, TwoTone, Click, Warning, Custom
     };
 
     public static SoundPreset Get(string? id) =>

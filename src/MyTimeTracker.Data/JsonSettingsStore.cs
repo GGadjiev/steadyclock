@@ -140,6 +140,7 @@ public sealed class JsonSettingsStore : ISettingsStore
         }
 
         settings.Notifications ??= new NotificationSettings();
+        settings.Notifications.CustomSoundDisplayName ??= string.Empty;
         settings.Notifications.AutoPause ??= new NotificationRuleSettings { SoundId = "soft" };
         settings.Notifications.Reminder ??= new NotificationRuleSettings { SoundId = "bell" };
         settings.Notifications.Error ??= new NotificationRuleSettings { SoundId = "warning" };

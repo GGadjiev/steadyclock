@@ -21,6 +21,7 @@ public sealed class NotificationSettings
 
     public bool Enabled { get; set; } = true;
     public int ToastDurationSeconds { get; set; } = 8;
+    public string CustomSoundDisplayName { get; set; } = string.Empty;
     public NotificationRuleSettings AutoPause { get; set; } = new() { SoundId = "soft" };
     public NotificationRuleSettings Reminder { get; set; } = new() { SoundId = "bell" };
     public NotificationRuleSettings Error { get; set; } = new() { SoundId = "warning" };
@@ -35,6 +36,7 @@ public sealed class NotificationSettings
     {
         Enabled = Enabled,
         ToastDurationSeconds = ToastDurationSeconds,
+        CustomSoundDisplayName = CustomSoundDisplayName,
         AutoPause = AutoPause.Clone(),
         Reminder = Reminder.Clone(),
         Error = Error.Clone(),

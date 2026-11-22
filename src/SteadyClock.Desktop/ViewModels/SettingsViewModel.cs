@@ -88,6 +88,15 @@ public partial class SettingsViewModel : ObservableObject
     private string _toastDurationText;
 
     [ObservableProperty]
+    private bool _hasCustomSound;
+
+    [ObservableProperty]
+    private string _customSoundDisplayName = string.Empty;
+
+    [ObservableProperty]
+    private string _customSoundError = string.Empty;
+
+    [ObservableProperty]
     private bool _quietHoursEnabled;
 
     [ObservableProperty]
@@ -213,6 +222,13 @@ public partial class SettingsViewModel : ObservableObject
         CloseToTray = settings.CloseToTray;
         NotificationsEnabled = settings.Notifications.Enabled;
         ToastDurationText = settings.Notifications.ToastDurationSeconds.ToString(CultureInfo.InvariantCulture);
+        CustomSoundDisplayName = settings.Notifications.CustomSoundDisplayName;
+        HasCustomSound = !string.IsNullOrWhiteSpace(CustomSoundDisplayName) &&
+                         _sounds.HasCustomSoundFile;
+        if (!HasCustomSound)
+        {
+            CustomSoundDisplayName = string.Empty;
+        }
         QuietHoursEnabled = settings.Notifications.QuietHoursEnabled;
         QuietHoursStart = settings.Notifications.QuietHoursStart;
         QuietHoursEnd = settings.Notifications.QuietHoursEnd;
@@ -259,6 +275,15 @@ public partial class SettingsViewModel : ObservableObject
                 sound => _sounds.Play(sound.Id))
         };
 
+        if (!HasCustomSound)
+        {
+            foreach (var rule in Rules.Where(rule =>
+                         rule.SelectedSound.Id == SoundPresetCatalog.Custom.Id))
+            {
+                rule.SelectedSound = SoundPresetCatalog.Soft;
+            }
+        }
+
         _ = RefreshProcessesAsync();
     }
 
@@ -274,6 +299,13 @@ public partial class SettingsViewModel : ObservableObject
     public string IdleThresholdDisplay =>
         TimeText.FormatDuration(TimeSpan.FromSeconds(IdleThresholdValue));
 
+    public string CustomSoundStatusText => HasCustomSound
+        ? Strings.Format("NotificationCustomSoundCurrentFormat", CustomSoundDisplayName)
+        : Strings.Get("NotificationCustomSoundNone");
+
+    public bool CanPreviewCustomSound => HasCustomSound;
+    public bool HasCustomSoundError => !string.IsNullOrWhiteSpace(CustomSoundError);
+
     public bool IsTimerSection => SelectedSection?.Section == SettingsSection.Timer;
     public bool IsTrackerModeSection => SelectedSection?.Section == SettingsSection.TrackerMode;
     public bool IsIdleSection => SelectedSection?.Section == SettingsSection.Idle;
@@ -284,6 +316,19 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnIdleThresholdValueChanged(double value) =>
         OnPropertyChanged(nameof(IdleThresholdDisplay));
+
+    partial void OnHasCustomSoundChanged(bool value)
+    {
+        OnPropertyChanged(nameof(CustomSoundStatusText));
+        OnPropertyChanged(nameof(CanPreviewCustomSound));
+        PreviewCustomSoundCommand.NotifyCanExecuteChanged();
+    }
+
+    partial void OnCustomSoundDisplayNameChanged(string value) =>
+        OnPropertyChanged(nameof(CustomSoundStatusText));
+
+    partial void OnCustomSoundErrorChanged(string value) =>
+        OnPropertyChanged(nameof(HasCustomSoundError));
 
     partial void OnSelectedSectionChanged(SettingsSectionViewModel value)
     {
@@ -363,6 +408,9 @@ public partial class SettingsViewModel : ObservableObject
         settings.WorkEnd = WorkEnd.Trim();
         settings.Notifications.Enabled = NotificationsEnabled;
         settings.Notifications.ToastDurationSeconds = toastDuration;
+        settings.Notifications.CustomSoundDisplayName = HasCustomSound
+            ? CustomSoundDisplayName
+            : string.Empty;
         settings.Notifications.QuietHoursEnabled = QuietHoursEnabled;
         settings.Notifications.QuietHoursStart = QuietHoursStart.Trim();
         settings.Notifications.QuietHoursEnd = QuietHoursEnd.Trim();
@@ -448,6 +496,55 @@ public partial class SettingsViewModel : ObservableObject
             IsBusy = false;
         }
     }
+
+    [RelayCommand(CanExecute = nameof(CanPreviewCustomSound))]
+    private void PreviewCustomSound()
+    {
+        if (HasCustomSound)
+        {
+            _sounds.Play(SoundPresetCatalog.Custom.Id);
+        }
+    }
+
+    [RelayCommand]
+    private void RemoveCustomSound()
+    {
+        CustomSoundError = string.Empty;
+        CustomSoundDisplayName = string.Empty;
+        HasCustomSound = false;
+        foreach (var rule in Rules.Where(rule =>
+                     rule.SelectedSound.Id == SoundPresetCatalog.Custom.Id))
+        {
+            rule.SelectedSound = SoundPresetCatalog.Soft;
+        }
+    }
+
+    public async Task ImportCustomSoundAsync(string? sourcePath)
+    {
+        if (string.IsNullOrWhiteSpace(sourcePath))
+        {
+            return;
+        }
+
+        CustomSoundError = string.Empty;
+        var result = await _sounds.ImportCustomSoundAsync(sourcePath);
+        if (!result.Success)
+        {
+            CustomSoundError = result.Error ?? Strings.Get("NotificationCustomSoundInvalid");
+            return;
+        }
+
+        CustomSoundDisplayName = result.DisplayName;
+        HasCustomSound = true;
+        foreach (var rule in Rules)
+        {
+            rule.SelectedSound = SoundPresetCatalog.Custom;
+        }
+
+        _sounds.Play(SoundPresetCatalog.Custom.Id);
+    }
+
+    public void SetCustomSoundError(string message) => CustomSoundError = message;
 
     [RelayCommand]
     private async Task RefreshProcessesAsync()

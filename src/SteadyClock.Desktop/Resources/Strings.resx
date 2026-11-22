@@ -121,6 +121,42 @@
   <data name="SoundWarning" xml:space="preserve">
     <value>Предупреждение</value>
   </data>
+  <data name="SoundCustom" xml:space="preserve">
+    <value>Свой звук</value>
+  </data>
+  <data name="NotificationCustomSoundTitle" xml:space="preserve">
+    <value>Свой звук</value>
+  </data>
+  <data name="NotificationCustomSoundHint" xml:space="preserve">
+    <value>WAV, MP3, M4A, WMA или AAC. Не длиннее 5 секунд.</value>
+  </data>
+  <data name="NotificationCustomSoundLoad" xml:space="preserve">
+    <value>Загрузить звук</value>
+  </data>
+  <data name="NotificationCustomSoundPreview" xml:space="preserve">
+    <value>Прослушать</value>
+  </data>
+  <data name="NotificationCustomSoundRemove" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="NotificationCustomSoundNone" xml:space="preserve">
+    <value>Свой звук не загружен</value>
+  </data>
+  <data name="NotificationCustomSoundCurrentFormat" xml:space="preserve">
+    <value>Сейчас: {0}</value>
+  </data>
+  <data name="NotificationCustomSoundInvalid" xml:space="preserve">
+    <value>Не удалось прочитать аудиофайл. Попробуйте WAV или MP3.</value>
+  </data>
+  <data name="NotificationCustomSoundPickerTitle" xml:space="preserve">
+    <value>Выберите звук уведомления</value>
+  </data>
+  <data name="NotificationCustomSoundFileType" xml:space="preserve">
+    <value>Аудиофайлы</value>
+  </data>
+  <data name="NotificationCustomSoundPickerError" xml:space="preserve">
+    <value>Не удалось открыть выбор файла.</value>
+  </data>
   <data name="SettingsSaveFailed" xml:space="preserve">
     <value>Не удалось сохранить настройки.</value>
   </data>

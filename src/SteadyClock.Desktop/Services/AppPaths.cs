@@ -19,17 +19,20 @@ public sealed class AppPaths
         DatabasePath = Path.Combine(Root, "data.db");
         SettingsPath = Path.Combine(Root, "settings.json");
         LogsDirectory = Path.Combine(Root, "logs");
+        SoundsDirectory = Path.Combine(Root, "sounds");
     }
 
     public string Root { get; }
     public string DatabasePath { get; }
     public string SettingsPath { get; }
     public string LogsDirectory { get; }
+    public string SoundsDirectory { get; }
     public bool UsesDataDirectoryOverride { get; }
 
     public void EnsureCreated()
     {
         Directory.CreateDirectory(Root);
         Directory.CreateDirectory(LogsDirectory);
+        Directory.CreateDirectory(SoundsDirectory);
     }
 }

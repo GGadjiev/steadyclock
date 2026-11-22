@@ -332,15 +332,18 @@ public sealed class TimelineAndValidationTests
         settings.AutoResumeOnActivity = false;
         settings.PauseOnScreenLock = false;
         settings.IdleDeductionMode = IdleDeductionMode.FromDetection;
+        settings.Notifications.CustomSoundDisplayName = "custom.wav";
 
         var clone = settings.DeepClone();
         settings.Theme = AppTheme.Light;
+        settings.Notifications.CustomSoundDisplayName = string.Empty;
 
         Assert.Equal(AppTheme.Dark, clone.Theme);
         Assert.False(clone.AutoPauseOnIdle);
         Assert.False(clone.AutoResumeOnActivity);
         Assert.False(clone.PauseOnScreenLock);
         Assert.Equal(IdleDeductionMode.FromDetection, clone.IdleDeductionMode);
+        Assert.Equal("custom.wav", clone.Notifications.CustomSoundDisplayName);
     }
 
     [Fact]
