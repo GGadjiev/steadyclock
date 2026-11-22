@@ -20,26 +20,12 @@
                     BorderThickness="0,0,0,1"
                     Padding="14,0">
                 <Grid ColumnDefinitions="18,*,Auto,Auto">
-                    <Panel Grid.Column="0">
-                        <Border Width="1"
-                                Height="17"
-                                Background="{DynamicResource TimelineBrush}"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Top"
-                                IsVisible="{Binding ShowTopConnector}" />
-                        <Border Width="1"
-                                Background="{DynamicResource TimelineBrush}"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Stretch"
-                                Margin="0,24,0,0"
-                                IsVisible="{Binding ShowConnector}" />
-                        <Ellipse Width="7"
-                                 Height="7"
-                                 Margin="0,17,0,0"
-                                 Fill="{DynamicResource SageBrush}"
-                                 HorizontalAlignment="Center"
-                                 VerticalAlignment="Top" />
-                    </Panel>
+                    <controls:TimelineRail Grid.Column="0"
+                                           IsHitTestVisible="False"
+                                           LineBrush="{DynamicResource TimelineBrush}"
+                                           DotBrush="{DynamicResource SageBrush}"
+                                           ShowTopConnector="{Binding ShowTopConnector}"
+                                           ShowBottomConnector="{Binding ShowConnector}" />
 
                     <StackPanel Grid.Column="1" Spacing="2" Margin="0,11,0,11">
                         <StackPanel Orientation="Horizontal" Spacing="8">
@@ -171,7 +157,7 @@
                                        Classes="timer" />
                             <Border Height="28"
                                     HorizontalAlignment="Center"
-                                    Margin="0,2,0,0"
+                                    Margin="0,7,0,0"
                                     Padding="13,0"
                                     CornerRadius="999"
                                     Background="{Binding Status, Converter={StaticResource StatusBrush}, ConverterParameter=Background}">
@@ -192,7 +178,7 @@
                             <Button Command="{Binding PrimaryActionCommand}"
                                     Classes="primary"
                                     HorizontalAlignment="Stretch"
-                                    Margin="0,16,0,0">
+                                    Margin="0,12,0,0">
                                 <StackPanel Orientation="Horizontal" Spacing="9" HorizontalAlignment="Center">
                                     <PathIcon Width="13"
                                               Height="14"
@@ -373,19 +359,15 @@
                                             IsVisible="{Binding IsToday}" />
                                     <StackPanel Grid.Column="1" Margin="14,14,12,0">
                                         <Grid ColumnDefinitions="18,*,Auto" Margin="14,0,0,0">
-                                            <Panel Grid.Column="0">
-                                                <Border Width="1"
-                                                        Background="{DynamicResource TimelineBrush}"
-                                                        HorizontalAlignment="Center"
-                                                        VerticalAlignment="Stretch"
-                                                        Margin="0,14,0,-4" />
-                                                <Ellipse Width="8"
-                                                         Height="8"
-                                                         Margin="0,6,0,0"
-                                                         Fill="{DynamicResource SageBrush}"
-                                                         HorizontalAlignment="Center"
-                                                         VerticalAlignment="Top" />
-                                            </Panel>
+                                            <controls:TimelineRail Grid.Column="0"
+                                                                   IsHitTestVisible="False"
+                                                                   DotDiameter="8"
+                                                                   DotCenterY="10.5"
+                                                                   ShowTopConnector="False"
+                                                                   ShowBottomConnector="True"
+                                                                   Margin="0,0,0,-6"
+                                                                   LineBrush="{DynamicResource TimelineBrush}"
+                                                                   DotBrush="{DynamicResource SageBrush}" />
                                             <StackPanel Grid.Column="1" Spacing="2" Margin="0,0,8,0">
                                                 <TextBlock Text="{Binding DateText}"
                                                            FontSize="17"
