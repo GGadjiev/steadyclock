@@ -18,7 +18,7 @@
         <DataTemplate x:Key="SessionRowTemplate" x:DataType="vm:SessionLineViewModel">
             <Border BorderBrush="{DynamicResource DividerBrush}"
                     BorderThickness="0,0,0,1"
-                    Padding="14,0">
+                    Padding="14,0,32,0">
                 <Grid ColumnDefinitions="18,*,Auto,Auto">
                     <controls:TimelineRail Grid.Column="0"
                                            IsHitTestVisible="False"
@@ -357,7 +357,7 @@
                                             CornerRadius="2"
                                             Margin="0,18,0,18"
                                             IsVisible="{Binding IsToday}" />
-                                    <StackPanel Grid.Column="1" Margin="14,14,12,0">
+                                    <StackPanel Grid.Column="1" Margin="14,14,18,0">
                                         <Grid ColumnDefinitions="18,*,Auto" Margin="14,0,0,0">
                                             <controls:TimelineRail Grid.Column="0"
                                                                    IsHitTestVisible="False"
@@ -381,7 +381,8 @@
                                                        FontSize="16"
                                                        FontWeight="SemiBold"
                                                        VerticalAlignment="Top"
-                                                       HorizontalAlignment="Right" />
+                                                       HorizontalAlignment="Right"
+                                                       Margin="0,0,32,0" />
                                         </Grid>
                                         <ItemsControl ItemsSource="{Binding Sessions}"
                                                       ItemTemplate="{StaticResource SessionRowTemplate}"
